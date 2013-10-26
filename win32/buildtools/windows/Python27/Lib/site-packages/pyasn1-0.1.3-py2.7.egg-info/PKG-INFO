@@ -1,0 +1,21 @@
+Metadata-Version: 1.0
+Name: pyasn1
+Version: 0.1.3
+Summary: ASN.1 types and codecs
+Home-page: http://sourceforge.net/projects/pyasn1/
+Author: Ilya Etingof
+Author-email: ilya@glas.net
+License: BSD
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Telecommunications Industry
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Communications
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: License :: OSI Approved :: BSD License

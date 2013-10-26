@@ -1,0 +1,6 @@
+certifi>=0.0.7
+oauthlib>=0.1.0,<0.2.0
+chardet>=1.0.0
+
+[async]
+gevent

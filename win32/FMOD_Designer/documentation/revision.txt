@@ -1,0 +1,2714 @@
+
+===============================================================================
+                        REVISION HISTORY : FMOD Designer
+             Copyright (c) Firelight Technologies, Pty, Ltd, 2004-2011
+                              http://www.fmod.org
+===============================================================================
+              + Added feature or noticable improvement
+              - Bug fix or something removed
+              * Changed or Information
+              ! Important!
+===============================================================================
+
+11/02/13 4.44.07 - Stable branch update
+----------------------------------------------------
+* Update for API release
+
+
+31/01/13 4.44.06 - Stable branch update
+----------------------------------------------------
+* Update for API release
+
+
+25/01/13 4.44.05 - Stable branch update
+----------------------------------------------------
+* Update for API release
+
+
+08/01/13 4.44.04 - Stable branch update
+----------------------------------------------------
+* Update for API release
+
+
+17/12/12 4.44.03 - Stable branch update
+----------------------------------------------------
+* Update for API release
+
+
+04/12/12 4.44.02 - Stable branch update
+----------------------------------------------------
+- Music Player - Fixed crashes when clicking "Load Sound Data" or
+                 "Free Sound Data" with no FEV loaded.
+
+
+14/11/12 4.44.01 - Stable branch update
+----------------------------------------------------
+* Update for API release
+
+
+09/11/12 4.44.00 - Initial stable branch release
+----------------------------------------------------
+* Update for API release
+
+
+26/10/12 4.43.07 - Development branch update
+----------------------------------------------------
+
++ Enabled CELT and Vorbis encodings for iOS.
+
+- FSBankLib - Fixed encoder error for multichannel AT9 files when using newer
+              libatrac9.dll files.
+
+17/10/12 4.43.06 - Development branch update
+----------------------------------------------------
+* Update for API release
+
+
+08/10/12 4.43.05 - Development branch update
+----------------------------------------------------
+- Fixed event player crashing at close on Mac.
+
+
+25/09/12 4.43.04 - Development branch update
+----------------------------------------------------
+* Changed error during build when applying templates (when there are no 
+  templates) to a warning, allows DesignerCL to continue when -T is
+  specified for a project without templates
+
+04/09/12 4.43.03 - Development branch update
+----------------------------------------------------
+* Update for API release
+
+
+22/08/12 4.43.02 - Development branch update
+----------------------------------------------------
+* Update for API release
+
+
+07/08/12 4.43.01 - Development branch update
+----------------------------------------------------
+- Fixed 3D Doppler Factor of all events being reset to default after undoing
+  certain actions
+
+19/07/12 4.43.00 - Initial development branch release
+-----------------------------------------------------
+* Update for API release
+
+29/06/12 4.43.00 - pre 10
+-----------------------------------------------------
+* Update for API release
+
+22/06/12 4.43.00 - pre 9
+-----------------------------------------------------
+- Fixed multichannel wavs that had speaker setup to
+  'multi mono/stereo', not being affected by pan/speaker 
+  levels.
+
+05/06/12 4.43.00 - pre 8
+-----------------------------------------------------
+* Update for API release
+
+25/05/12 4.43.00 - pre 7
+-----------------------------------------------------
+* Update for API release
+
+15/05/12 4.43.00 - pre 6
+-----------------------------------------------------
+* Update for API release
+
+18/04/12 4.43.00 - pre 5
+-----------------------------------------------------
+* Update for API release
+
+04/04/12 4.43.00 - pre 4
+-----------------------------------------------------
+* Fixed compression quality being grayed out per-waveform for XMA.
+
+01/03/12 4.43.00 - pre 3
+-----------------------------------------------------
+* Update for API release
+
+29/02/12 4.43.00 - pre 2
+-----------------------------------------------------
+- Fixed incorrect build error being shown for hardware formats.
+
+24/02/12 4.43.00 - pre 1
+-----------------------------------------------------
+- Added Wii U platform to the Designer available platforms.
+- AT9 format is now hardware only.
+
+02/02/12 4.43.00 - Initial internal branch release
+-----------------------------------------------------
+- Fixed -80db values in sneaking in from bulk editor
+
+18/01/12 4.41.00 - pre 7
+-----------------------------------------------------
+* Update for API release
+
+28/12/11 4.41.00 - pre 6
+-----------------------------------------------------
+- Fixed unassigned ASIO output channels in sound preferences
+
+14/12/11 4.41.00 - pre 5
+-----------------------------------------------------
+- Fixed fmod_designercl.exe returning 0 (success) even if the build failed
+
+12/12/11 4.41.00 - pre 4
+-----------------------------------------------------
+* Update for API release
+
+28/11/11 4.41.00 - pre 3
+-----------------------------------------------------
+* Update for API release
+
+17/11/11 4.41.00 - pre 2
+-----------------------------------------------------
+- Fixed hardware vs software selection to avoid mismatch errors at runtime.
+- Made sounddef trigger delay work on hardware platforms
+
+03/11/11 4.41.00 - pre 1
+-----------------------------------------------------
+- FSBankLib - Fixed FSB5 header incompatibility causing failed loading, update
+              runtime to handle both old and new FSBs.
+
+20/10/11 4.41.00 - Initial Internal branch release
+-----------------------------------------------------
+- Fixed crash when auditioning sound defs.
+- Fixed crash after adding sounds to segments when primary language is not
+  selected.
+- Fixed certain 3D event properties not being disabled when event is 2D.
+- Fixed spelling of '3D Auto Distance Centre Freq' event property from UK to US
+  English.
+
+05/10/11 4.39.00 pre 5
+-----------------------------------------------------
+
++ Added Reverb Def XML import/export
+
+- Attempting to load a corrupt template file displays a warning
+- Fixed crash after loading a corrupt project file containing simple events
+
+16/09/11 4.39.00 pre 4
+-----------------------------------------------------
+
++ Added platform choices for Android and iOS.
+
+31/08/11 4.39.00 pre 3
+-----------------------------------------------------
+
+- Fixed Channel Mix effect not reading envelopes from FDP correctly if they
+  include channel 15.
+- Fixed a bug where sound definition trigger delay could be ignored if the
+  sound was on a layer without software effects
+
+18/08/11 4.39.00 pre 2
+-----------------------------------------------------
+
++ Added support for FSB5 output, now with PS Vita AT9 and Xbox360 xWMA encoding.
+
+- Allowed occlusion effect in hardware for 3DS and PSVita. Allowed speaker
+  spread and 3D pan level effect on all hardware.
+
+03/08/11 4.39.00 pre 1
+-----------------------------------------------------
+
+- Fixed keyboard navigation on the SoundBanks list
+- Fixed HE-VAG banks being allowed as software.
+
+- Mac/Win64 - Fixed CELT encoder not working.
+
+14/07/11 4.39.00 - Initial internal branch release
+-----------------------------------------------------
+
+* Update for API release
+
+30/06/11 4.37.00 - pre 6
+----------------------------------------------------
++ Made a few improvements to the music system interface including: improved
+  stacking behavior in the theme editor, double click to show editors,
+  all beats enabled by default for new segments, and toggling off cues in
+  the audition console on reset
+
++ Added ToolTip to Simple Event playlist to show long filenames in full.
+
+- Fixed hardware platforms not loading PCM FSBs.
+- Disabled "Audition With Compression" for HEVAG.
+- Make 'New effect' window larger to show all default effects at once.
+
+* The event 3D Listener Angle parameter can now be affected by elevation and
+  not just hoizontal direction if the event system is initialised with the flag 
+  FMOD_EVENT_INIT_ELEVATION_AFFECTS_LISTENER_ANGLE.
+
+02/06/11 4.37.00 - pre 5
+----------------------------------------------------
++ Added a built-in distance-modulated bandpass effect to events. The effect can
+  be enabled by setting the 'Auto Distance Filtering' event property to 'On'.
+  The 'Auto Distance Centre Freq' property sets the bandpass centre frequency.
+  The system must be initialised with the FMOD_INIT_DISTANCE_FILTERING flag for
+  the effect to work.
++ Added category browser context menu to copy/paste entire category structure
+
+- Fixed auto generated duplicate sound bank name issue when adding new sound bank
+
+- FSBankLib - Fixed potentially corrupted FSB audio for VAG and HE-VAG formats.
+
+* .FEV file format updated! If you build with FMOD Designer 4.35.05, you must
+  use FMOD version 4.35.05, 4.34.05 or higher.
+
+20/05/11 4.37.00 - pre 4
+----------------------------------------------------
++ Mac - Added command line version of FMOD Designer.
+
+13/05/11 4.37.00 - pre 3
+----------------------------------------------------
++ Added FMOD Highpass Simple effect to the Event Editor which is a fast
+  first-order highpass
+
+- Fixed crash when trying to paste sound defs and the clipboard is empty
+- Disallow object names with forward slashes
+- Stopped event dialogs from being reset when switching between tabs
+- Fixed banks set to HE-VAG format being built as PCM.
+- Fixed issue where min/max distance are presented using e notation for large values
+
+28/04/11 4.37.00 - pre 2 
+----------------------------------------------------
+- Fixed excessive slowdown when adding new events to large projects
+
+20/04/11 4.37.00 - pre 1 
+----------------------------------------------------
++ Added build option (-i for command line) to continue build on error
++ Added a new 3D Min Position Randomization property for events and sound
+  definitions
+
+* Changed designer to init to sample rate that windows is set to, rather than 
+  48khz all of the time.
+
+7/04/11 4.37.00 - Initial internal branch release
+----------------------------------------------------
+- Fixed volume and pitch of all events being reset to default after undoing
+  certain actions
+- Fixed excessive slowdown when moving or deleting events in large projects
+
+08/03/11 4.35.00 pre 9
+----------------------------------------------------
+- Fix ADPCM source wavs causing error during build.
+- Fix profiler reporting corrupted packets when they weren't corrupted.
+
+31/01/11 4.35.00 pre 8
+----------------------------------------------------
+- Fixed multi-track Event Editor having a fixed scrollable height
+
+5/01/11 4.35.00 pre 7
+----------------------------------------------------
+- Fixed cache not being rebuilt when adjusting the optimized sample rate
+  percentage.
+- Fixed invalid param error when compressing as MPEG when source file is a
+  certain length.
+
+
+01/12/10 4.35.00 pre 6
+----------------------------------------------------
+- Fixed validation bug that caused sound def pitch and pitch randomization
+  property to be limited to +/- 4 semitones
+- Fixed crash when moving an event category into a category contained within it
+- Fixed crash when copying an item after copying event layer which contains
+  parameter
+- Fixed sometimes not being able to move sound def folders into other folders
+- Fixed record output feature for simple event editor
+- Fixed not being able to reset event category max playbacks to zero
+- Fixed crash in command line versio of designer when building
+
+* Changed text refering to 'waveforms', 'wavetables' and 'wavefiles' to
+  'sound files' and 'sounds'
+* Changed sound bank 'Compression Quality' minimum value from 1 to 0.
+  0 is used to set default quality.
+
+
+12/11/10 4.35.00 pre 5
+----------------------------------------------------
+
+- Fixed undo for reverb preset
+- Fixed music headers written in FEV even when there is no music data
+- Fixed segments adding samples even if the wavefiles are not included in the bank
+- Fixed no undo push for disabling sync points during build
+- Fixed project corruption issue related to undo and the music system
+- Fixed FEV corruption when current build target does not build some events.
+
+- Profiler - Fixed volume levels coming out incorrect.
+
+
+22/10/10 4.35.00 pre 4
+----------------------------------------------------
+
+* Update for API release
+
+
+5/10/10 4.35.00 pre 3
+----------------------------------------------------
++ Added global versions of Sequential, Random Without Repeat and Shuffled
+  segment play modes
++ Improved build dialog
++ Added user option to replace the old sounds on a layer when pasting a sound which
+  obscures the existing sounds
++ Added support for the select all shortcut in the bulk editor
++ Changed Sound Def pitch units from octaves to semitones
+
+- Fixed envelope deletion when deleting a parameter which is not controlling this
+  envelope
+- Fixed command line designer crash while loading plugins
+- Fixed "Fmod Engine Designer" sliders not being able to increment one single step
+  by clicking above or below the slider handle
+- Fixed designer crash while undoing "Add Surround Pan Points to Layer"
+- Fixed event 3d position getting reset at the start of an event even when 3d dialog
+  is open
+- Fixed waveform index mismatch in .fev and .fsb
+- Fixed Designer memory leak when auditioning event which has loop and cutoff sounds
+- Fixed music tab not playing MP3s with large amounts of tag data at the start
+
+* .FEV file format updated! If you build with FMOD Designer 4.33.03, you must
+  use FMOD version 4.33.03 or higher
+
+
+15/09/10 4.35.00 pre 2
+----------------------------------------------------
++ Added different cache folders for each language .fsb file
++ Added a new 'Linear Square' roll-off curve which has a steep initial roll-off
+  similar to 'Inverse' but tapers to zero at max distance
++ Added sound definition context menu option to sort entries alphabetically
++ Reduced designer build times by 30%-85%
++ Improved build performance when building banks with optimised sample rate
+  waveform setting
++ Added sound definition waveform context menu items to mirror some of the
+  actions in hierarchy
+
+- Fixed unused files included in .fsb file
+- Fixed designer crash when closing a project which has template with parameter
+
+* .FEV file format updated! If you build with FMOD Designer 4.33.02, you must
+  use FMOD version 4.33.02 or higher
+* Renamed the 'Logarithmic' roll-off curve to 'Inverse' to reflect it's current
+  behavior
+* More descriptive undo text when setting template to an event
+
+
+26/08/10 4.35.00 pre 1
+----------------------------------------------------
+- Fixed hang when deleting multiple sound def waveforms
+
++ Music Player - added ability to specify an encryption key via the Edit menu
+
+
+5/08/10 4.33.00 
+----------------------------------------------------
++ Added simplified editor for simple events
++ Added 'Add Template' in the template folder context menu
++ Added fixed sample rate option for waveforms. This option is available 
+  through the 'Adjust sample rate' item in the waveform context menu
++ Dropping files onto the event hierarchy now creates simple events. This
+  behavior can be changed through the 'Preferences' dialog
++ Sped up building
+
+- Fixed build progress dialog showing negative value
+- Fixed "Change wavetable..." adding files to wrong bank
+- Fixed crash when changing the plugins directory when no projects are loaded.
+- Fixed non-plugin files in the plugins directory causing plugin discovery to
+  halt or crash.
+- Fixed application focus glitch when switching between platforms
+- Fixed crash when trying to build empty bank
+
+- Mac - Fixed VST dialog not displaying when the show config button is pressed
+- Mac - Fixed VSTs not loading when using the browse button via "Add effect"
+
+* .FEV file format updated! If you build with FMOD Designer 4.33.00, you must
+  use FMOD version 4.33.00 or higher.
+* Changed 'Add Event...' to 'Add Multi-Track Event...' in the event hierarchy
+  context menu
+* Removed 'Optimize Sample Rate' bank option. This option can be set per 
+  waveform
+* Waveform resampling mode is now plaform specific
+* Changed 'Adjust sample rate optimization' to 'Adjust sample rate' in the 
+  waveform context menu
+* Moved 'Rebuild' item from 'Project' menu to build dialog
+
+
+22/07/10 4.33.00 pre 5
+----------------------------------------------------
+- Fixed cleaning of build files when using the $(CurrentLanguage) macro in the
+  build directory project settings
+- Fixed paste event properties not pasting all properties
+- Fixed designer crash when moving templates into event group
+- Fixed 8bit PCM files not being accepted by some encoders
+- Fixed build output to wrong directory
+
+
+01/07/10 4.33.00 pre 4
+----------------------------------------------------
+- Fixed crash when setting template property on multiple events
+- Fixed multiple undo actions created after deleting multiple sound def items
+
+* Changed auto-save before build to only save the current project instead of 
+  the workspace
+
+
+28/05/10 4.33.00 pre 3
+----------------------------------------------------
+- Fix AuditionClient support.  Parameters now show proper range rather than 0 to
+  1 all the time on the remote tool.
+- Fixed event property 3d rolloff default value not set to logarithmic even if 
+  designer shows that in property sheet
+- Fixed invalid object handle error when auditioning in the bulk editor
+
+
+10/05/10 4.33.00 pre 2
+----------------------------------------------------
++ Added keyboard shortcut for the Project > Clean menu item
++ Added auto-save preferences to save projects automatically in .autosave files
+
+- Fixed crash when setting filename prefix on multiple banks
+- Fixed notifcation when the build output files can't be opened for writing
+- Fixed being able to click the build button while building
+- Fixed greyed out "3D Position Randomisation" sound def property
+- Fixed undo action created after moving an item in the hierarchy on top of
+  itself
+- Fixed undo action created when the existing waveform channel mode
+  setting is reselected
+- Fixed multiple undo actions created after moving multiple sound definition
+  waveforms
+- Fixed multiple undo actions created when dropping multiple wavefiles in sound
+  definition list view and waveform view
+
+
+* Disabled delete menu item for master and music categories
+
+21/04/10 4.33.00 pre 1
+----------------------------------------------------
++ Added a visual bulk editor for event properties
++ Added unlimited undo and redo
++ Added auditioning for compressed wave files
++ Moved the event editor and event properties so they appear side-by-side
++ Changed the layout of the main tabs so that the editors appear in the center
+  and the properties along the side
++ Added ability to tweak values in the event property sheet and audition the
+  change at the same time
++ Added 'Category' to the list of event properties
++ Added 'Category' to the list of event template properties
++ Improved ordering of properties in the property lists
++ Added a status bar
++ Move property descriptions to the status bar
++ Improved property descriptions
++ Changed the look and order of the main tabs
++ Reordered and improved the naming of items in the menu bar
++ Moved the project properties, reverb tab, and profiler into floating windows,
+  accessible via the 'Window' menu in the menu bar
++ Made the audition 3D, engine designer, and surround pan tools always
+  accessible and moved them into the 'Window' menu
++ Changed the look of the audition buttons and made their behavior consistent
+  across the tabs
++ Changed the behavior of the event editor so that sound instances are freely
+  movable
++ Added the ability to author for all platforms
++ Added notification when moving multiple items in the event or category
+  hierarchies fails
++ The first segement in the theme now defaults to being a start segment
++ Themes created via cues are now named after the cue
++ Segment loop links now default to the 'At Segment End' transition type
++ Added 'Show In Category Tree' to the event context menu
++ Added 'Show In Event Tree' to the category context menu
++ Added 'Create Template From Event' to the event context menu
++ Added 'Add Simple Event...' to the event group context menu
++ Added 'Template Properties...' to the template context menu
++ Added the ability to toggle between displaying percentage or weighting in the
+  sound def tab
++ Added the ability to lock the play percentage in the percentage slider popup
++ Added the ability to reorder waveforms in the sound def waveform list
++ Added the ability to drag n drop wave files into the waveforms list
+
+- Fixed validation of property values
+- Fixed sound def view being non-responsive on the first click
+- Disabled global reverb when previewing waveforms
+- Event Hierarchy and Category views retain their selection after moving
+  multiple items
+- No items are moved and the user is notified when one of multiple items in
+  Event Hierarchy and Category views cannot be moved
+- Fixed the multi-selection behavior for waveform XMA filtering in banks
+- Fixed audio source directory file dialog not remembering the last direcotry
+- Fixed crash when applying template to an event
+
+* Changed the behavior of the spawn time and trigger delay properties for sound
+  defs. The editors now pop up when the properties are clicked.
+* Removed access to the cone designer tool from the menu bar. Cone designer can
+  be accessed from the 3D cone properties in the event property list.
+* Removed the 'Template' property from the event property list. Templates
+  can be created by right-clicking on an event in the event hierarchy.
+* Changed cone designer minimum outside volume from -1024 to -60 dB
+
+06/04/10 4.33.00 
+----------------------------------------------------
+
+
+19/03/10 4.31.00 pre 11
+----------------------------------------------------
+- Fixed previewing of events when position randomisation is non-zero
+
+26/02/10 4.31.00 pre 9
+----------------------------------------------------
+- Fixed duplicate effects on layers of events created from a template after
+  template changes are applied
+- Fixed crash when merging projects with same named soundef folders
+- Fixed template file reported as modified on loading of project
+
+
+12/02/10 4.31.00 pre 8
+----------------------------------------------------
+- Fixed crash when changing sound definition waveforms and switching from the
+  sound definitions tab
+
+22/01/10 4.31.00 pre 7
+----------------------------------------------------
++ Added trigger delay property for sound definition
+
+- Fix mp3 encoded bank files producing corrupted data if cache data 
+  was used.  Alternate fix = 'clean build files' menu option and rebuild.
+  Bug introduced 4.31.00 pre 5.
+
+* .FEV file format updated! FMOD Designer 4.31.00 pre 7 requires FMOD version
+  4.31.00 pre 7, 4.29.07, 4.28.07, 4.26.17, 4.24.30 , 4.22.39 or higher
+
+08/01/10 4.31.00 pre 6
+----------------------------------------------------
++ Added the "-S" switch (specify which soundbanks to build) to fmod_designercl.exe
+
+- Fixed oneshot detection in the event editor playback controls
+- Fixed template file changes sometimes not being saved
+
+
+18/12/09 4.31.00 pre 5
+----------------------------------------------------
+- Fixed crash when applying template changes
+- Fixed crash when auditioning over network
+
+
+10/12/09 4.31.00 pre 4
+----------------------------------------------------
++ Added ability to change parameter cursor position in the event editor parameter bar
+
+- Fixed crash when building when user DSP plugin is not found
+- Fixed backup modification when the project has not changed
+- Fixed crash when build output text was too long
+
+
+03/12/09 4.31.00 pre 3
+----------------------------------------------------
++ Added "Sequential Global" play mode for sound definition
++ Added support for CELT encoding.
++ Added music segment IDs to the generated header file
++ Added new event property "Include in build" to include/exclude events from
+  build ouput
+
+- Fixed solo state of event layers when adding and removing layers
+- Fixed crash when cutting and pasting layers and layer dependancies are
+  temporarily deleted
+- Fixed control parameter not working on pasted layers
+- Fixed simple events with spawned sounds stopping prematurely when played
+- Made simple events play with the correct oneshot setting in designer
+- Disabled MP2 compression format for PS3
+- Fixed FSBs created on PPC Mac causing mismatch errors when loaded.
+- Disabled "Pan" effect if an event is 3D
+
+- Mac - Fixed problem with opening released DMG installer package on OS X 10.3.9.
+
+
+12/11/09 4.31.00 pre 2
+----------------------------------------------------
++ Event Player - Added category hierarchy
+
+- Fixed event sound instance "Length" property when parameter range minimum is
+  non-zero
+- Fixed crash when dragging files into certain layers in the event editor
+  introduced in 4.29.00
+- Fixed error when attempting to edit multi-layered events introduced in
+  4.29.00
+- Fixed layer control not appearing after adding new layers
+- Prevented sound definitions from being moved into a folder where a sound
+  definition or folder with the same name already exists
+- Fixed sound instance not created when dropping a sound file, which is already
+  in the project, onto an event layer and choosing the "use existing" option
+ 
+
+05/11/09 4.31.00 pre 1
+----------------------------------------------------
+* Conflicting event properties, such as when '3D Min distance' is greater than
+  '3D Max distance' or '3D Cone Inside Angle' is greater than
+  '3D Cone Outside Angle', now cause build errors and are highlighted in the 
+  Event property editor
+
+
+21/10/09 4.29.00
+----------------------------------------------------
++ Added event editor option to audition oneshot events repeatedly
++ Added 'ignore pre- and post-build commands' command line options: '-k' and
+  '-K' respectively
++ Events are now shown with simple/complex badges: a green 'S' for simple
+  events and a red 'C' for complex events
++ Event groups are now flagged in the event hierarchy with a red 'C' badge
+  if they contain any complex events
++ Simple events' Oneshot property is now disabled for editing, as it is
+  overridden by the event's sound instance
+
++ Profiler - Added ability to see snapshots of the peak volume for each DSP
+             node, per channel
+
+- Fixed "Pitch randomisation units" and "Pitch units" properties being
+  overwritten by templates when properties are unlocked
+- Fixed FMOD_ERR_EVENT_MISMATCH when project is partially built from multiple
+  different directories
+
+- Profiler - Spread out DSP input connections so any duplicates are more visible
+
+* Event layers can now be selected by clicking on empty spaces in the layer
+  control
+* NOTE: You should rebuild *all* wavebanks in your projects to avoid
+        FMOD_ERR_EVENT_MISMATCH errors after upgrading to this build. You only
+        have to do this once.
+
+
+01/10/09 4.29.00 pre 10
+----------------------------------------------------
+- Fixed playback of side speakers when auditioning 7.1 surround pan on a 5.1
+  sound system
+- Fixed crash in command line designer
+- Fixed crash when applying a template that has more layers than the target
+  event
+
+
+11/09/09 4.29.00 pre 9
+----------------------------------------------------
++ Added reverb property "apply to all platforms" togglebutton
+
+- Fixed automatic wave bank "Force software" setting overrides for certain
+  platforms and compression types
+
+
+03/09/09 4.29.00 pre 8
+----------------------------------------------------
+- Fixed some command line output being truncated under Windows 7
+- Fixed build error when surround pan is used with hardware sounds on some
+  platforms
+
+
+27/08/09 4.29.00 pre 7
+----------------------------------------------------
++ Added context menu item to reorder effects in Event editor
+
+- Disable MPEG loop encoding on music waveforms if they are used in
+  non-looping segments
+
+
+21/08/09 4.29.00 pre 6
+----------------------------------------------------
++ Added ability to control the music volume and reverb level in the music tab
+
+- Fixed crash when pasting eventgroup in projecct's master eventgroup
+- Fixed "sort alphabetically" when selecting multiple items in Events and Sound
+  definitions views
+- Fixed visiblity of events created when dropping files onto blank space in the
+  event hierarchy view
+
+* Changed pasted item naming from "Copy of <item>" to "<item> Copy N"
+* made "Force software" wave bank property always on for pc/xbox360/ps3 
+  platforms
+* MusicSystem volume and reverb levels default to 0dB. Setting these levels
+  will only effect FMOD Ex releases 4.29.00 pre 7 and above
+
+13/08/09 4.29.00 pre 5
+----------------------------------------------------
+- Fixed crash when playing events with "programmer" sounds in event editor
+
+
+06/08/09 4.29.00 pre 4
+----------------------------------------
+
+- Fixed a crash when merging projects
+- Fixed double-clicking on sound definitions (introduced in 4.29.00 pre 2)
+- Fixed project from becoming dirty after editing a number property, CTRL-S
+  saving and clicking off the property editor
+
+
+27/07/09 4.29.00 pre 3
+----------------------------------------
++ Custom link transitions are now displayed in the segment links list
+
+* Re-arranged the segment editor to be shorter and wider
+
+
+16/07/09 4.29.00 pre 2
+----------------------------------------
++ All GUID conflicts are now listed at the end of the build log
+
+- Fixed designer crash when loading VST plugins
+- Fixed sound definition instance volume curve not released from mouse
+
+
+09/07/09 4.29.00 pre 1
+----------------------------------------
++ Added ability to control individual envelopes in an effect with different
+  parameters. This is accessed via the 'Envelope control parameter' entry in
+  the envelope context menu
+
+- Fixed cache file still being used when the wavebank property "Optimize sample 
+  rate" is changed.
+- Fixed a crash when pasting Reverb Definitions
+- Made the music category control the music system's output when auditioning
+
+* FDP files for projects that use multiple parameters per effect can be opened
+  in previous versions of designer except all envelopes within those effects
+  will be assigned to the first envelope's control parameter
+* Saving a project that uses multiple parameters per effect in previous
+  versions of designer will cause envelopes within those effects to lose their
+  bindings with other parameters
+
+
+02/07/09 4.27.00
+----------------------------------------
+
++ Added Copy/Paste for Reverb Definitions
++ Added Copy all properties/Paste all properties for Reverb Definition properties
+
+- 3D Speaker Spread and 3D Pan Level effects are now allowed with hardware
+  sounds on the Wii
+- Fixed sound definition list not rebuilding when moving existing sound
+  definitions into folders or sorting sound definitions (introduced in 4.27.09)
+- Fixed data corruption when applying templates to events with non-template
+  effects controlled by non-template parameters
+- Fixed crashes after deleting selected items on a non-visible tab
+- Fixed wave bank list not updating after "Set as current bank" command
+
+
+25/06/09 4.27.00 pre 12
+----------------------------------------
++ Template file only saved with project if template has changed
++ Implemented network tweaking for event user properties (only int and float)
+
+- Fixed template file project property change not being committed when property
+  is deselected without enter key pressed
+- Fixed sound definition and wave bank lists not rebuilding on project change
+  when their respective tabs are already selected (introduced in 4.27.09)
+
+
+19/06/09 4.27.00 pre 11
+----------------------------------------
++ Added sound definition pitch randomisation modes for recalculating pitch
+  either every spawn (default), when triggered by a parameter or only once when
+  an event is started
+
+- Fixed FEV and FSB files getting out of sync when reopening projects after
+  adding or removing waveforms
+- Fixed a crash when pasting sound definitions
+
+* .FEV file format updated! FMOD Designer 4.25.11 requires FMOD version
+  4.25.11, 4.24.11, 4.22.20, 4.20.27, 4.18.35 or higher
+
+
+11/06/09 4.27.00 pre 10
+----------------------------------------
++ Added clean (-C) and rebuild (-r) command line options
++ Dropping a sound file onto a sound definition folder puts the new sound 
+  definition in that folder instead of the master folder
++ Added yes/no to all buttons when deleting multiple sound definitions
+
+- Fixed template file write errors being ignored when saving. Designer now
+  prompts for a new template file path if the write failed.
+- Fixed a crash in the "Apply template changes" command if no project is open
+- Fixed scaling of LFE parameter for surround pan effect
+- Prevented designer from building events with more than 16 parameters
+
+- Mac - Fixed crash on load introduced in 4.27.00 pre 9.
+
+- Profiler - Fixed profiler not disconnecting when Xbox360 reboots.
+
+
+4/06/09 4.27.00 pre 9
+----------------------------------------
++ Property sheets, lists and treeviews remember their selection when changing
+  tab or project
++ Added workspace file path to window title
+
+- 3D Pan Level and 3D Speaker spread effects no longer require software on
+  PlayStation 3, Xbox 360 and Wii
+- Disabled cone designer in tabs other than Events and Events Editor
+- Fixed a bug where automatic parameters added from the context menu weren't
+  controlling sound instance playback properly
+
+29/05/09 4.27.00 pre 8
+----------------------------------------
+- Made Designer respect the 'Default event "Oneshot" property' setting when
+  adding an event based on a template
+- Fixed a bug where changing the case of event and group names didn't work
+
+
+21/05/09 4.27.00 pre 7
+----------------------------------------
+
+- Fixed dropping files onto the sound definition list not working properly when
+  it is full; there is now always a drop area at the bottom of the list
+- Removed "Range spacing error" message when minimum exceeds maximum in 
+  parameter properties range settings
+- Ignore 3D Pan and Speaker Spread settings if the event is not 3D
+- Removed "Couldn't create effect" errors for Surround Pan (if the event is 3D)
+  and Occlusion (if the event is 2D). The effect is now added, but disabled if
+  necessary (see below).
+
+* DSP Effects are now disabled if the event is 2D and the effect needs 3D.
+
+
+15/05/09 4.27.00 pre 6
+----------------------------------------
+
+! "Apply speaker levels and close" button must be clicked to save speaker
+  levels using the surround pan dialog.
+
++ Added "$CurrentLanguage" macro and enabled macros in the "Build directory"
+  project property. This allows different build directories per language
++ Added ability to paste sound definitions into folders
+
+- Fixed surround pan dialog from creating unwanted changes to event properties
+- Fixed creation of new pan points in surround pan dialog
+- Fixed crash when merging soundbanks with identical waveform names
+- Fixed merge project to copy sound definitions into their proper folders
+- Fixed network tweaking code not notifying target when properties are changed
+
+* DSP Effects are no longer disabled based on the platform. Instead, they are
+  disabled if the layer uses any hardware-only wave banks (VAG or GCADPCM).
+  This means that many effects that were disabled on PSP, PS2, Wii and Gamecube
+  can now be enabled if the layer doesn't use hardware-only wave banks.
+
+
+04/05/09 4.27.00 pre 5
+----------------------------------------
+* Update for API release
+
+
+30/04/09 4.27.00 pre 4
+----------------------------------------
++ Added the ability to enable early link transitions on bars or beats in the
+  segment and link property editors
++ Added FMOD Tremolo effect which produces tremolo, chopper and and auto-pan
+  effects
+
+* .FEV file format updated! FMOD Designer 4.25.04 requires FMOD version 4.25.04,
+  4.24.04, 4.22.13, 4.20.20, 4.18.28 or higher
+
+
+23/04/09 4.27.00 pre 3
+----------------------------------------
+!+ Improved optimized rate seeking and decimation quality. This will affect all
+   waveforms for which optimized rates are used. Select the "Use old method"
+   option in the wavebank "Optimize sample rate" property to process waveforms
+   using the previous method and preserve their existing sound
+
+- Fixed assigning a template to multi-selected events
+- Fixed sample rate display in waveform "Adjust sample rate optimization" slider
+
+
+17/04/09 4.27.00 pre 2
+----------------------------------------
++ Added ability to associate sound file types to different external editors in
+  the preferences dialog
+
+- Fixed crash when adding and editing user properties when multiple events are
+  selected
+- Fixed event playback ignoring the position set in the Audition 3D dialog
+  unless it was set after playback started
+- Fixed event properties being incorrectly locked when multiple
+  non-template-using events were selected
+- Fix crashing with encoding sounds above 48khz when encoding to MP2/MP3.
+
+
+31/03/09 4.27.00 pre 1
+----------------------------------------
++ Added profiling of geometry thread to Profiler, this means new versions of
+  the API cannot connect to older versions of designer for profiling!
++ Added dirty status to project dropdown list
++ Added sound previewing to add/change wavetable file dialogs
+
+- Fixed 'add parameter' name checking which is now case insensitive
+- Fixed event and sound definition play buttons disabling when auditioning
+
+
+18/03/09 4.25.00
+----------------------------------------
++ Added "Ignore Geometry" event property
+
+- Fixed glitches when music theme crossfade duration is too short (the fade-in
+  part of all crossfades now happens 50ms sooner)
+- Fixed FDP and FEV file association setup on Windows
+- Stopped dirty flag from being cleared after project build
+- Fixed corruption of designer settings on mac platform
+
+
+12/03/09 4.25.00 pre 8
+----------------------------------------
++ Added 'FMOD Delay' dsp effect
+
+- Fixed inconsistent path separators
+- Fixed error saving projects with long paths on exit introduced in 4.25.00
+  pre 6
+
+
+05/03/09 4.25.00 pre 7
+----------------------------------------
+- Fixed wave bank software waveforms sometimes having no reasons in the tooltip
+- Fixed Channel Mix effect forcing waveforms to use software
+- Fixed reverb occlusion not working on newly created occlusion effects
+
+
+26/02/09 4.25.00 pre 6
+----------------------------------------
++ Double-clicking a wavebank waveform entry opens the external editor
++ Wavebank waveform context menu lists all sound definitions the waveform is
+  used in
++ Added an "apply template changes" checkbox to the build dialog
+
+- The value on the "Adjust envelope" button in the Event editor envelope
+  control is now displayed in the correct units
+- Elided long file paths in the 'save changes' dialogs to avoid linebreaks
+- The parameter value displayed in event editor reflects its real value rather
+  than being calculated from the cursor position
+- The updated parameter value is correctly displayed after changing the 
+  parameter range or resizing the main window
+
+
+20/02/09 4.25.00 pre 5
+----------------------------------------
++ Added a Copy Path entry to the Event Hierarchy context menu
++ Added direct editing of sound definition waveform percentages via the
+  context menu, including editing of multi-selected waveforms and locking of 
+  percentages
++ Print a log message for each event GUID that is regenerated when pasting
+
+- Update selection properly when right-clicking in event hierarchy and category
+  views
+- Hide ambiguous context menu entries when more than one item is selected
+- Automatically add a parameter when adding an effect and no parameters exist
+- Fixed crashes when changing ASIO settings
+- Made category max playbacks properties visible in the property sheet
+- Support moving events via cut and paste while keeping the same GUID: GUIDs
+  are not changed when pasting unless there would be conflicts in the workspace
+
+
+12/02/09 4.25.00 pre 4
+----------------------------------------
++ Added the ability to edit event template properties via the property sheet
+  buttons when multiple events are selected
+
+- Fixed a bug where oneshot sounds that were moved between layers after the
+  event was played behaved as if they were still in the original layer
+- Fixed events having bad GUIDs when created by dropping files onto Designer
+- Fixed crashes when building FSBs
+- Disable editing of the "Template" and "Use template" properties when multiple
+  events are selected
+
+
+06/02/09 4.25.00 pre 3
+----------------------------------------
++ Population of waveform lists are detailed with an abortable progress bar
++ Added the ability to protect selected properties of individual events from
+  template changes. This functionality can be controlled from two places: the
+  "Allow template to affect" section of the "Use template" event property
+  dialog, and the lock/unlock buttons in the event property sheet.
++ Added template property control buttons to the template's property sheet
++ Added the CurrentPlatform macro for build and save commands
+
+- The Channel Mix effect can now be enabled for Wii, PS2, PSP and GameCube
+
+* Two settings now control which event properties are affected by a template:
+  The template's properties and the template user's properties. A property will
+  only be affected by the template if it is set for both template and user.
+
+30/01/09 4.25.00 pre 2
+----------------------------------------
++ Made sound instance "Wait for previous" start mode sample-accurate so sounds
+  are stitched together seamlessly. This allows for granular synthesis
+  with spawning oneshot sounds, seamless stitching of looping sounds and
+  other effects.
++ Support loading FSBs as samples (this uses the first sound in the FSB)
++ FMOD Music Player now uses the speaker mode set by the operating system
++ FMOD Music Player now works with up to 16 channel wave data
+
+- Double clicking a waveform in Sound Definitions brings up the correct wavebank
+  and selects the correct waveform.
+- Fixed a crash when editing event properties after collapsing user properties
+
+
+22/01/09 4.25.00 pre 1
+----------------------------------------
+
+- Fixed crash when dragging file onto Designer.
+
+
+16/01/09 4.23.00
+----------------------------------------
++ Added a GUID field and regenerate button to the event property sheet
++ Added a "Regenerate GUIDs" context menu entry to the Events tab
++ Added event GUIDs to the programmer report and header file
++ Added "User properties" checkbox for event templates
+
+- Fixed events having no category after pasting or merging. Events are now put
+  into the source category if it exists, otherwise into the master category.
+- Remove glitch sound from some mp2 encoded banks.
+- Fixed loading of old fdp files from before sounddef folders were implemented
+- Fixed building when first layer of two layer event is disabled.
+- Downgraded the "GUID conflicts" build error to a warning 
+
+* .FEV file format updated! FMOD Designer 4.23.00 requires FMOD version 4.23.00,
+  4.22.00, 4.20.07, 4.18.16, 4.16.26 or higher
+
+
+18/12/08 4.23.00 pre 6
+----------------------------------------
++ Projects now remember the expanded/collapsed state of their template file
+
+- Fixed unsaved wave bank changes not being reported when closing projects
+- Fixed unsaved changes being wrongly reported for projects opened at startup
+- Fixed a crash on Alt-Left-click in the event hierarchy with no project loaded
+- Fixed a crash when closing Designer
+
+
+11/12/08 4.23.00 pre 5
+----------------------------------------
++ Added Speaker level effect for per speaker manipulation of volume.
++ Added reverb preset selection option in EventPlayer.
+
+- Fixed file change notification not working after a failed save command
+- Fixed a crash if a music system view was open when "Save Workspace" failed
+- Fixed failed build and save commands being ignored
+- Fixed a crash when pasting into the sound definitions tab if it is empty
+- Set the unsaved changes indicator when deleting a sound definition entry
+- Fixed bad remapping of sound definition references when renaming a folder
+- Fixed envelope mute flags for the wrong platform being written to FEV
+- Fixed data corruption when copying and pasting envelopes
+
+* XMA encoder updated from XDK, hopefully to address rare XMA encode based hangs.
+* .FEV file format updated! FMOD Designer 4.21.05 requires FMOD version 4.21.05,
+  4.20.05, 4.18.14, 4.16.24 or higher
+
+
+28/11/08 4.23.00 pre 4
+----------------------------------------
++ Added the ability to copy and paste data between projects
++ Added option to open native file manager to containing folder where the
+  wave files are stored. Available in Sound definitions and Wave banks.
++ Improved keyboard support in music tab lists
++ Show mode and software playback reason for waveforms used by the music system
+
+- Fixed bug in conversion of projects created in designer previous to 4.22.03.
+- Changing project name now updates project selection list immediately.
+- Fixed sounds in disabled layers still being reported as used
+- Clarified the "failed to build" dialog for hardware compression format
+  wavebanks with software waveforms
+- Tabbing in the Property editor now cycles through the properties for editing.
+
+
+21/11/08 4.23.00 pre 3
+----------------------------------------
++ Directories are remembered for choose sound file dialog.
++ Sound definitions with the same name in different folders are now supported.
++ Added event property "Steal priority". Events with a lower "Steal priority"
+  will never steal events with a higher "Steal priority". This is only relevant
+  for simple events when the programmer specifies a >0 value for
+  FMOD_EVENT_LOADINFO.sizeof_instancepool_simple.
+
+- Copy/Pasted events and event groups now show in Category tab immediately.
+
+* Event API - Events with "programmer" sounds won't be made into "simple" events
+* Sound definitions are now referenced by full folder path, which can be seen 
+  in sounds shown in the Event Editor.
+* .FEV file format updated! FMOD Designer 4.22.00 pre 3 requires FMOD version
+  4.22.00 pre 3, 4.21.03 or higher to use all supported features.
+
+14/11/08 4.23.00 pre 2
+----------------------------------------
++ Added user properties to programmer report.
+
+- Fixed "Audition 3D" tool overwriting internal event doppler & cone values
+- Fixed memory usage display in Event Player
+
+
+07/11/08 4.23.00 pre 1
+----------------------------------------
+* Update for API release
+
+
+30/10/08 4.21.00
+----------------------------------------
+- Fixed some events being left in the template file when changing "Template" to
+  "No" on multiple selected templates
+
+
+27/10/08 4.21.00 pre 9
+----------------------------------------
+* Update for API release
+
+
+23/10/08 4.21.00 pre 8
+----------------------------------------
++ Audition console layout is now saved with the project
+
+- Set simple events' oneshot property to match their sound's loop mode
+- Fixed bad Surround pan effect speaker mode when built with fmod_designercl.exe
+
+
+16/10/08 4.21.00 pre 7
+----------------------------------------
+* Update for API release
+
+- Fixed a crash in "File->New Project" when no project is currently loaded
+
+
+09/10/08 4.21.00 pre 6
+----------------------------------------
+- Fixed a crash when applying templates with no parameters
+
+
+02/10/08 4.21.00 pre 5
+----------------------------------------
++ Added support for per-project template files
++ Added support for cue drag n drop to the scene editor
++ Added support for centering on themes to the theme editor
++ Added the "Keep Non-template Effects & Parameters" template property
++ Added support for graphing channel and codec usage in the profiler tab.
+
+- Fixed a crash when merging projects
+- Waveforms used by the music system are now identified in the wave bank tab
+
+* Removed the "Template File" setting from the Preferences dialog; template
+  file names are now stored in FDP files
+* The "Keep Non-template Effects & Parameters" template property is enabled
+  by default, which is different from the old behaviour; disable it if you want
+  to remove non-template effects & parameters when applying templates
+* Updated Music Player to use the cue and parameter enumeration API; this means
+  header files are not needed for FEVs built with Designer 4.19.00 or greater
+
+
+22/09/08 4.21.00 pre 4
+----------------------------------------
+* Update for API release
+
+
+11/09/08 4.21.00 pre 3
+----------------------------------------
++ Added "Shuffle Global" play mode for sound definitions
+
+- Fix a crash in Event Player when loading a project after unloading a project
+
+* .FEV file format updated! FMOD Designer 4.19.03 requires FMOD version 4.19.03,
+  4.18.03, 4.16.14 or higher
+
+
+04/09/08 4.21.00 pre 2
+----------------------------------------
+- Fixed a crash when deleting a sound definition folder hierarchy all at once
+
+
+29/08/08 4.21.00 pre 1
+----------------------------------------
++ FSBank - Added Mac support for MP2 and MP3 compression.
+
+- Fixed a crash in "Edit->Clean project"
+
+
+25/08/08 4.19.00
+----------------------------------------
++ Improve usability of lists in the music tab. Drag n drop can now commence
+  from any point within the item lists. Drag n drop can now be used to reorder
+  priority lists
++ Added runtime enumeration of cues and parameters in the music system
++ Added volume display options: dB with amplitude ratio, dB with power ratio,
+  and dB only
+
+- Fixed crashes in drag and drop on big-endian systems (e.g. Mac PowerPC)
+
+* .FEV file format updated! Features in this release require FMOD version 
+  4.19.00 or later.
+
+
+12/08/08 4.19.00 pre 10
+----------------------------------------
++ Add support for Protools (L C R Ls Rs LFE) speaker mapping to wavebank screen.
+
+
+06/08/08 4.19.00 pre 9
+----------------------------------------
+- Profiler - Fixed support for future versions of DSP tree network data.
+
+
+31/07/08 4.19.00 pre 8
+----------------------------------------
+- Mac - Fixed window stacking issue in shared timeline dialog
+
+
+25/07/08 4.19.00 pre 7
+----------------------------------------
+- Fixed bug that occasionally caused cue controls to jump about the audition
+  console
+- Fixed reverb property sheet not updating when the platform is changed
+
+
+18/07/08 4.19.00 pre 6
+----------------------------------------
+- Fixed intermittent crash bug when using value input popup boxes (eg. envelope
+  point set position)
+- Ensure changes aren't discarded as properties are modified in the theme and
+  segment properties dialogs
+- Mac - Ensure tool windows always stay in front
+
+* The "Edit->Clean project" command now removes empty sound definition folders
+
+
+11/07/08 4.19.00 pre 5
+----------------------------------------
+- Fixed problem with build when events have disabled effects
+- Fixed wave bank prefixes to support path elements in the primary prefix
+- Fixed step editor initialization in segment properties dialog
+
+- Mac (PowerPC) - Fixed crash when dragging sound definitions.
+
+
+04/07/08 4.19.00 pre 4
+----------------------------------------
++ Added shared segment timelines - synchronize playback of multiple segments
+  along a single timeline
++ Added customizable crossfade durations to theme synchronization properties
+
+- Event Player - Fixed problem starting multiple instances
+
+
+24/06/08 4.19.00 pre 3
+----------------------------------------
++ Added "Load Sound Data" and "Free Sound Data" buttons to Fmod Music Player
+
+- Fixed a crash when deleting an event group with sub-groups containing events
+
+
+20/06/08 4.19.00 pre 2
+----------------------------------------
++ Load the last workspace at startup (if any)
++ Load the workspace given on the command line (if any)
++ Show tooltips for software wavebank entries detailing why they are software
++ Added message log output when saving/loading workspaces
+
+- Fixed a crash when deleting event templates
+- Fixed wavebank channel setup not honouring multi-select
+- Fixed a crash when pasting sound definitions with a folder selected
+- Fixed mp2/mp3 banks cutting the end off sounds if they are not looping.
+- Fixed mp2/mp3 banks changing pitch of small sounds if they are not looping.
+
+
+12/06/08 4.19.00 pre 1
+----------------------------------------
+- Fixed a crash when building an event with no enabled layers
+- Prevent use of shortcut keys to copy & paste between projects
+
+
+06/06/08 4.17.00
+----------------------------------------
++ Added automatic build optimisation for "simple" events
++ Added project workspaces - you can now have multiple projects loaded at the
+  same time - great for realtime mixing!
++ Added music audition palette - audition music interactively within designer
++ Added segment playlists - segments may now contain multiple samples
+
+- Fixed problem with templates zeroing out properties
+- Fixed problem with wave bank tab not being refreshed for music data
+- Fixed problem with scene and theme editor canvas not being resized when
+  loading new projects
+
+* Older FMOD Ex API branches will load "simple" events but FMOD Ex API 4.17.00
+  or higher is required to realize their full resource saving benefits
+
+
+30/05/08 4.17.00 pre 7
+----------------------------------------
+* Update for API release
+
+
+22/05/08 4.17.00 pre 6
+----------------------------------------
++ FMOD Designer and FMOD Event Player now work with 16 channel files
+
+
+16/05/08 4.17.00 pre 5
+----------------------------------------
++ Added project property "Build interactive music"
+
+- Fixed problem building when different languages were used
+- Fixed "Spawn intensity" and "Time offset" forcing waveforms to software
+
+
+02/05/08 4.17.00 pre 4
+----------------------------------------
++ Mac - Added fmod_musicplayer application.
+
+
+24/04/08 4.17.00 pre 3
+----------------------------------------
+* Update for API release
+
+
+18/04/08 4.17.00 pre 2
+----------------------------------------
+- Profiler - made screen capture feature more obvious and fixed a problem where
+             the produced image was at the current zoom level, it should save
+             at the default zoom level for readability.
+
+
+11/04/08 4.17.00 pre 1
+----------------------------------------
+* Update for API release
+
+
+04/04/08 4.15.00
+----------------------------------------
++ Enabled network profiling in fmod_musicplayer
++ "Open in external editor" now works with multiple select
++ Added "All platforms" checkbox to waveform quality slider
++ Added new tab providing profiler functionality, this is the same feature set
+  as the standalone FMOD Profiler application provided with the FMOD low level
+  API.
++ Added interactive music tab
++ Added fmod_musicplayer application
++ Added the "-t" argument (specify template file) to fmod_designercl.exe
++ Added the "-T" argument (apply templates) to fmod_designercl.exe
++ Added "RoughSequence" event to example project
++ Added support for network auditioning to FMOD Event Player
++ Added cue "Begin/End" and "Prompt" buttons to FMOD Music Player
++ Added parameter sliders to FMOD Music Player
++ Added persistent "All platforms" state for sound bank waveform quality
++ The wave bank "Adjust sample rate optimization" slider now goes up to 1000%
+
+- Fixed a crash when editing link properties due to bad cleanup in file load
+- Fixed theme timeouts not being written to FDP
+- Fixed cursor jumping to the end when editing text in the interactive music tab
+- Fixed broken sample length caching for nonexistent files
+- Fixed crashes due to improper initialisation in command-line mode
+- Fixed project merging to leave music data unchanged for the time being
+- Fixed crashes in the Surround Pan dialog when a Reverb Level, Reverb Balance
+  or Pan effect was present
+- Builds that fail due to missing wave files no longer produce an incomplete FEV
+- Fixed a crash when selecting a soundbank after dragging a music system
+  waveform from one soundbank to another
+- Fixed waveform "Open in external editor" sometimes not working
+- Fixed auditioning of empty/zero-length segments
+- Fixed network tweaking category volume/pitch
+- Fixed a crash when moving sounds in layers if the parameter max distance is
+  too large relative to the ruler spacing
+- Wave banks are now left out of the BuildFiles macro if they are empty
+- Fixed event player crash when attempting to play unrecognised fsb format
+- Fixed the autopitch feature to use the layer's control parameter instead of
+  the event's primary parameter
+- Fixed "Reverb Wet Level" not working for templates
+- Fixed network auditioning in nameless mode
+- Fixed number formatting in the condition editor to avoid scientific notation
+- Changes made to the project from the music tab will now prompt the user to
+  save on exit
+- Fixed waveforms with windows network path (\\blah) causing build to fail
+- Fixed network tweaking crash between Windows and Mac.
+- Fixed 3D Pan effect to be relative to the Event 3D Pan level
+
+* .FEV file format updated! FMOD Designer 4.13.05 requires FMOD version 4.13.05,
+  4.12.05 or higher.
+* .FEV file format updated! FMOD Designer 4.13.06 requires FMOD version 4.13.06,
+  4.12.06 or higher.
+
+
+01/02/08 4.13.00
+----------------------------------------
++ Added "ProjectFile" macro for pre/post build/save commands
+
+
+25/01/08 4.11.06
+----------------------------------------
+- Fixed incorrect path issue when using -b with fmod_designercl
+
+
+18/01/08 4.11.05
+----------------------------------------
+* Update for API release
+
+
+10/01/08 4.11.04
+----------------------------------------
+- Mac - Fixed crash when loading Designer. 
+
+
+20/12/07 4.11.03
+----------------------------------------
+- Fixed envelope cache flags being incorrectly written to FEV files
+- Fixed copy/paste sometimes causing envelope name collision
+
+
+14/12/07 4.11.02
+----------------------------------------
+- Fixed a crash when setting the template on an event which has just been added
+- Fixed a bug giving incorrect paths for added files when the audio source
+  directory contained "." (e.g. "./audio" or "audio/.")
+
+* Various message boxes' default button has changed from "No" to "Yes" for
+  greater consistency
+* FMOD Designer and FMOD Event Player now have software occlusion filters
+  enabled so the Occlusion effect can be auditioned properly
+* FMOD Event Player now has DSP network viewing enabled to allow testing with
+  FMOD DSPNet Listener
+
+
+7/11/07 4.11.01
+----------------------------------------
+- Fixed a bug where projects saved or built with Designer 4.11.00 could have
+  DSP effects disabled due to incorrect flags
+
+
+6/11/07 4.11.00
+----------------------------------------
++ Added the BuildFiles macro for pre- and post-build commands (gives a list of
+  all output files for this build)
++ Added " = <actual value>" to the end of the Index field in the Reverbs
+  section of the programmer report
++ Added "Numerical index" fields to the Groups and Categories sections of the
+  programmer report (same as the Index fields, but constant names are replaced
+  by actual values)
++ Added a "Spawn intensity randomization" Event property. The event spawn
+  intensity is randomized based on this value when the event is started.
++ Added a Message Log window which keeps a log of all status, warning and error
+  messages for the current Designer session. This window can be shown/hidden
+  with the View->Message Log menu entry.
++ Added pre- and post-save commands. These can be used for source control
+  management and file pre- or post-processing. All the macros available to
+  build commands are also available to pre- and post-save commands. 
+
+- Fixed a crash when multi-selecting wavebanks and changing the bank type to
+  "Load into memory"
+- Fixed crash when changing platform on newly-created project
+- Fixed a bug where sound definition entry weights were not updated properly
+  when the values were changed with the slider
+- Fixed a crash when closing a project while a sound def is playing
+- Fixed build command output getting skipped on Mac OS
+- Disabled the Occlusion effect for 2D events (it's not supported for 2D)
+- Fixed crashes when copying or cutting effects or layers
+- Fixed the Clean and Rebuild commands to look in the .fsbcache directory
+
+* The pre- and post-build command progress dialog now limits the displayed
+  command line to a maximum of 100 characters
+* Various message boxes' default button has changed from "No" to "Yes" for
+  greater consistency
+* Removed the "No files to clean" message from the Clean and Rebuild commands
+* .FEV file format updated! FMOD Designer 4.11.00 requires FMOD version 4.11.00,
+  4.10.00, 4.08.10 or higher.
+* Removed the "No files to clean" message from the Clean and Rebuild commands
+
+
+23/11/07 4.09.09
+----------------------------------------
++ Added a "Pitch randomization units" Event property. If this property is set
+  to a unit other than Octaves, the randomly generated pitch variation is
+  snapped to exact multiples of that unit.
++ Added the "-L" argument (select the language to be built) to fmod_designercl
+
+- Fixed a bug where typing in some property editor text fields would constantly
+  reset the cursor position to the end of the field
+- Fixed crash when loading empty project with templates
+- Fixed a bug where the FSB build process was ignoring the current language
+
+
+12/11/07 4.09.08
+----------------------------------------
++ Added a "Pitch units" Event property, allowing event pitch to be specified
+  in Octaves (fractional), Tones or Semitones
+
+
+01/11/07 4.09.07
+----------------------------------------
++ Added an Occlusion effect.  This lets you set the cutoff for the built in 
+  lowpass filter effect instead of using extra memory to add new lowpass 
+  filters to each event. 
+
+- Fixed a bug where files saved with "File->Save As" or "File->New" weren't
+  remembered in the recent file list
+- Fixed the "File->Merge" file dialog to have the correct caption, filter and
+  start directory
+- Fixed a crash when merging from a project that uses templates
+
+* FMOD Designer and Event Player version numbering has changed! The major and
+  minor revision numbers are now 4.09 to correspond with the development version
+  of the FMOD API. FMOD Designer 4.09.07 is the next version after 1.09.06.
+
+
+19/10/07 1.09.06
+----------------------------------------
++ Added the ability to edit effect envelope colours via the context menu
++ Added "Open in external editor" commands to the context menus for wavebank
+  entries and sound definition entries (uses the system file type association)
++ Improved performance of the event editor
++ Added support for MinGW toolchain and Designer source compilation with
+  Qt/OpenSource
++ User interface now consistent across Windows and Mac
+
+- Fixed several graphical issues with the event editor
+
+- Increased the click area around effect envelope and envelope points
+- Updated list of selectable output modes
+- Text pasted into single-line property sheet fields now has newlines removed
+- Mac - Fixed launch of user manual from help menu
+- Mac - Fixed drag and drop support
+
+* Wavebank entries are now shown in red if their file could not be read
+* Mac - Designer is now a universal binary
+
+
+12/10/07 1.09.05
+----------------------------------------
++ Added parameter property "Keyoff on silence". Use this with oneshot events to
+  make a parameter keyoff when previously it would have ended. Put a sustain
+  point in each sound and give your parameter a very large velocity and you can
+  effectively sequence oneshot sounds together. Great for random dialog!
+
+- Fixed error when building MP2/MP3 with waveform quality < 10
+
+
+05/10/07 1.09.04
+----------------------------------------
++ Added a "Language" drop-down box to the global toolbar. Use this to add, edit
+  and select languages
++ Added per-language filename prefixes to wavebanks
+
+- Fixed a crash when building a project with pre- or post-build commands from
+  the command line 
+
+
+01/10/07 1.09.03
+----------------------------------------
+* Update for API release
+
+
+27/09/07 1.09.02
+----------------------------------------
++ Added "ProgrammerSelected" to sound definition "Play mode". Use this to allow
+  the programmer to choose sound definition entries at runtime.
+
+- Fixed crash when right-clicking in "Waveforms" pane in newly-created project
+
+* .FEV file format updated! FMOD Designer 1.09.02 requires FMOD version 4.06.30,
+  4.08.02, 4.09.02 or higher.
+
+
+21/09/07 1.09.01
+----------------------------------------
++ Added a "Groups" section to the programmer report
+
+- Fixed programmer report output so constant names match the header file
+- Fixed programmer report output to use forward slashes in event paths
+
+* The programmer report now shows the parameter index value for each parameter
+
+
+14/09/07 1.09.00
+----------------------------------------
++ Added a list of recently opened files to the File menu
++ Added a "Spawn Intensity" property to events; this is a multiplier for the
+  spawn frequency of all sounds in the event
+
+- Fixed an incorrect "couldn't be opened" error when specifying the location
+  of waveforms which have moved to a Mac or Linux networked directory
+- Fixed Designer not being able to save to Mac or Linux networked files
+
+* The File->New command no longer adds a parameter to the newly created event
+* .FEV file format updated! FMOD Designer 1.09.00 requires FMOD version 4.08.00,
+  4.09.00 or higher.
+
+
+7/09/07 1.07.25
+----------------------------------------
++ Added an "(event angle)" parameter; any parameter with the name
+  "(event angle)" is automatically updated with the angle to the listener from
+  the event's forward vector (0 to 180 degrees)
++ Added "Rebuild project..." and "Clean build files" items to the Build menu
+
+* Changed the name of the "(heading)" automatic parameter to "(listener angle)"
+  for greater clarity
+* Changed the event editor ruler to never use scientific notation, and to
+  adjust the number of digits after the decimal point to fit the step size
+* The "Change wavetable..." context menu option in the sound definition tab now
+  sets the file dialog's start directory to the current wavetable's location
+
+3/09/07 1.07.23
+----------------------------------------
++ Added a warning when the user tries to set bank type to "Load into memory"
+  on a wave bank that has sounds with more than 2 channels
++ Added a build-time check for "Load into memory" wave banks that have sounds
+  with more than 2 channels
++ Added event count constants to generated header files: EVENTCOUNT_<project>,
+  EVENTGROUPCOUNT_<project>_<group> and EVENTCATEGORYCOUNT_<project>_<category>
++ Added a "(heading)" parameter; any parameter with the name "(heading)" is
+  automatically updated with the angle to the event about the listener's up
+  vector (-180 to 180 degrees)
++ Added a "3D Position randomization" property to sound definitions; sound
+  definition instances are offset from their parent event by a random vector
+  based on this value, recalculated each time the sound is triggered
+
+- Fixed a crash in fmod_designercl when building wavebanks with syncpoints
+  from an FDP without the hasbuiltwithsyncpoints tag set
+- Fixed ruler drawing for parameters with minimum > maximum
+- Fixed automatic parameters to handle minimum > maximum correctly
+- Fixed ruler drawing for parameters to display only 3 significant digits
+- Fixed ruler drawing for parameters to calculate number of notches based on
+  parameter spacing setting and available screen space
+- FMOD Eventplayer now operates in the xz plane (i.e. top-down) rather than the
+  xy plane (this fixes issues with head-relative events)
+- Fixed oneshot events stopping when sounds with both "Wait for Previous" and
+  "Loop and cutoff" set are still playing
+- Fixed "Wait for Previous" sounds not being updated properly
+
+* Changed header file generation to prevent name collisions between projects
+  by inserting the project name in the constant names (e.g. for a project
+  called "test", EVENTGROUP_EXAMPLES has become EVENTGROUP_TEST_EXAMPLES)
+
+
+21/08/07 1.07.22
+----------------------------------------
+* Update for API release
+
+
+20/08/07 1.07.21
+----------------------------------------
++ Added preprocessor include guards to designer-generated header files
+
+- Fixed a Windows bug where build progress dialogs could steal the system
+  keyboard focus from other applications
+- Fixed a bug where the numeric input popup could go off the right edge of the
+  screen on certain multi-monitor setups
+- Fixed a bug where event parameter ruler spacing couldn't be set to less than
+  one tenth of the parameter range
+- Fixed layer background not updating when parameter properties were changed
+- Fixed Designer and FSBank not supporting sounds with > 6 channels
+- Fixed Envelope copy/paste distorting envelope values on some effects
+- Fixed a bug where the "XMA Filtering" entry was still enabled in the
+  waveform context menu even when the wavebank compression type was not XMA
+
+
+02/08/07 1.07.20
+----------------------------------------
++ Added the ability to set the channel mode of multichannel wavebank entries
+  to "n x Mono" (all channels panned to centre) or "n x Stereo" (channels
+  alternate between front left and front right) via the context menu. Channel
+  modes are saved to FSB. Useful for multichannel interactive music
++ Added a "Sort alphabetically" option to the wavebank list context menu
++ Added get/setUserData functions to all Event API classes
++ Added a "Disable seeking" option for XMA wavebanks (saves memory)
++ Added an "XMA Filtering" option for XMA wavebank entries (off by default)
++ Added a "Disable seeking" option to the fsbankex utility's XMA options
++ Added the "IMA ADPCM" format to the fsbankex utility's Xbox 360 format list
++ Added an "Enable syncpoints" option for wavebanks (can be turned off to
+  save memory if waves have syncpoints)
++ Added a build-time warning and enable/disable dialog for wavebank syncpoints
++ Added multiple select editing for wave banks in Wave bank view
++ Added the ability to add/edit/delete user properties on multiple selected
+  events/event groups at once
++ Added support for pre- and post-build commands
++ Added the ability to specify a random deviation in the 3D position of an
+  event
++ Added icons for the various curve and crossfade types in the event editor
++ Major improvements to network audition. Now only builds/syncs wavebanks as
+  they're played in event editor
++ Added "Max playbacks" and "Max playbacks behavior" for event categories:
+  If too many events are playing in a category when Event::start is called,
+  an event is stopped according to "Max playbacks behavior"
+
+- Fixed "Clean project" to remove duplicate wavebank waveform entries
+- Fixed a bug where Designer didn't save FSB volume and pan defaults correctly
+- Fixed a crash when copying & pasting a layer from an event with no parameters
+- Fixed the sound definition panel so the "Sort alphabetically" option is
+  always available in the sound definition list context menu
+- Sound definition "Maximum spawned sounds" is now clamped to be at least 1
+- Fixed a bug in wavebank list file generation where duplicate entries would
+  have a blank filename rather than "<duplicate>"
+- Fixed a bug where the sound definition list view would auto-expand when
+  dropping a wave file on it to create a new sound definition
+- Fixed a bug where record mode kept recording after the last event in the
+  record batch stopped.
+- Fixed loading from windows network shares
+- Fixed a bug where editing a text property item would move the cursor to the
+  end of the item after each keystroke
+- Fixed broken cut/copy/paste in Event Category view
+- Fixed a bug where copying & pasting certain effects didn't work
+- Fixed problem with network audition and empty wavebanks
+- Fixed events/eventgroups being allowed to have names that differ only in case
+- Fixed a bug where the Audition 3D tool didn't update distance parameters
+- Fixed Surround Pan effect forcing wavebanks to software mode on PS2
+
+* Changed order of speakers in event properties
+* Changed name of 7.1 speakers in event properties from "Left/Right Surround"
+  to "Left/Right Side"
+* Events created by dropping sample files onto the event screen no longer have
+  a parameter added to them by default
+* The Build button is now the default button in the Build dialog
+* The Build dialog now shows a "Build aborted" messsage if the build is aborted
+* Changed FDP writing code to replace XML special characters in text
+  properties with entity references
+* Changed "Optimise" to "Optimize" in the Wavebank panel for consistent use of
+  American English
+* Waveform "Sample rate optimization" is now a per-platform setting
+* "Clean project" now deletes empty wave banks.
+* .FEV file format updated! FMOD Designer 1.07.20 requires FMOD version 4.06.23,
+  4.07.20 or higher.
+
+
+22/06/07 1.07.19
+----------------------------------------
++ Added ASIO channel-mapping and speaker setup options to the "Sound" section
+  of the preferences dialog
++ The play button in the sound definition tab now provides previewing of spawn
+  behaviour (spawn time, maximum spawned sounds and play mode)  
++ Added the ability to cut, copy and paste sound instances in the event editor
++ Added the ability to cut, copy and paste layers in the event editor
++ Added "Search subdirectories" to file dialog for finding lost waveforms
+
+- Fixed error in finding lost waveforms that have spaces in them
+- Fixed crash when using File -> Merge...
+- Fixed some platforms not building when they have disabled software effects
+- Fixed file not found error after finding lost waveforms
+
+
+15/06/07 1.07.18
+----------------------------------------
++ Added a GUI option (in the Build dialog box) and command-line switch ("-l")
+  to generate listing files (.lst) for each sound bank, suitable for use with
+  the fsbankex utility when building .fsb files
+
+- Fixed a bug where events, groups, categories etc. could have leading or
+  trailing spaces in their names
+- Made adding/removing/editing envelopes in the effect properties dialog not
+  take effect until "Ok" is pressed
+
+* The fsbankex utility now preserves the case of file names from the listing
+  file, rather than folding them to lowercase
+
+
+05/06/07 1.07.17
+----------------------------------------
++ Removed the "Spawn Intensity" sound definition property and re-introduced
+  the minimum and maximum spawn time properties. The spawn intensity layer
+  effect now scales the average spawn time by (1 / (envelope value))
++ Added a tree view for sound selection to the "New sound" dialog
++ Made the "New sound" dialog remember its size between sessions
++ Added the "Channel Mix" effect, providing control over the incoming levels
+  of multichannel sounds in an event layer - useful to set volumes of 
+  subchannels for things like interleaved multichannel music etc
+
+- Fixed export of FSB files not writing correct flags, so that if a sound
+  has 2d AND 3d wave entries in a soundbank, it wouldn't load.
+
+* .FEV file format updated! FMOD Designer 1.07.17 requires FMOD version 4.06.20,
+  4.07.17 or higher.
+
+
+18/05/07 1.07.16
+----------------------------------------
++ Added per-platform effect enabling/disabling; effects are automatically
+  disabled in platforms which don't support them
++ Added the ability to set envelope control point positions numerically
+  (via context menu or double-click on the control point)
+
+- Fixed problem with effect curve tweaking in network audition.
+- Fixed a bug where layer resize handles could be hidden under effect widgets
+- Fixed a bug where "Save as..." could adjust waveform filenames incorrectly;
+  now waveform filenames are unchanged and audio source directories are set
+  to the old project directory if they are blank
+
+* FMOD Eventplayer now lists events in .fev file order (i.e. the same order as
+  in Designer) by default; clicking on a column header sorts by that column
+* Added error message when trying to build a GCADPCM wavebank that contains 
+  software references
+
+
+11/05/07 1.07.15
+----------------------------------------
++ Added the ability to set parameter values numerically (via context menu or
+  double-click on the parameter value display or parameter selection widget)
++ Added the ability to set sustain point positions numerically (via context
+  menu or double-click on the sustain point widget)
+
+- The Event Editor panel now updates the parameter value display and cursor
+  widget when the selected parameter changes
+- The project dirty flag is now set when sustain points are added/removed/moved
+  so FMOD Designer will prompt to save on exit or when loading a new file
+- Fixed a bug where oneshot sounds would retrigger if the parameter left the
+  sound and returned to it while it was playing
+
+* Double-clicking on the parameter selection widget now brings up a numeric
+  input box, rather than the parameter properties dialog box
+* The layer solo button now defaults to only soloing one layer at a time. Hold
+  the Control key while clicking to solo multiple layers.
+
+
+09/05/07 1.07.14
+----------------------------------------
++ Added tickboxes for whether or not to include layers & effects in a template
++ Added a "Nonblocking" checkbox to FMOD Event Player (switchesEVENT_NONBLOCKING
+  on/off for all calls to getEvent)
++ Added "Load into RSX memory" wavebank property (PS3 only)
++ Added the ability to copy/cut & paste effects from one layer/event to another
++ Added the ability to disable sample rate optimisation per waveform
++ Added MP2/MP3 compression for Xbox360
+
+- Event sustain points are now clamped to valid parameter range
+- Fixed a bug where sustain points could be written to .fev in the wrong order
+- Fixed the event editor ruler to redraw when the selected parameter changes
+- Removed annoying flashing when adding an effect envelope
+- Fixed the "Replace sound..." menu option to only restart the event if it is
+  already playing
+- Fixed parameter value rounding issue
+- Fixed crash on startup when event templates have user properties
+- Fixed a bug where a template-based event could be made a template itself
+
+* Wavebank "Bank type" is now saved per-platform
+
+
+26/04/07 1.07.13
+----------------------------------------
++ Added individual layer priorities; if layer priority < 0, use event priority
++ Added a Solo button to the event editor panel's layer controls
++ Added sound instance property "Autopitch at min" for offsetting autopitch ramping
++ Added a "Replace sound" option to the sound instance context menu
+
++ Upgraded the fmod_eventplayer tool:
++   Added a soundstage allowing sound sources (events) and the listener to be
+    positioned in 2D, with visual feedback on which events are playing/audible.
++   Added the capability to drag and drop events from the event hierarchy onto
+    the sound stage to create a source that plays that event.
++   Added saving and loading of test setups (source & listener positions,
+    events playing, projects loaded etc).
++   Added multiple source & listener movement behaviours.
++   Added multiple source play modes: Once, Repeat & Random.
++   Added master volume and mute controls.
++   Updated the event and system properties displays to use a hierarchical list.
++   Added saving & restoring of UI configuration between sessions.
+
+- Fixed dragging sounds between layers when there is no selected parameter
+- Disabled dragging sounds onto locked layers
+- Fixed "don't play" sound definition entry
+
+* Sound instances now display in grey when their layer is muted
+* Sound instances now display in dark grey when their layer is disabled
+* Disabled and muted layers now have effects and sounds locked
+* "Lay out sounds evenly" menu item is now disabled if layer sounds are locked
+* The event editor play button now stays pressed while the event is playing 
+* Updated the UI style for better pressed button display
+* .FEV file format updated! FMOD Designer 1.7.13 requires 4.06.16, 4.07.13 or higher.
+
+
+16/04/07 1.07.12
+----------------------------------------
+* Update for API release
+
+
+05/04/07 1.07.11
+----------------------------------------
++ Added an "Enable layer" checkbox to the Event editor tab. Layer enable state
+  is stored on a per-platform basis. Disabled layers are not included in the
+  build process.
++ Added the ability to specify the file name for a template file
+
+- Fixed the layer mute button to correctly affect playing events
+
+
+22/03/07 1.07.10
+----------------------------------------
+- Fixed error message when compresson format .dll not found
+- Mac - Fixed playback of events "File Not Found" issue
+
+
+01/03/07 1.07.09
+----------------------------------------
++ Added Spawn Intensity effect, a multiplier for a sound definition's spawn 
+  intensity parameter.
++ Added Record mode. Records output of a playing event to a .wav file
+
+* Can now have multiple cumulative Pitch effects per layer.
+
+
+23/02/07 1.07.08
+----------------------------------------
+* Update for API release
+
+
+20/02/07 1.7.7
+----------------------------------------
+!+ Addded brand new documentation.  New documentation is comprehensive and 
+   professionally written.
+!+ Added gapless mp2/mp3 encoding.  Runtime API upgrade is required also otherwise 
+   there will be small clicks on each loop.
+
+
+13/02/07 1.7.6
+----------------------------------------
+!- FSBank - Fixed bad FSB data being written out which could cause hang with XMA
+  and garbled sound on other formats.  This bug is present in 1.7.2 to 1.7.5 
+  inclusive.
+- Removed "FMOD Reverb" from "New effect" dialog. Use "SFX Reverb" instead
+
+
+08/02/07 1.7.5
+----------------------------------------
++ Added File->Merge... Use it to merge a second project into the currently loaded one
+
+- Fixed layer control parameter not being saved correctly
+
+
+02/02/07 1.7.4
+----------------------------------------
++ Added volume randomisation to events.
+- Fix reverb balance effect not setting correct gain levels
+- Fix event crossfades gettting reset on copy event
+- Fix sound definitions not looping properly.
+- Fix wave bank compression type saying 'MP3' twice in PS3 mode instead of MP2 and MP3.
+
+
+29/01/07 1.7.3
+----------------------------------------
+* Update for API release
+
+
+25/01/07 1.7.2
+----------------------------------------
+- Fixed problems with template events
+
+
+23/01/07 1.7.1
+----------------------------------------
+- Fixed "Clean project" not cleaning everything the first time it's used
+- Fixed "Max playbacks" so it can't go -ve
+
+
+22/01/07 1.7.0
+----------------------------------------
++ Soundbank waveform quality parameter now stored per platform
++ Event system memory/speed optimisations
++ Added Start Mode to layer sounds. Options "Immediate" & "Wait for previous".
++ Added "Reverb Balance" effect
+
+- Fixed "Max Playbacks Behaviour" writing out wrong value and causing wrong getEvent behaviour in runtime engine.
+
+- Fixed whitespace on end of names when drag/dropping wav files to create events/sounddefs
+- Fixed problem with "music" category and multiple projects
+- Fixed audio source directory problem
+- Fixed stereo sounds not playing correctly when non-pc platform selected
+- Fixed conflicting guids when using cut'n'paste
+- Fixed network connect version mismatch problem
+
+
+14/12/06 1.6.0
+----------------------------------------
++ Added MP2 support
++ Added linked control for event "Volume" parameter, which maintains relative dB gain between selected events. The operational gain values are clamped between -60dB and 0dB.
++ Added "music" category
++ Removed "Music" event property
+
+- Fixed "Seek Speed" in "Parameter Properties"
+- Fixed drag and drop in category hierarchy
+- Fixed envelope point value tab disappearing when mouse approaches edge of layer
+- Fixed parameter velocity and seek speed now in terms of parameter units
+- Fixed bug in eventplayer loading
+- Fixed sounds jumping into different layers
+
+* EventCategory indices may be incorrect (+1) until projects are rebuilt
+
+
+5/12/06 1.4.53
+----------------------------------------
+- Improved error message when adding mutliple effects of the same type
+- Tweaked examples.fdp for each platform
+- Removed "Steal next" from event "Max playbacks" behaviour as it was found to be extraneous
+
+
+24/11/06 1.4.51
+----------------------------------------
++ Added parameter to reduce a wave's stored sample rate to a percentage of optimised samplerate, per wavebank waveform. The user can preview the resampled audio, and the revised sample rate is displayed.
+
+- Fixed problem where no new banks could be created
+
+
+16/11/06 1.4.49
+----------------------------------------
++ Added new command line option to fmod_designercl.exe "-c <compression>" to override the
+  compression method specified for all wavebanks
+
+- Fixed crash when renaming sound definition folders
+- Fixed problem with crossfade curves
+
+* Events can no longer put into more than one category
+
+
+9/11/06 1.4.47
+----------------------------------------
++ Added editable notes field for wave bank waveforms.
+
+- Fixed sample rate optimisation optimising down to too low a frequency.
+- Fixed crash after deleting sustain points involved in event copy operations
+
+
+2/11/06 1.4.45
+----------------------------------------
++ Added Event "Mode", "3D Rolloff", "3D Min Distance", "3D Max Distance", 
+  "3D Position", "3D Cone Inside Angle", "3D Cone Outside Angle" and
+  "3D Cone Outside Volume" to be updated in realtime network auditioning.
++ Added 5 new crossfade curves: "Power -0.5dB mid", "Power -3dB mid", 
+	"Power -4.5dB mid", "Power -3dB early" and "Power -3dB late".
++ Added soundbank commands: "Set properties as default for new soundbanks" and
+	"Copy properties to all soundbanks".
++ Added "-s 2   Don't build any FSB wavebanks." to command line options for fmod_designercl.
+ 
+- Fixed 'needs 3d' error popping up when trying to preview an event sometimes.
+- Fixed crash when encoding 24bit wav files to xma or adpcm.
+- Fixed '3D Pan Level' effect's 'Level' envelope tip units now in standard range [0,1]
+- Fixed adding sinewave/oscillator producing an error box when trying to play it.
+
+26/10/06 1.4.43
+----------------------------------------
+- Fixed crash when using "Clean project"
+* Changed newly added waveforms to default to "bank" compression quality
+
+
+19/10/06 1.4.41
+----------------------------------------
++ Added scrollbars to event player for large projects
++ Allowed ADPCM for PS3
+- Fixed crash when working with templates
+
+
+13/10/06 1.4.39
+----------------------------------------
+- Fixed crash on selecting edit (user properties) in a category folder
+
+
+12/10/06 1.4.37
+----------------------------------------
++ Added new command line option to fmoddesignercl.exe "-b <pathname>" to allow override of Build Directory.  
++ Added category list for events in programmer report.
+- Fixed crash after deleting an event
+- Fixed surround pan effect not initialising correctly
+
+
+04/10/06 1.4.33
+----------------------------------------
+- Fixed events with fadeout not stopping in event screen
+- Fixed crash after Clean
+
+
+29/09/06 1.4.31
+----------------------------------------
++ Added new layer effect: "Time offset". Specifies the start position, in seconds, within a wavetable.
++ Added specifiable template file directory
++ Added pitch randomisation for events
++ Standardised pitch and volume randomisation for sound definitions (fdp's are backwards compatible)
++ Added interactive search for missing sound file directories on build
++ Sound definition "Goto event" now lists all events that use that sound definition
++ Frequency curves are now non-linear in certain DSP effects giving a more useful range of movement. Effects changed are "Lowpass",
+  "IT Lowpass", "Lowpass Simple" and "Highpass". Note: Curves in existing events are not affected. Only newly created curves will
+  benefit from this improvement.
++ Added event "Pitch randomization" property
++ Improved sound definition "Volume randomization" and "Pitch randomization" interface
++ Added "Template File" filed in "Directories" section of "Preferences" dialog for specifying where the template file is located
++ Added new command line option to fmoddesignercl.exe "-a <pathname>" to allow override of Audio Source Directory.  Useful for 
+  specifying different paths per project build for localization purposes.
++ Added new command line option to fmoddesignercl.exe "-s [0|1]" to specify only building streaming wavebanks or only building 
+  static sample wavebanks.
+
+- Fixed wrong input .fdp filename using fmod_designercl -m
+- Fixed "Abort" button on build dialog
+- Fixed Alt-Left-click on event in category hierarchy now previews event in same way as it does on event hierarchy
+- Fixed command line -m mode to not include wave banks that aren't referenced
+- Fixed sound events appearing in the wrong layer when added
+- Fixed network paths not working in sound definitions
+
+
+08/09/06 1.4.29
+----------------------------------------
++ Added multi-level sortable sound definition folders for organising sound definitions!
++ Added drag'n'drop sounds between layers
++ Added "Shuffle" sound definition play mode
++ Added fine control for dragging envelope points. Hold down "Z" while dragging
++ Added new curve type "Logarithmic"
++ Added new sound crossfade types "Linear" and "Raised"
+- Fixed "3D Pan Level" slider not updating in realtime over network
+- Fixed problem with shuffle sound definition play mode when entries are added/deleted
+- Fixed problem previewing sound definitions that use shuffle play mode
+- Fixed ruler range spacing bug when using -ve values
+* If Event::start is called on an event that is fading out ("Fadeout Time" property), it will now restart that event immediately
+
+
+23/08/06 1.4.27
+----------------------------------------
++ Added Reverb Level effect whose envelope, when present, overrides the event's reverb level property
++ Added keyboard command to Event Editor - restricts horizontal movement of edit points while CTRL held down
++ Added SI value tooltip display when edit points are being dragged
++ Updated header file and programmer report written out by FMOD Designer to include reverbs, categories and 
+  event parameters. Full paths used now as well.
+- Fixed command line build not rebuilding banks that are unchecked in build dialog
+- Mac - Fixed fdp files not being shown in open file dialog
+- Fixed "Audio source directory" changing sound definition waveform paths erroneously
+- Fixed handling of '&' in .fdp files
+
+
+10/08/06 1.4.25
+----------------------------------------
++ Changed "3D Reverb Level" to "Reverb Level". It now works in 2D as well
++ Reverbs in reverb view are now network tweakable. Connect to your game and adjust reverbs in realtime.
++ Added "Loop and cutoff" and "Loop and play to end" to sound instance "Loop mode" properties
+- Fixed "3D Spread" effect not working properly
+* Event parameters now automatically reset back to 0 on Event::start if they have non-null
+  velocity and setValue hasn't been called on them
+
+
+04/08/06 1.4.23
+----------------------------------------
+- Mac - Fixed files with lowercase extensions not showing up in file open dialogs.
+- Fixed "Max playbacks behavior" "Steal oldest" not working correctly
+- Enabled ADPCM compression format for Xbox360
+- Enabled VAG compression format for PSP
+- Fixed problem where PSP platform was never available
+* NOTE: FMOD Event Player may not report correct memory usage. This is temporary and will be rectified in a future version
+
+
+31/07/06 1.4.21
+----------------------------------------
+- Fixed problem with keyoff button in FMOD Designer
+
+
+27/07/06 1.4.19
+----------------------------------------
+- Fixed problems with categories tab not being updated
+
+
+21/07/06 1.4.17
+----------------------------------------
++ Added user properties to event groups
+- Fixed problem loading certain FEVs in event player
+- Removed ADPCM compression format for PS3 platform
+- Disabled "Adjust compression quality" context menu appropriately for format
+
+
+17/07/06 1.4.15
+----------------------------------------
+- Fixed bug where it was possible to create multiple categories with the same name
+- Fixed crash related to sound definition pitch randomisation
+- Fixed surround pan dialog inserting -1024dB into event speaker levels properties
+- Fixed freeEventData not freeing streams in certain circumstances
+- Fixed ADPCM issues
+* Disabled "Compression quality" wave bank property for formats that don't have variable quality
+* Allowed surround pan dialog for 3d events
+* Changed IMAADPCM compression format to ADPCM. This is a name change only - the compression format is the same.
+
+
+07/07/06 1.4.13
+----------------------------------------
++ Added ability to load multiple projects into event player
++ Added "Load event data" and "Free event data" to eventgroup context menu in event player
++ Added extended event and eventsystem info to event player
+- Fixed problem with some events not playing because they need software engine support
+* Reworded event player load/unload menu items
+
+
+03/07/06 1.4.11
+----------------------------------------
++ Added event "3D Pan Level" property
++ Added "Reverb" view. Sound designer can now design and preview named reverb presets that the programmer can use at runtime
++ Added event "Fadein time" and "Fadeout time" properties
++ Added wave bank "Max streams" property
++ Added default event "Oneshot" property to Preferences dialog
++ Added "Edit->Clean project" to remove unused sound definitions and waveforms
++ Added alt-leftclick on an event in event hierarchy in event form to play that event (leftclick event to stop it)
++ Added "Play" button to "New sound" dialog for previewing sound definitions
++ Added doubleclick on waveform in waveform list view in wave bank view to navigate back to sound definition that uses that waveform
++ Added "Goto event" in sound definition context menu to navigate back to the first event that uses this sound definition
++ Added event templates
++ Added "key off" button per parameter in Event Player
++ Added "Audio source directory" project property
++ Templates update automatically when template properties are changed
+- Fixed problem with relative paths in project "Build directory" property
+- Fixed "Audio source directory" issues
+- Fixed certain validation dialogs sometimes coming up twice
+- Fixed problem with volumes reverting to previous setting in network audition mode
+- Fixed event player initialisation code to be more robust
+- Fixed 3d spread not previewing correctly
+- Fixed Sfx Reverb problems
+- Fixed Preferences dialog always prompting for a restart
+- Fixed effect mute state not restoring properly on project load
+- Fixed graphical corruption on some line edit widgets
+- Fixed problem where effect mute was not working
+- Fixed random volume/pitch not remembering values
+- Removed "Synchronize files" menu item
+* Speaker levels default to 0dB left/right isntead of -3dB
+* Changed name of "Speaker spread" effect to "3d Speaker spread"
+* Speaker levels properties can now be modified for 3d events
+* FEV format extended. Rebuild FEV's to access new features!
+
+
+01/06/06 1.4.7
+----------------------------------------
++ Added event "3D Speaker Spread" property. Use "Audition 3D" dialog to preview.
++ Added event "Oneshot" property. Event will automatically stop playing when all sounds are finished.
++ Added per-waveform compression quality in wave bank screen.
++ Added "Programmer sound" sound definition entry. Use event callback to feed external sounds into an event at runtime.
++ File->Open dialog remembers last directory opened from.
++ Added parameter "Seek speed" property. Use this to make EventParameter::setValue() seek the cursor to the specified value over time.
++ Added confirmation dialog to "Lay out sounds evenly" function.
+- Fixed build dialog platform setting sometimes not matching up with project platform setting.
+- Output mode set to "No sound" for command line builds.
+- Removed parameter "Minimum value" and "Maximum value" from "Parameter Properties" dialog.
+- Removed OpenAL output mode.
+* Changed default event "Max playbacks behavior" property to "Steal oldest".
+
+
+30/05/06 1.4.4 - Stable release update
+----------------------------------------
+- Update for fixes in FMOD Ex low-level library
+
+
+25/05/06 1.4.2 - Stable release update
+----------------------------------------
+- Update for fixes in FMOD Ex low-level library
+
+
+23/05/06 1.4.0
+---------------
++ Improved network tweaking performance
++ Added wavebank compression quality setting in wavebank screen
++ Added new "Bank type" setting "Decompress into memory" in wavebank screen
++ Added "SequentialEventRestart" play mode to sound definitions
++ LFE level can now be set for 2D/3D sounds and even boosted to +13dB (5x linear gain)
+- Fixed bug where exported events had very low volume
+- Fixed MP3 encoder
+- Fixed problems with sound definition entry selection
+- Fixed crash on exit after using copy/paste
+
+
+16/05/06 1.3.10
+---------------
++ Added command line switch -n to _not_ build .FEV or .FSB
++ Added random weighted sound definitions
++ Improved .fdp loading to recover invalid files (missing soundbanks)
++ Event system now uses FMOD_LOWMEM for all sounds
++ Fixed FMOD initialisation to be more robust and informative
+- Oneshot parameters now visually clamp to maximum range
+- Fixed empty context menu when no layer selected in event editor view
+- Fixed crash when project references a dsp unit that doesn't exist
+- Fixed problem where oneshot event parameter went past parameter maximum range
+- Fixed problem in sound definition view where sound definition wouldn't play first time
+* Newly created wave banks default to "Force software" for Xbox360
+* Oneshot parameters that are at maximum range reset back to minimum range automatically when event is played in FMOD Designer
+* "Oneshot and stop event" parameters don't stop the event until all oneshot sounds have finished playing
+
+
+02/05/06 1.3.9
+---------------
+* On PC platform, all 2D events are now played using FMOD's software mixer.
+
+
+26/04/06 1.3.8
+---------------
++ Added dedicated command line version of FMOD Designer (fmod_designercl.exe)
++ Added -p and -h command line switches for toggling programmer report and header file output respectively
++ Added -m command line switch for producing dependency information
+- Fixed problem with autopitch reference being expressed in terms of selected parameter not primary parameter
+- Fixed quality issue in FMOD Pitch Shifter effect
+
+
+18/04/06 1.3.7
+---------------
++ Added "linear" curve shape. Use context menu on envelope curve segment, envelope or whole effect to change curve shape.
++ Added default curve shape option to preferences dialog
++ Added "FMOD Compressor" effect
+- Fixed crash related to "oneshot and stop event" parameters
+- Fixed problem with sustain points on parameters with range outside of 0 -> 1
+- Fixed bug where event loop mode wasn't being saved properly
+* Changed some event editor context menus
+
+
+07/04/06 1.3.5
+---------------
++ Added event sustain points. Parameters with velocity stop on sustain points until programmer calls a "keyoff" function at runtime.
++ Added "keyoff" button to FMOD Designer and FMOD Event Player.
++ Added "Surround Pan" effect.
++ "Surround Pan" dialog can now be used in conjunction with the "Surround Pan" effect to automate 5.1/7.1 mixing.
+- Fixed "Help -> User Manual" menu item not working when application was started by double-clicking a .fdp file.
+
+
+31/03/06 1.3.4
+---------------
+- Fixed graphical glitches and flicker
+- Fixed crash/file corruption caused by deleting event parameters
+- Fixed build error when unreferenced wavebanks are encountered
+- Fixed limitation where copy/paste would stop adding "Copy of" if name was identical
+* Whitespace is no longer allowed at the start and end of any names i.e. event, eventgroup, eventcategory etc.
+
+
+17/03/06 1.3.3
+---------------
++ Major graphical overhaul!
++ Added "del" key to delete the current sound in event editor.
++ Added "Resize layers" item to context menu in layer control area in event editor view. Use this to make all layers the same height as the selected layer.
++ Property sheet properties now require only a single click to begin editing them.
++ Added 'loop mode' to parameters so parameters can now stop when they reach the maximum value, and even stop the whole event if instructed to do so.
++ Added 'Max playbacks behavior' property to event property sheet, for when the programmer runs out of event instances.
++ Added "don't play" sound definition entry. This allows you to make sound definitions that sometimes don't play anything when triggered.
++ Adjusting sound volume (with the blue curves) now updates across network.
+- Fixed various issues with IMAADPCM compression.
+- Fixed problem where an event that had been copied and pasted would play as looping even though it was oneshot.
+- Fixed alphabetic/numeric sorting bug on wavebank waveform property sheet.
+- Fixed problem where muted envelopes could still be dragged.
+- Fixed envelope visibility on/off bug.
+- Fixed eventgroup copy/paste bug where events in pasted eventgroups were playing silently.
+- Fixed problem editing autopitch reference when parameter range minimum is > 0.
+* Tightened up property sheet column width.
+* Updated fmod_designer.pdf to mention command line mode limitation.
+
+
+24/02/06 1.3.2
+---------------
++ Added 3D "Cone Designer" for defining 3D sound cones
+- Fixed problem with event priority not being saved
+- Fixed crash on EventSystem::release
+
+
+22/02/06 1.3.1
+---------------
++ Updated documentation
++ Various minor graphical improvements
+- Fixed uninstaller leaving files behind
+- Removed target export path (wasn't needed)
+
+
+10/02/06 1.3.0
+---------------
++ Added speaker level support to event property sheets (2d events only)
++ Added "Audition 3D" dialog box for event editor to preview 3d sound with an event.
++ Added "Surround Pan" dialog box for event editor to preview 5.1 panning with an event.
++ Added min/max distance and 3d position / speaker level preview to audition client (xbox 360)
+- Fixed Audition client crash when disconnecting / closing tool.
+- Fixed Audition client crash with changing pitch.
+
+
+02/02/06 1.2.10
+---------------------
++ getEvent now only loads the sounds it needs, not the whole wave bank - much more memory efficient!
++ Reduced runtime memory usage
+- Fixed rare crash on getEvent
+- Fixed bug in random playback in FMOD Event Player
+
+
+27/01/06 1.2.9
+---------------------
+- Removed "Basic headers" option in wave bank view
+- Fixed error when using "stream from disk"
+
+
+23/01/06 1.2.8
+---------------------
++ Reduced runtime memory usage
+- Fixed crash when calling getEvent after freeEventData
+- Fixed 3D stereo wave banks
+- Fixed events playing with incorrect (old) volume
+- Fixed problem loading previous project when previous project no longer exists
+* Increased timeout for network auditioning
+
+
+12/01/06 1.2.7
+---------------------
+- Fixed problem playing hardware sounds in 2d and 3d on xbox360
+
+
+11/01/06 1.2.6
+---------------------
++ Added realtime network curve tweaking in the event editor. Adjust parameter curves while you're playing your game!
++ Volume/pitch sliders now update over the network in realtime
++ Added drag'n'drop to the event tree view so events and eventgroups can be re-ordered how you like
++ Added "Sort alphabetically" context menu option for sorting events and eventgroups in the event tree view
++ Removed flicker when adding/removing items from event tree view
++ Added "realtime_tweaking" example for Xbox360
+- Fixed crash when using event callbacks with oneshot sounds
+- Fixed crash when changing compression format
+- Fixed crash when deleting an effect
+- Fixed bug where newly created effects aren't pasted along with their event
+- Fixed problem where FSB files were sometimes not being rebuilt
+
+
+21/12/05 1.2.5
+---------------------
++ Added "Stop all" button to event player
++ Added more build progress output
+- Fixed RandomNoRepeat play mode
+- Fixed .FSB incorrect pitch problem
+- Fixed crash when drag'n'drop sound file onto a playing event in event editor
+- Fixed oneshot sounds not stopping in certain cases
+- Fixed .FEV not going through filecallbacks in fmod_event_net.dll
+* Removed .FEV checkbox in build dialog. FEV always needs to be built
+* Improved build error messages
+
+
+15/12/05 1.2.4
+---------------------
++ Limited the maximum number of streams created per eventsystem. Huge memory savings in certain cases!
++ Added drag'n'drop sound files from explorer into blank area below sound definition tree to create new sound definitions
++ Added drag'n'drop of sound definition entries between sound definitions
++ Added drag'n'drop to reorder sound definition entries
++ Added memory usage display to event player
++ Added "File -> Close" menu option to close loaded project in event player
++ Added "Play random" and "Stop random" buttons in event player
++ Added wave bank info display in event player
+- Fixed drag'n'drop to always create relative paths not absolute paths
+- Fixed drag'n'drop when treeview is scrolled down on event view, sound definition view and wave bank view
+- Fixed problem with audition client for Xbox360
+- Fixed problem with uninstaller
+- Fixed build error when sound definition contains entries with absolute path
+- Fixed copy/cut crash
+- Disallowed multiple identical sound definition entries
+* Updated example project
+* When creating a new event by drag'n'drop, waveform references are now relative
+* Paste sound definition properties now pastes notes as well
+* NOTE: The .FEV file format has been extended! It is still backwards compatible with 1.2.3
+
+
+24/11/05 1.2.3
+---------------------
++ Added "Copy all properties" and "Paste all properties" to event view context menu. Copy/paste all event properties at once. Paste works with multiple select.
++ Added "Copy all properties" and "Paste all properties" to sound definition view context menu. Copy/paste all sound definition properties at once. Paste works with multiple select.
++ Added Sound Definition cut/copy/paste/delete in Sound Definition view (Context menu and CTRL-X/CTRL-C/CTRL-V/DEL)
++ Added Sound Definition Entry cut/copy/paste/delete in Sound Definition view (Context menu and CTRL-X/CTRL-C/CTRL-V/DEL)
++ Improved event instance creation and event data handling
+- Fixed wavebank loading/unloading when loadEventData is called multiple times on the same eventgroup
+- Mac - Fixed tool not working with pre-Tiger versions of OSX.
+
+
+18/11/05 1.2.2
+---------------------
++ Added command line mode. Specify -b and an .fdp file on the command line to build a project
+- Fixed selection of VAG compression format (PS2 only)
+- Fixed problems building VAG wavebanks
+- Fixed problem updating properties for oneshot sounds
+- Fixed oneshot sounds not crossfading properly in certain circumstances
+- Fixed oneshot sounds not updating 3d position properly
+- Fixed crash in fmod_event_net
+- Removed duplicate "Save changes?" dialog when opening a project
+- Removed SOURCE compression format
+* Changed Event::start() behaviour - if event is already playing but Event::isPlaying() is false then the event will be restarted else Event::start() will just return immediately
+
+
+10/11/05 1.2.1
+---------------------
++ Added drag'n'drop of wave file(s) onto event hierarchy in the event view to automatically create new event(s) + sound definition + placed sound
++ Added drag'n'drop of wave file(s) onto a sound definition in the sound definition view to add them to the sound definition
++ Added drag'n'drop of wave file(s) onto a sound in the event editor to add them to the sound definition
++ Added drag'n'drop of wave file(s) onto empty part of a layer. Adds new sound definition(s) and places sound instance(s)
++ Added "Default sound type" in preferences dialog. Choose whether to place oneshot or looping sounds by default
++ Added "Layout sounds evenly" to event editor context menu
++ Added ctrl-doubleclick on a sound to expand it into the available space. ctrl-double-click again to halve it
++ Added double-click to select from list in "New Sound", "New Oscillator" and "New Envelope" dialogs
++ Added "Save As..." for projects
++ Added soundbanknames to Event::getInfo
++ Added Event::getCategoryByIndex
+- Fixed "Delete Layer" context menu item - it's not always greyed out now
+- Removed old Event::release function from documentation
+- Fixed graphical inaccuracy in sound placement
+* Changed "Bank type" in wave bank view from "Sample"/"Stream" to "Load into memory"/"Stream from disk"
+
+
+04/11/05 1.2.0
+---------------------
++ Significant optimizations in memory and cpu usage
++ Added FMOD Designer Network API. Tweak events playing in your game as it's running using FMOD Designer!
++ Added realtime_tweaking example
++ Programmer report now lists what DSP effects are used per event
++ Added Event::getPitch, Event::setPitch
+- Fixed getCategoryByIndex to return FMOD_ERR_INVALID_PARAM on bad indices
+- Fixed oneshot sounds not spawning immediately when event is started
+- Fixed software 3d sounds in FSB/EventSystem
+* Multiple EventSystems are no longer allowed. This is to prevent inadvertant opening of the same soundcard twice
+
+
+21/10/05 1.1.7
+---------------------
++ Added EventSystem::getVersion
++ EventSystem::getGroup and EventGroup::getGroup can now take a full pathname i.e. "level1/weapons/guns/bazooka"
+- Fixed crash when deleting a wave bank
+- Fixed loading multiple projects with eventgroups/categories of the same name
+- Changing a sound definition's play mode now doesn't require a save/load to take effect
+- Added "RandomNoRepeat" play mode for sound definitions
+
+
+14/10/05 1.1.6
+---------------------
++ Added event categories
++ Added event callbacks
+* Improved default XMA compression quality
+* NOTE: FEV file format has changed! Rebuild all existing FEV's for use with this version
+
+
+04/10/05 1.1.5
+---------------------
++ Improved resource management. Added EventGroup::loadEventData/freeEventData
+- Fixed problem when too many streams tried to play at once
+- Fixed memory leak
+- Fixed crash when loading a project
+
+
+23/09/05 1.1.2
+---------------------
++ Added "music" property for events
++ Added user properties for events
+- Fixed problem where it was possible to run out of room to add more eventgroups
+* Build directory is now relative to .fdp path not fmod_designer.exe path
+
+
+16/09/05 1.1.1
+---------------------
++ Added multiple select editing for Events in Event view
++ Added multiple select editing for Sound Definitions in Sound Definition view
++ Added EventGroup cut/copy/paste/delete in Event view (Context menu and CTRL-X/CTRL-C/CTRL-V/DEL)
++ Added Event cut/delete in Event view (Context menu and CTRL-X/DEL)
++ Added "Change wavetable..." to Sound Definition view.
+* Changed terminology to be clearer. An "Envelope" is now called an "Effect".
+* Upgraded to Qt 3.3.5
+
+
+08/09/05 1.1.0
+---------------------
++ Added Event copy and paste in event view (Context menu and CTRL-C/CTRL-V)
++ Added "User Manual" menu item in Help menu
++ Added more informative error messages
+- Updated docs on renaming .bak if .fdp is trashed
+- Fixed problem deleting waveforms from sound definitions also deleting from wave bank
+- Fixed DSP connection error when using more than one volume envelope
+- Fixed problem with wave files on a different drive than the project
+- Fixed delete sound definition warning dialog
+- Fixed problem with sound definition with no sounds in it
+- Fixed sound definition randomisation
+* Event/EventParameter now use reference counted handles
+
+
+25/08/05 1.0.12
+---------------------
++ Improved event/eventgroup resource management
++ Improved finetune dialog for tuning sounds against the currently playing event
+- Fixed a problem when changing a layer's name
+- Fixed a problem with Event::getIndex and EventGroup::getIndex
+* .fdp extension is now automatically added if it's not there when creating a new project
+* EventGroup::release now releases all Events in the EventGroup
+
+
+23/08/05 1.0.11
+---------------------
++ Added "Custom" 3D rolloff model
+- Fixed problem loading/saving projects
+- Fixed doubleclick on project loading wrong project
+
+
+05/08/05 1.0.10
+---------------------
++ Added support for non-unique event names
+- Added 3D listener functions to event api
+- Fixed problem saving wavebank compression format
+
+
+01/08/05 1.0.9
+---------------------
++ Added head/world relative property to events
++ Reworked sound properties dialog
++ Added support for more platforms
++ Added "force software" property to wave banks
++ Optimized event playback
+- Fixed event editor graphical issues
+- Fixed bug in wavebank creation
+- Fixed remote target audition file synch issue
+- Fixed height of new layer when create new project
+
+
+16/07/05 1.0.8 beta
+---------------------
++ Added volume/pitch randomization
++ Added programmer report and header file output
++ Added 3D rolloff property to event
++ Added "Used" column in wave bank screen
++ Improved handling of 2D/3D, HW/SW properties
++ Fixed problem with stream wave banks
++ Improved installer/uninstaller
+- Fixed various remote target audition issues
+- Fixed wave bank waveforms showing wrong size
+- Fixed memory leaks
+* Changed "CROSS" platform to "PC"
+* Moved 3D min/maxdistance property to event
+* Changed to Qt 3.3.4
+
+
+25/06/05 1.0.6 beta
+---------------------
+
++ Added remote target auditioning
++ Many optimisations for speed and memory usage
++ Events can now be instanced multiple times
++ Added encryption support to event player
+- Fixed various memory leaks
+- Fixed various graphical/interface glitches
+- Fixed oneshot sound volume not being updated
+- Fixed parameters going out of range
+- Fixed property sheet issues
+- Fixed various soundbank properties not being exported correctly
+* Revised menus
+
+
+09/06/05 1.0.5 alpha
+---------------------
+
++ Added output and buffersize settings in preferences dialog
++ Improved error handling
++ Added platform toolbar (still only supports cross-platform atm)
++ Added new build dialog
+- Fixed focus issues
+- Fixed various bugs
+* Revised menus
+
+
+31/05/05 1.0.4 alpha
+---------------------
+
++ Can now create sound definitions in sound definition screen by multiple-selecting wavs
++ Sound definition preview is now affected by volume and pitch
++ Added "Close" project menu option
++ Cleaned up interface
++ Added driver setting in sound preferences
+- Added "Fix absolute paths" in Special menu
+- Fixed bug that allowed multiple sound definitions with the same name or null name
+- Fixed ruler min/max issues
+- Fixed problem when enabling autopitch
+- Fixed crash on save
+* All new sounds are now added with path relative to their project file
+
+
+??/??/05 1.0.2 alpha
+---------------------
+
++ Added an installer
+
+
+03/04/05 1.0.1 alpha
+---------------------
+
++ Added help text in middle of event editor screen if no event selected
+- Fixed debug dll dependency
+- Fixed problems when no event is selected
+- Fixed window maximise on startup
+* Better variable names in simple_event example
+
+
+01/04/05 1.0.0 alpha
+---------------------
+
+* Initial release

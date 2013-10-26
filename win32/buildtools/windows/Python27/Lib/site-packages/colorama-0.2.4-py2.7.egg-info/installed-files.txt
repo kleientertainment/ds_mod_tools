@@ -1,0 +1,17 @@
+..\colorama\ansi.py
+..\colorama\ansitowin32.py
+..\colorama\initialise.py
+..\colorama\win32.py
+..\colorama\winterm.py
+..\colorama\__init__.py
+..\colorama\ansi.pyc
+..\colorama\ansitowin32.pyc
+..\colorama\initialise.pyc
+..\colorama\win32.pyc
+..\colorama\winterm.pyc
+..\colorama\__init__.pyc
+.\
+dependency_links.txt
+PKG-INFO
+SOURCES.txt
+top_level.txt

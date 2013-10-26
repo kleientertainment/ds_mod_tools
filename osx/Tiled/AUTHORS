@@ -1,0 +1,59 @@
+Main developer and maintainer:
+
+Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+
+Contributors:
+
+Andrew G. Crowell (added additional ways to access layer related actions)
+Christian Henz    (added handling of non-encoded map data)
+Dennis Honeyman   (implemented the nice about dialog and CSV layer support)
+Edward Hutchins   (added automatic reloading of changed tileset images)
+Jeff Bland        (added Offset Map feature, fill tool and running commands)
+Michael Woerister (improvements to the object properties dialog)
+Roderic Morris    (added many icons and initial object group support)
+Stefan Beller     (added the automap feature, quick stamps, lines/circles
+                   support for multiple maps, random mode for stamp tool and
+                   bucketfill tool)
+Alexander Kuhrt <alex@qrt.de>
+
+Translators:
+
+Alex Vega                (Russian)
+Antonio Ricci            (Italian)
+Gornova                  (Italian)
+Bin Wu                   (Chinese)
+Hiroki Utsunomiya        (Japanese)
+Mauricio Muñoz Lucero    (Spanish)
+Petr Viktorin            (Czech)
+Porfírio Ribeiro         (Portuguese)
+Jānis Kiršteins          (Latvian)
+Jonatas de Moraes Junior (Brazilian Portuguese)
+jurkan                   (German)
+Sébastien Burillard      (French)
+seeseekey                (German)
+Tamir Atias (KonoM)      (Hebrew)
+Thorbjørn Lindeijer      (Dutch)
+Yohann Ferreira          (French)
+Zhao Sting               (Chinese)
+
+Acknowledgements:
+
+Most of the icons are from the GNOME and GIMP icon themes (GPL)
+
+Some Icons are Copyright (C) Yusuke Kamiyamane. All rights reserved.
+Licensed under a Creative Commons Attribution 3.0 license.
+See http://p.yusukekamiyamane.com/
+
+The dice icon is based on an SVG by Steaphan Greene that I found on Wikipedia:
+http://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
+
+The rename icon for tilesets is a strong modified version of the
+'new Tileset' icon by Stefan Beller (GPL, CC-BY-SA3)
+
+Tilesets:
+
+perspective_walls.png - (C) Clint Bellanger, released as Public Domain
+isometric_grass_and_water.png - (C) Clint Bellanger, released as GPL2, GPL3, CC-BY-SA3
+tmw_desert_spacing.png - (C) The Mana World Development Team, GPL
+sewer_tileset.png - (C) Blues Brothers RPG developers, GPL
+Replica Island - (C) Chris Pruett and Genki Mine, Apache (except hotspots.png)

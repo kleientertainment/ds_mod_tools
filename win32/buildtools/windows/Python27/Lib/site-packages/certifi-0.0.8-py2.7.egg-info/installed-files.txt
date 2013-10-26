@@ -1,0 +1,10 @@
+..\certifi\core.py
+..\certifi\__init__.py
+..\certifi\cacert.pem
+..\certifi\core.pyc
+..\certifi\__init__.pyc
+.\
+dependency_links.txt
+PKG-INFO
+SOURCES.txt
+top_level.txt
