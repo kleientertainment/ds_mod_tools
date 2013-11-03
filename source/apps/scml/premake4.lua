@@ -1,7 +1,18 @@
+if _OPTIONS.os == nil then
+   error('Please specify your target os!')
+end
+
 solution("scml")
    configurations { "debug", "release" }
    location "../../../gen/proj"
-   targetdir "../../../win32/compilers"   
+
+   configuration("windows")
+      targetdir( "../../../win32/compilers" )
+   configuration("macosx")
+      targetdir( "../../../osx/compilers" )
+   configuration("linux")
+      targetdir( "../../../linux/compilers" )
+
    flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
 
    project "scml"
