@@ -1,5 +1,6 @@
 solution("scml")
    configurations { "debug", "release" }
+   location "../../../gen_proj"
     
    project "scml"
       kind "ConsoleApp"
