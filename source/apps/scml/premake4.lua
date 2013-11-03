@@ -1,6 +1,6 @@
 solution("scml")
    configurations { "debug", "release" }
-   location "../../../gen_proj"
+   location "../../../gen/proj"
    targetdir "../../../win32/compilers"   
    flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
 
