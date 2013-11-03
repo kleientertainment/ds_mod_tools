@@ -13,4 +13,5 @@ solution("scml")
          defines { "DEBUG" }
  
       configuration "release"
-         defines { "NDEBUG" }      
+         defines { "RELEASE" }
+         flags { "Optimize" }      
