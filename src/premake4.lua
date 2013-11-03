@@ -21,7 +21,7 @@ for k, app in pairs(apps) do
 	   project(app)
 	      kind "ConsoleApp"
 	      language "C++"
-	      files { "apps/"..app.."/**.h", "apps/"..app.."/**.cpp" }      
+	      files { "app/"..app.."/**.h", "app/"..app.."/**.cpp" }      
 	 
 	      configuration "debug"
 	         defines { "DEBUG" }
