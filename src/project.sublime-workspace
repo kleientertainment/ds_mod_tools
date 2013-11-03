@@ -1,0 +1,811 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"_pi",
+				"_pivot_y"
+			],
+			[
+				"found_pi",
+				"found_pivot_y"
+			],
+			[
+				"found_",
+				"found_pivot_x"
+			],
+			[
+				"kK",
+				"k_key_map"
+			],
+			[
+				"folder",
+				"folder"
+			],
+			[
+				"k_symb",
+				"k_symbol_map"
+			],
+			[
+				"k_sy",
+				"k_symbol_map"
+			],
+			[
+				"found",
+				"found_pivot_x"
+			],
+			[
+				"num",
+				"numtoharvest"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "",
+			"file": "apps/scml/premake4.lua",
+			"file_size": 750,
+			"file_write_time": 130279187478634617,
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "premake4.lua",
+			"settings":
+			{
+				"buffer_size": 794,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/User/test.sublime-build",
+	"command_palette":
+	{
+		"height": 311.0,
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package",
+				"Package Control: Remove Package"
+			],
+			[
+				"packl",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: Insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: list",
+				"Package Control: List Packages"
+			],
+			[
+				"Pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"Packe",
+				"Package Control: List Packages"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"Install Package",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 284.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Yog/Documents/GitHub/ds_mod_tools/source/project.sublime-project",
+		"/C/Users/Yog/Documents/GitHub/ds_mod_tools/source/premake4.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/tina/scripts/prefabs/tina.lua",
+		"/C/Users/Yog/Documents/Klei/DoNotStarve/log.txt",
+		"/C/Program Files (x86)/Steam/SteamApps/common/Don't Starve Mod Tools/mod_tools/scripts/ds_to_spriter.py",
+		"/C/Program Files (x86)/Steam/SteamApps/common/Don't Starve Mod Tools/mod_tools/scripts/resize.py",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/User/test.sublime-build",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Zulu Tribal (Six Feet Under)/images/selectscreen_portraits/zulu.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/strings.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/amulet.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Zulu Tribal (Six Feet Under)/modicon.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Zulu Tribal (Six Feet Under)/modinfo.lua",
+		"/C/Users/Yog/Desktop/wots_the_diff.txt",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/workshop-186053703/modmain.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/nt/modmain.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/wickerbottom.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sample_dude2/exported/build.xml",
+		"/C/Users/Yog/Desktop/sample_dude/exported/build.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/nt/scripts/stategraphs/SGterror.lua",
+		"/C/Users/Yog/Documents/GitHub/ds_mod_tools/LICENSE",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/nt/scripts/prefabs/terror.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/stategraphs/SGhound.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/stategraph.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/behaviours/chaseandattack.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/stategraphs/commonstates.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/nt/scripts/brains/terrorbrain.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Spawn Character Works Test/scripts/prefabs/spn.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Spawn Character Works Test/modmain.lua",
+		"/C/Users/Yog/Downloads/xnaBrashSpriter-master/xnaBrashSpriter-master/BrashMonkeyContentPipelineExtension/SpriterWriter.cs",
+		"/C/Users/Yog/Downloads/xnaBrashSpriter-master/xnaBrashSpriter-master/BrashMonkeySpriter/Character.cs",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/nt/exported/skeleterror.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/components/locomotor.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/hound.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/test/test.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/stategraphs/SGrook.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/scripts/prefabs/sampleprefabdef.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/skeleterror.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/workshop-187003799/scripts/prefabs/chick.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/Don't Starve Mod Tools/mod_tools/source/spriter_exporter/main.cpp",
+		"/C/Program Files (x86)/Steam/SteamApps/common/Don't Starve Mod Tools/mod_tools/scripts/zipanim.py",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/test/exported/test.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/Don't Starve Mod Tools/mod_tools/build.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/wilson.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/beardhair.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/strict.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/Don't Starve Mod Tools/mod_tools/tools/scripts/optimizeimage.py",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/myprefab_build.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/myprefab.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/test/animation.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/test/build.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/myprefab/myprefab_build.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/skeleterror/animation.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/test/animation.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sampleprefab/exported/test/build.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/Don't Starve Mod Tools/mod_tools/test.scml",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Mavis/modmain.lua",
+		"/C/Users/Yog/Downloads/theweepingwillow/theweepingwillow/exported/anim/wand/swap_wand/swap_wand.scml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Mavis/bigportraits/mavi.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/myitem/scripts/prefabs/myitem.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/dont_starve.sublime-project",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/theweepingwillow/scripts/prefabs/wand.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Spawn Character 2/scripts/prefabs/wod.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/debug_keys/modmain.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/modsettings.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/theweepingwillow/exported/anim/wand/swap_wand/swap_wand/build.xml",
+		"/C/Users/Yog/Desktop/tracing",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/mainfunctions.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/debug_keys/scripts/fonts.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/components/fueled.lua",
+		"/C/Users/Yog/AppData/Local/Microsoft/Windows/Temporary Internet Files/Content.IE5/Y27YJPJL/modmain[1].lua",
+		"/C/Users/Yog/Downloads/1016-ver7/scripts/fonts.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/fonts.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/happy flowers/modmain.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/simutil.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/constants.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/components/builder.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/modutil.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/widgets/crafttabs.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/happy flowers/wickerbottom.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/recipe.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/minimap.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/nt/scripts/behaviours/eatfire.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/behaviours/findlight.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/beehive.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/minimap/minimap_atlas.tex",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/minimap/minimap_data.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/test/images/saveslot_portraits/wod.xml",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/tuning.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/Spawn Character 2/anim/wod.zip",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/cheats/modmain.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/cheats/modinfo.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/debug_keys/modinfo.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/nt/modinfo.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/dont_starve.zip",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/map/static_layouts/skeleton_graverobber.lua",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/yde/Main.sublime-menu",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/User/Package Control.sublime-settings",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/User/yde.py",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/debugkeys.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/log.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/debugprint.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/player_common.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/mods.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/waxwell.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/consolecommands.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/components/inventory.lua",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Installed Packages/temp/ParseLua.py",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/actions.lua",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/User/yde/yde.py",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/class.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/update.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/entityscript.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/vector3.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/components/highlight.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/standardcomponents.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/evergreens.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/events.lua",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/Lua Dev/Lua Dev.sublime-settings",
+		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/main.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/gamelogic.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/birds.lua",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sound_mod_tutorial/fmod_event.txt",
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sound_mod_tutorial/generate_sound_remap.py"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"",
+			"C:\\Program Files (x86)\\Steam\\SteamApps\\common\\dont_starve\\mods\\workshop-187180922",
+			"",
+			"C:\\Users\\Yog\\Downloads\\xnaBrashSpriter-master\\xnaBrashSpriter-master\\BrashMonkeyContentPipelineExtension",
+			"C:\\Users\\Yog\\Downloads\\xnaBrashSpriter-master\\xnaBrashSpriter-master\\BrashMonkeySpriter",
+			"C:\\Users\\Yog\\Downloads\\xnaBrashSpriter-master\\xnaBrashSpriter-master",
+			"",
+			"C:\\Program Files (x86)\\Steam\\SteamApps\\common\\dont_starve\\mods\\workshop-180938116",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"NoPCH",
+			"resolvefilepath",
+			"addrecipetab",
+			"IsCharacterUnlocked",
+			"addrecipytab",
+			"\"IMAGE\"",
+			"ASSET(",
+			"tab_book.tex",
+			"AddRecipeTab",
+			"stickybomb",
+			"Ancient",
+			"ancient",
+			"OverrideSymbol",
+			"swap",
+			"silho",
+			"zulu_silho",
+			"piney",
+			"spn",
+			"flip",
+			"Transform:",
+			"ChaseAndAttack",
+			"HOUND_ATTACK_PERIOD",
+			"canrotate",
+			"hastag",
+			"onlocomote",
+			"KeepTarget",
+			"doattack",
+			"wantstorun",
+			"run",
+			"ChaseAndAttack",
+			"run",
+			"canrun",
+			"angle",
+			"Clockwise",
+			"spin",
+			"anim",
+			"Walk_side",
+			"run_start",
+			"settwo",
+			"wilton/",
+			"Spawn",
+			"pushanimation",
+			"playanimation",
+			"PlayAnimation",
+			"spin",
+			"ApplyBoneTransforms",
+			"bone",
+			"parent",
+			"anim",
+			"set_scale",
+			"bones",
+			"bone",
+			"beardhair",
+			"set_scale",
+			"m_a",
+			"ctrl+b",
+			"AnimState:Show",
+			"ARM_carry",
+			"OverrideSymbol",
+			"swap_wand",
+			"overridesymbol",
+			"spawn",
+			"loadfonts",
+			"UnloadFonts",
+			"LoadFonts",
+			"LoadFont",
+			"addsimpostinit",
+			"FONTS",
+			"belisaplumilla",
+			"UIFONT",
+			"bp50",
+			"FONTS",
+			"belisaplumilla50",
+			"FindEntities",
+			"GetClosestInstWithTag",
+			"ring_mid.png",
+			"custom_tabs",
+			"BOOK_BIRDS",
+			"birds of the world",
+			"RECIPETABS",
+			"recipetabs",
+			"RECIPETABS.BOOKS",
+			"recipe",
+			"STRINGS.TABS.BOOKS",
+			"custom_tabs",
+			"AddRecipeTab",
+			"TABS",
+			"books",
+			"hi",
+			"addcomponentpostinit",
+			"custom_tabs",
+			"table.insert",
+			"AddRecipeTab",
+			"recipe",
+			"env.Recipe",
+			"AddPrefabPostInit",
+			"wickerbottom",
+			"dbg",
+			"minimap",
+			"damage_mult",
+			"wilson_damage_mult",
+			"TUNING.WILSON_DAMAGE_MULT",
+			"spawn.tex",
+			"saveslot_portraits/Spawn.tex",
+			"\"FONT\"",
+			"_silho.tex",
+			"batwing",
+			"state",
+			"toggleframeprofiler",
+			"frameprofiler",
+			"caneat",
+			"eater",
+			"Makeplayercharacter",
+			"CanEatTest",
+			"SetCanEatTestFn",
+			"addtag(\"meat\")",
+			"addtag",
+			"foodtype",
+			"\"meat\"",
+			"AnimState",
+			"GamePostInit",
+			"postinitfns",
+			"AddSimPostInit",
+			"KEY_SPACE",
+			"key_space",
+			"keydown",
+			"space",
+			"AddGlobalDebugKey"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "apps/scml/premake4.lua",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.tmLanguage",
+							"tab_size": 3,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "premake4.lua",
+					"settings":
+					{
+						"buffer_size": 794,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								73,
+								73
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 130.0
+	},
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"tina",
+				"dont_starve/mods/tina/scripts/prefabs/tina.lua"
+			],
+			[
+				"craftabs",
+				"dont_starve/data/scripts/widgets/crafttabs.lua"
+			],
+			[
+				"builder",
+				"dont_starve/data/scripts/components/builder.lua"
+			],
+			[
+				"strings.",
+				"dont_starve/data/scripts/strings.lua"
+			],
+			[
+				"craft",
+				"dont_starve/data/scripts/widgets/crafttabs.lua"
+			],
+			[
+				"character",
+				"dont_starve/data/scripts/screens/characterselectscreen.lua"
+			],
+			[
+				"wickerbottom",
+				"dont_starve/data/scripts/prefabs/wickerbottom.lua"
+			],
+			[
+				"stategraph",
+				"dont_starve/data/scripts/stategraph.lua"
+			],
+			[
+				"sghound",
+				"dont_starve/data/scripts/stategraphs/SGhound.lua"
+			],
+			[
+				"hound.lua",
+				"dont_starve/data/scripts/prefabs/hound.lua"
+			],
+			[
+				"locomotor",
+				"dont_starve/data/scripts/components/locomotor.lua"
+			],
+			[
+				"commonstates",
+				"dont_starve/data/scripts/stategraphs/commonstates.lua"
+			],
+			[
+				"optimizeimage",
+				"scripts/optimizeimage.py"
+			],
+			[
+				"strict",
+				"dont_starve/data/scripts/strict.lua"
+			],
+			[
+				"beardh",
+				"dont_starve/data/scripts/prefabs/beardhair.lua"
+			],
+			[
+				"wilson",
+				"dont_starve/data/scripts/prefabs/wilson.lua"
+			],
+			[
+				"spear",
+				"prefabs/spear.lua"
+			],
+			[
+				"wod",
+				"dont_starve/mods/Spawn Character 2/scripts/prefabs/wod.lua"
+			],
+			[
+				"fonts",
+				"dont_starve/data/scripts/fonts.lua"
+			],
+			[
+				"findlight",
+				"dont_starve/data/scripts/behaviours/findlight.lua"
+			],
+			[
+				"fueled",
+				"dont_starve/data/scripts/components/fueled.lua"
+			],
+			[
+				"fuel",
+				"dont_starve/data/scripts/components/fueled.lua"
+			],
+			[
+				"minimap",
+				"dont_starve/data/scripts/prefabs/minimap.lua"
+			],
+			[
+				"builder.lua",
+				"dont_starve/data/scripts/components/builder.lua"
+			],
+			[
+				"recipe",
+				"dont_starve/data/scripts/recipe.lua"
+			],
+			[
+				"strings",
+				"dont_starve/data/scripts/strings.lua"
+			],
+			[
+				"strings.lua",
+				"dont_starve/data/scripts/strings.lua"
+			],
+			[
+				"craftabl",
+				"dont_starve/data/scripts/widgets/crafttabs.lua"
+			],
+			[
+				"tuning",
+				"dont_starve/data/scripts/tuning.lua"
+			],
+			[
+				"sgrabb",
+				"dont_starve/data/scripts/map/static_layouts/skeleton_graverobber.lua"
+			],
+			[
+				"debugkeys",
+				"debugkeys.lua"
+			],
+			[
+				"debug",
+				"debugkeys.lua"
+			],
+			[
+				"birds.",
+				"prefabs/birds.lua"
+			],
+			[
+				"eater",
+				"components/eater.lua"
+			],
+			[
+				"edible",
+				"components/edible.lua"
+			],
+			[
+				"meat",
+				"prefabs/meats.lua"
+			],
+			[
+				"console",
+				"consolecommands.lua"
+			],
+			[
+				"player_common",
+				"prefabs/player_common.lua"
+			],
+			[
+				"log",
+				"prefabs/log.lua"
+			],
+			[
+				"invetory",
+				"components/inventory.lua"
+			],
+			[
+				"inventory",
+				"components/inventory.lua"
+			],
+			[
+				"events",
+				"events.lua"
+			],
+			[
+				"entity",
+				"entityscript.lua"
+			],
+			[
+				"entityscript",
+				"entityscript.lua"
+			],
+			[
+				"evergree",
+				"prefabs/evergreens.lua"
+			],
+			[
+				"highlight",
+				"components/highlight.lua"
+			],
+			[
+				"update",
+				"update.lua"
+			],
+			[
+				"vector",
+				"vector3.lua"
+			],
+			[
+				"class",
+				"class.lua"
+			],
+			[
+				"prefabs",
+				"prefabs.lua"
+			],
+			[
+				"prefa",
+				"prefabs.lua"
+			],
+			[
+				"prefab",
+				"prefabs.lua"
+			],
+			[
+				"hound",
+				"prefabs/hound.lua"
+			],
+			[
+				"debugke",
+				"debugkeys.lua"
+			],
+			[
+				"dynamicmus",
+				"components/dynamicmusic.lua"
+			],
+			[
+				"emitter",
+				"components/emitter.lua"
+			],
+			[
+				"consolecommands",
+				"consolecommands.lua"
+			],
+			[
+				"modmain",
+				"Test Tools/modmain.lua"
+			],
+			[
+				"testscreen",
+				"Test Tools/scripts/screens/testscreen.lua"
+			],
+			[
+				"keysc",
+				"Test Tools/scripts/screens/keyscreen.lua"
+			],
+			[
+				"testscree",
+				"Test Tools/scripts/screens/testscreen.lua"
+			],
+			[
+				"houndbrain",
+				"brains/houndbrain.lua"
+			],
+			[
+				"bird",
+				"prefabs/birds.lua"
+			],
+			[
+				"sgbi",
+				"stategraphs/SGbird.lua"
+			],
+			[
+				"main",
+				"main.lua"
+			],
+			[
+				"heat",
+				"prefabs/heatrock.lua"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 284.0,
+	"status_bar_visible": true
+}
