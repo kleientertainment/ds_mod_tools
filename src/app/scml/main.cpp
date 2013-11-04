@@ -6,7 +6,6 @@
 #include <vector>
 #include <stdarg.h>
 #include <sys/stat.h>
-#include <Windows.h>
 #include "SCMLpp.h"
 #include <math.h>
 
@@ -209,7 +208,6 @@ void error( char const* format, ... )
 	va_start( argptr, format );
 	vsprintf( message, format, argptr );
 	va_end( argptr );
-	OutputDebugString( message );
 	printf( message );
 
     fprintf( gErrorLog, message );
@@ -227,23 +225,9 @@ char const* get_application_folder()
     return appplication_folder;
 }
 
-BOOL run( char* command_line )
+bool run( char* command_line )
 {
-    STARTUPINFO si = {0};
-    PROCESS_INFORMATION pi = {0};
-    BOOL result = CreateProcess( 0, command_line, 0, 0, FALSE, 0, NULL, NULL, &si, &pi );
-    
-    if( !result )
-    {
-        return -1;
-    }
-    else
-    {
-        WaitForSingleObject( pi.hProcess, INFINITE );
-        CloseHandle(pi.hThread);
-        CloseHandle(pi.hProcess);
-        return 0;
-    }
+	return system(command_line) == 0;
 }
 
 struct xml_writer
@@ -329,7 +313,7 @@ struct xml_writer
 		{
 			tabs[i] = ' ';
 		}
-		tabs[max( _tags.size() - 1, 0 )] = 0;
+		tabs[max( (int)_tags.size() - 1, 0 )] = 0;
 		fprintf( _file, tabs );
 	}
 };
@@ -2233,6 +2217,8 @@ void set_application_folder( char const* application_path )
     get_folder( application_path, appplication_folder );
 }
 
+#define MAX_PATH 32768
+
 bool gPrintCommandLines = false;
 int main( int argument_count, char** arguments )
 {    
@@ -2247,11 +2233,6 @@ int main( int argument_count, char** arguments )
 	char const* input_file_path = arguments[1];
 
     printf( "Exporting '%s'...", strrchr(input_file_path, '\\') + 1 );
-    if(gPrintCommandLines)
-    {
-        printf("\n%s\n", GetCommandLine());
-        
-    }    
 
 	if( !exists( input_file_path ) )
 	{
