@@ -10,11 +10,11 @@ for k, app in pairs(apps) do
 	   location "../gen/proj"
 
 	   configuration("windows")
-	      targetdir( "../win32/compilers" )
+	      targetdir( "../win32/Don't Starve Mod Tools/compilers" )
 	   configuration("macosx")
-	      targetdir( "../osx/compilers" )
+	      targetdir( "../osx/Don't Starve Mod Tools/compilers" )
 	   configuration("linux")
-	      targetdir( "../linux/compilers" )
+	      targetdir( "../linux/Don't Starve Mod Tools/compilers" )
 
 	   flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
 
