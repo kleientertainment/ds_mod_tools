@@ -2,31 +2,30 @@ if _OPTIONS.os == nil then
    error('Please specify your target os!')
 end
 
-apps = {'scml'}
+apps = {'scml', 'png', 'autocompiler', 'textureconverter'}
 
-for k, app in pairs(apps) do
-	solution(app)
-	   configurations { "debug", "release" }
-	   location "../gen/proj"
+solution('mod_tools')
+for k, app in pairs(apps) do	
+	   	configurations { "debug", "release" }
+	   	location "../gen/proj"
+	   	flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
 
-	   configuration("windows")
-	      targetdir( "../win32/Don't Starve Mod Tools/compilers" )
-	   configuration("macosx")
-	      targetdir( "../osx/Don't Starve Mod Tools/compilers" )
-	   configuration("linux")
-	      targetdir( "../linux/Don't Starve Mod Tools/compilers" )
+	   	configuration { "windows" }
+	      	targetdir ( "../win32/Dont Starve Mod Tools/compilers" )
+	   	configuration { "macosx" }
+	      	targetdir ( "../osx/Dont Starve Mod Tools/compilers" )
+	   	configuration { "linux" }
+	      	targetdir ( "../linux/Dont Starve Mod Tools/compilers" )
 
-	   flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
+       	configuration { "debug" }
+          	defines { "DEBUG" }	 
+	   	configuration { "release" }
+	        defines { "RELEASE" }
+	        flags { "Optimize" }	
 
 	   project(app)
 	      kind "ConsoleApp"
 	      language "C++"
 	      files { "app/"..app.."/**.h", "app/"..app.."/**.cpp" }      
 	 
-	      configuration "debug"
-	         defines { "DEBUG" }
-	 
-	      configuration "release"
-	         defines { "RELEASE" }
-	         flags { "Optimize" }      	
 end
