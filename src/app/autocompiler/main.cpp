@@ -17,24 +17,9 @@ char const* get_application_folder()
     return appplication_folder;
 }
 
-BOOL run( char* command_line )
+bool run( char* command_line )
 {
-    STARTUPINFO si = {0};
-    PROCESS_INFORMATION pi = {0};
-    BOOL result = CreateProcess( 0, command_line, 0, 0, FALSE, 0, NULL, NULL, &si, &pi );
-
-    if( !result )
-    {
-        printf( "ERROR: Could not run '%s'!\n", command_line );
-        return -1;
-    }
-    else
-    {
-        WaitForSingleObject( pi.hProcess, INFINITE );
-        CloseHandle(pi.hThread);
-        CloseHandle(pi.hProcess);
-        return 0;
-    }
+	return system( command_line ) == 0;
 }
 
 
