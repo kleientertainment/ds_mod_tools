@@ -55,7 +55,7 @@
 			"file": "app/autocompiler/main.cpp",
 			"settings":
 			{
-				"buffer_size": 5607,
+				"buffer_size": 5603,
 				"line_ending": "Windows"
 			}
 		}
@@ -453,15 +453,15 @@
 					"file": "app/autocompiler/main.cpp",
 					"settings":
 					{
-						"buffer_size": 5607,
+						"buffer_size": 5603,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								683,
-								683
+								0,
+								0
 							]
 						],
 						"settings":
