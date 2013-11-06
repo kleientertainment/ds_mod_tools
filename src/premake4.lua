@@ -9,7 +9,7 @@ for k, app in pairs(apps) do
 	   	configurations { "debug", "release" }
 	   	location "../gen/proj"
 	   	flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
-
+	   	includedirs { "../lib/" }
 	   	configuration { "windows" }
 	      	targetdir ( "../win32/Dont Starve Mod Tools/compilers" )
 	   	configuration { "macosx" }

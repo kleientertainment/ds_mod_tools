@@ -44,21 +44,18 @@
 	"buffers":
 	[
 		{
-			"contents": "",
-			"file": "apps/scml/premake4.lua",
-			"file_size": 750,
-			"file_write_time": 130279187478634617,
+			"file": "premake4.lua",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 961,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "premake4.lua",
+			"file": "app/autocompiler/main.cpp",
 			"settings":
 			{
-				"buffer_size": 794,
+				"buffer_size": 5607,
 				"line_ending": "Windows"
 			}
 		}
@@ -123,6 +120,8 @@
 	},
 	"file_history":
 	[
+		"/C/Users/Yog/Documents/GitHub/ds_mod_tools/src/app/scml/main.cpp",
+		"/C/Users/Yog/Documents/GitHub/ds_mod_tools/src/apps/scml/premake4.lua",
 		"/C/Users/Yog/Documents/GitHub/ds_mod_tools/source/project.sublime-project",
 		"/C/Users/Yog/Documents/GitHub/ds_mod_tools/source/premake4.lua",
 		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/tina/scripts/prefabs/tina.lua",
@@ -248,9 +247,7 @@
 		"/C/Users/Yog/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
 		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/main.lua",
 		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/gamelogic.lua",
-		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/birds.lua",
-		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sound_mod_tutorial/fmod_event.txt",
-		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/mods/sound_mod_tutorial/generate_sound_remap.py"
+		"/C/Program Files (x86)/Steam/SteamApps/common/dont_starve/data/scripts/prefabs/birds.lua"
 	],
 	"find":
 	{
@@ -277,6 +274,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"windows.h",
 			"NoPCH",
 			"resolvefilepath",
 			"addrecipetab",
@@ -403,8 +401,7 @@
 			"KEY_SPACE",
 			"key_space",
 			"keydown",
-			"space",
-			"AddGlobalDebugKey"
+			"space"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -422,30 +419,28 @@
 	"groups":
 	[
 		{
-			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "apps/scml/premake4.lua",
+					"file": "premake4.lua",
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 961,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								74,
+								74
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"tab_size": 3,
-							"translate_tabs_to_spaces": true
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -455,24 +450,25 @@
 				},
 				{
 					"buffer": 1,
-					"file": "premake4.lua",
+					"file": "app/autocompiler/main.cpp",
 					"settings":
 					{
-						"buffer_size": 794,
+						"buffer_size": 5607,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								73,
-								73
+								683,
+								683
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
