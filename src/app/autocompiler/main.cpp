@@ -3,8 +3,8 @@
 #include <string>
 #include <sys/stat.h>
 #include <Windows.h>
-#include <boost/filesystem.hpp>
-using namespace boost::filesystem;
+//#include <boost/filesystem.hpp>
+//using namespace boost::filesystem;
 
 char appplication_folder[1024];
 void set_application_folder( char const* application_path )

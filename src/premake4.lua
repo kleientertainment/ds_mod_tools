@@ -7,15 +7,15 @@ apps = {'scml', 'png', 'autocompiler', 'textureconverter'}
 solution('mod_tools')
 for k, app in pairs(apps) do	
 	   	configurations { "debug", "release" }
-	   	location "../gen/proj"
+	   	location "../../ds_mod_tools_out/proj"
 	   	flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
 	   	includedirs { "../lib/" }
 	   	configuration { "windows" }
-	      	targetdir ( "../win32/Dont Starve Mod Tools/compilers" )
+	      	targetdir ( "../../ds_mod_tools_out/win32/mod_tools/compilers" )
 	   	configuration { "macosx" }
-	      	targetdir ( "../osx/Dont Starve Mod Tools/compilers" )
+	      	targetdir ( "../../ds_mod_tools_out/osx/mod_tools/compilers" )
 	   	configuration { "linux" }
-	      	targetdir ( "../linux/Dont Starve Mod Tools/compilers" )
+	      	targetdir ( "../../ds_mod_tools_out/linux/mod_tools/compilers" )
 
        	configuration { "debug" }
           	defines { "DEBUG" }	 
