@@ -11,11 +11,11 @@ for k, app in pairs(apps) do
 	   	flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
 	   	includedirs { "../lib/" }
 	   	configuration { "windows" }
-	      	targetdir ( "../../ds_mod_tools_out/win32/mod_tools/compilers" )
+	      	targetdir ( "../../ds_mod_tools_out/win32/mod_tools" )
 	   	configuration { "macosx" }
-	      	targetdir ( "../../ds_mod_tools_out/osx/mod_tools/compilers" )
+	      	targetdir ( "../../ds_mod_tools_out/osx/mod_tools" )
 	   	configuration { "linux" }
-	      	targetdir ( "../../ds_mod_tools_out/linux/mod_tools/compilers" )
+	      	targetdir ( "../../ds_mod_tools_out/linux/mod_tools" )
 
        	configuration { "debug" }
           	defines { "DEBUG" }	 
