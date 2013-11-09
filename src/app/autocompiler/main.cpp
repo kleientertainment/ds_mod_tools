@@ -145,9 +145,7 @@ void get_asset_folders( compiler& c, file_list& asset_folders )
 
 int main( int argument_count, char** arguments )
 {
-    char module_name[1024];
-    GetModuleFileName( 0, module_name, 1024 );
-    set_application_folder( module_name );
+    set_application_folder( arguments[0] );
 
     file_list mod_folders;
     char mods_folder[1024];
