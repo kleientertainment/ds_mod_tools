@@ -2226,11 +2226,11 @@ int main( int argument_count, char** arguments )
     fclose(image_list_file);
 
 	char command_line[32768];
-	sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\"", get_asset_temp_dir(), get_application_folder() );
+	sprintf( command_line, "\"%s\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\"", get_application_folder(), get_application_folder(), get_asset_temp_dir(), get_application_folder() );
 
 	run( command_line, true, "Packaging '%s'", strrchr(output_package_file_path, '\\') + 1 );
 
-    sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s..\\exported\\export.py\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\\..\\data\" \"%s\"", get_application_folder(), get_application_folder(), output_dir, get_application_folder(), output_package_file_path );
+    sprintf( command_line, "\"%s\\buildtools\\windows\\Python27\\python.exe\" \"%s\\exported\\export.py\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\\data\" \"%s\"", get_application_folder(), get_application_folder(), output_dir, get_application_folder(), output_package_file_path );
     run( command_line, true, "Building '%s'", strrchr(output_package_file_path, '\\') + 1 );
 
     end_log();
