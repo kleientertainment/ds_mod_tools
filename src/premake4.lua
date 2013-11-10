@@ -41,9 +41,10 @@ solution('mod_tools')
 	end
 
 local function extract(file, folder)
-	cmd = props.tooldir..'7z.exe x '..file..' -o'..folder
+	cmd = props.tooldir..'7z.exe -y x '..file..' -o'..folder
 	os.execute(cmd)	
 end
 
 extract('..\\pkg\\cmn\\mod_tools.zip', props.outdir..props.dir)
+extract('..\\pkg\\cmn\\wand.zip', props.outdir..'dont_starve\\mods')
 extract('..\\pkg\\'..props.dir..'\\mod_tools.zip', props.outdir..props.dir)
