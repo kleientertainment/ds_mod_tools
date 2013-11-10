@@ -2199,8 +2199,7 @@ int main( int argument_count, char** arguments )
         is_more_recent( arguments[0], built_package_path ) && 
         is_more_recent( output_package_file_path, built_package_path ) )
     {
-        log("SUCCESS!\n");
-        return 0;
+         return 0;
     }
 
     SCML::Data scml( input_file_path );	
