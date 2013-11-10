@@ -3,8 +3,11 @@
 #include <string>
 #include <sys/stat.h>
 #include <tinydir/tinydir.h>
+#include <modtoollib/modtool.h>
 
-char appplication_folder[1024];
+#define MAX_PATH_LEN 2048
+
+char appplication_folder[MAX_PATH_LEN];
 void set_application_folder( char const* application_path )
 {
     int length = strrchr( application_path, '\\' ) - application_path + 1;
@@ -22,15 +25,17 @@ bool run( char* command_line )
 	return system( command_line ) == 0;
 }
 
+void error( char const* format, ... )
+{
+	exit( -1 );
+}
 
 struct compiler
 {
     compiler( char const* compiler_path )
     :   path( compiler_path )
     {
-        int ext_begin = strrchr(compiler_path, '\\') - compiler_path + 1;
-        int ext_end = strrchr(compiler_path, '.') - compiler_path - ext_begin;
-        extension = path.substr(ext_begin, ext_end);
+        extension = strrchr(compiler_path, '\\') + 1;
     }
 
     void compile( char const* asset_path, char const* output_folder )
@@ -42,6 +47,7 @@ struct compiler
 
     std::string extension;
     std::string path;
+	std::string input_path;
 };
 
 typedef std::vector< std::string > file_list;
@@ -103,15 +109,28 @@ void list_files( char const* folder, char const* extension, file_list& files )
 
 compiler_list get_compilers( char const* folder )
 {
-    file_list paths;
-    list_files( folder, "exe", paths );
+	char compiler_list_path[MAX_PATH_LEN];
+	sprintf(compiler_list_path, "%s\\compilers.txt", folder);
+	FILE* in = fopen(compiler_list_path, "rb");
+	if(!in)
+	{
+		error("ERROR: Could not open '%s'.", compiler_list_path);
+	}
+
     compiler_list compilers;
-    for( file_list::iterator iter = paths.begin(); iter != paths.end(); ++iter )
-    {
-        char const* path = (*iter).c_str();
-        compilers.push_back( new compiler( path ) );
-    }
-    return compilers;
+	char* buffer = read_file_append_null(in);
+	while(*buffer)
+	{
+		buffer = strtok(buffer, "\r\n");
+		char* compiler_name = buffer;
+
+		char compiler_path[MAX_PATH_LEN];
+		sprintf(compiler_path, "%s\\%s", folder, compiler_name);
+
+		compilers.push_back( new compiler( compiler_path ) );
+	}
+
+	return compilers;
 }
 
 void compile_folder( compiler* c, char const* asset_folder, char const* mod_folder )
@@ -151,10 +170,7 @@ int main( int argument_count, char** arguments )
     sprintf( mods_folder, "%s..\\..\\dont_starve\\mods", get_application_folder() );
     list_folders( mods_folder, mod_folders );
 
-    char compilers_folder[1024] ;
-    sprintf( compilers_folder, "%scompilers", get_application_folder() );
-
-    compiler_list compilers = get_compilers( compilers_folder );
+    compiler_list compilers = get_compilers( get_application_folder() );
     for( compiler_list::iterator iter = compilers.begin(); iter != compilers.end(); ++iter )
     {
         compiler* c = *iter;
