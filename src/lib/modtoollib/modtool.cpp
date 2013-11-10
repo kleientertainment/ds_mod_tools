@@ -1,6 +1,7 @@
 #include <modtoollib/modtool.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 int get_file_size(FILE* f)
 {
@@ -122,4 +123,22 @@ bool run( char* command_line, bool fail_on_error, char const* format, ... )
 	}
 
 	return result;
+}
+
+char appplication_folder[MAX_PATH_LEN];
+void get_folder( char const* path, char* folder )
+{
+    int length = strrchr( path, '\\' ) - path + 1;
+    memcpy( folder, path, length );
+    folder[length] = 0;
+}
+
+void set_application_folder( char const* application_path )
+{
+    get_folder( application_path, appplication_folder );
+}
+
+char const* get_application_folder()
+{
+    return appplication_folder;
 }

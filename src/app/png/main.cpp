@@ -54,52 +54,6 @@ void get_output_file_path( char const* input_file_path, char* output_file_path )
     strcpy( strrchr( output_file_path, '.' ), ".xml" );
 }
 
-void get_image_name( char const* path, char* name )
-{
-    char const* name_with_ext = strrchr( path, '/' );
-    if( !name_with_ext )
-    {
-        name_with_ext = path;		
-    }
-    else
-    {
-        ++name_with_ext;
-    }
-
-    char const* extension = strrchr( name_with_ext, '.' );
-    int length = extension - name_with_ext;
-    memcpy( name, name_with_ext, length );
-    name[length] = 0;
-}
-
-char const* skip_slash( char const* name )
-{
-    if( name[0] == '/' )
-    {
-        ++name;
-    }
-    return name;
-}
-
-
-void get_folder( char const* path, char* folder )
-{
-    int length = strrchr( path, '\\' ) - path + 1;
-    memcpy( folder, path, length );
-    folder[length] = 0;
-}
-
-char appplication_folder[1024];
-void set_application_folder( char const* application_path )
-{
-    get_folder( application_path, appplication_folder );
-}
-
-char const* get_application_folder()
-{
-    return appplication_folder;
-}
-
 int main( int argument_count, char** arguments )
 {
     set_application_folder( arguments[0] );

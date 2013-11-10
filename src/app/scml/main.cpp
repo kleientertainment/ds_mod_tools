@@ -184,12 +184,6 @@ float lerp_angle( float start_angle, float end_angle, float blend, int spin )
 	return result;
 }
 
-char appplication_folder[1024];
-char const* get_application_folder()
-{
-    return appplication_folder;
-}
-
 struct xml_writer
 {
 	std::vector<char const*> _tags;
@@ -2163,18 +2157,6 @@ void build_scml(
 
 	image_paths = symbol_frame_image_paths;
 	image_path_count = symbol_frame_count;
-}
-
-void get_folder( char const* path, char* folder )
-{
-    int length = strrchr( path, '\\' ) - path + 1;
-    memcpy( folder, path, length );
-    folder[length] = 0;
-}
-
-void set_application_folder( char const* application_path )
-{
-    get_folder( application_path, appplication_folder );
 }
 
 int main( int argument_count, char** arguments )

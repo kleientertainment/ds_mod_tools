@@ -12,3 +12,6 @@ void error( char const* format, ... );
 void log( char const* format, ... );
 void create_temp_dir();
 char* get_temp_dir();
+void get_folder( char const* path, char* folder );
+void set_application_folder( char const* application_path );
+char const* get_application_folder();

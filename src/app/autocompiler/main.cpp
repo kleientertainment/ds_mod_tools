@@ -4,19 +4,6 @@
 #include <tinydir/tinydir.h>
 #include <modtoollib/modtool.h>
 
-char appplication_folder[MAX_PATH_LEN];
-void set_application_folder( char const* application_path )
-{
-    int length = strrchr( application_path, '\\' ) - application_path + 1;
-    memcpy( appplication_folder, application_path, length );
-    appplication_folder[length] = 0;
-}
-
-char const* get_application_folder()
-{
-    return appplication_folder;
-}
-
 struct compiler
 {
     compiler( char const* compiler_path )
