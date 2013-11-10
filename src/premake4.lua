@@ -19,6 +19,7 @@ else
 end
 
 apps = {'scml', 'png', 'autocompiler', 'textureconverter'}
+libs = {'texturelib', 'modtoollib'}
 
 solution('mod_tools')
 	configurations { "debug", "release" }
@@ -38,6 +39,13 @@ solution('mod_tools')
 			kind "ConsoleApp"
 			language "C++"   	   
 	      	files { "app/"..app.."/**.h", "app/"..app.."/**.cpp" }	 
+	end
+
+	for k, lib in pairs(libs) do	
+	   	project(lib)
+			kind "StaticLib"
+			language "C++"   	   
+	      	files { "lib/"..lib.."/**.h", "lib/"..lib.."/**.cpp" }	 
 	end
 
 local function extract(file, folder)
