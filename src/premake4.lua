@@ -18,14 +18,25 @@ else
 	props.tooldir = '..\\tools\\bin\\'..props.dir.."\\"
 end
 
-apps = {'scml', 'png', 'autocompiler', 'textureconverter'}
-libs = {'texturelib', 'modtoollib'}
+apps = 
+{
+	--'scml', 
+	--'png', 
+	'autocompiler', 
+	--'textureconverter'
+}
+
+libs = 
+{
+	--'texturelib', 
+	'modtoollib'
+}
 
 solution('mod_tools')
 	configurations { "debug", "release" }
 	location ( props.outdir.."proj" )
 	flags { "Symbols", "NoRTTI", "NoEditAndContinue", "NoExceptions", "NoPCH" }
-	includedirs { "../lib/" }
+	includedirs { "lib", "../lib/" }
   	targetdir ( props.skuoutdir )
 
     configuration { "debug" }
@@ -39,6 +50,9 @@ solution('mod_tools')
 			kind "ConsoleApp"
 			language "C++"   	   
 	      	files { "app/"..app.."/**.h", "app/"..app.."/**.cpp" }	 
+	      	for k, lib in pairs(libs) do
+	      		links{ lib }
+	      	end
 	end
 
 	for k, lib in pairs(libs) do	
