@@ -28,8 +28,8 @@ apps =
 
 libs = 
 {
-	--'texturelib', 
-	'modtoollib'
+	--texturelib = { include_lib = true },
+	modtoollib = { include_lib = false },
 }
 
 solution('mod_tools')
@@ -50,16 +50,19 @@ solution('mod_tools')
 			kind "ConsoleApp"
 			language "C++"   	   
 	      	files { "app/"..app.."/**.h", "app/"..app.."/**.cpp" }	 
-	      	for k, lib in pairs(libs) do
+	      	for lib, settings in pairs(libs) do
 	      		links{ lib }
 	      	end
 	end
 
-	for k, lib in pairs(libs) do	
+	for lib, settings in pairs(libs) do	
 	   	project(lib)
 			kind "StaticLib"
 			language "C++"   	   
-	      	files { "lib/"..lib.."/**.h", "lib/"..lib.."/**.cpp" }	 
+	      	files { "lib/"..lib.."/**.h", "lib/"..lib.."/**.cpp" }
+	      	if settings.include_lib then
+	      		includedirs { "lib/"..lib }
+	      	end
 	end
 
 local function extract(file, folder)
