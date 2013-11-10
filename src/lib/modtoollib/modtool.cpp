@@ -25,14 +25,47 @@ char* read_file_append_null(FILE* f)
 	return buffer;
 }
 
+char appplication_folder[MAX_PATH_LEN];
+void get_folder( char const* path, char* folder )
+{
+    int length = strrchr( path, '\\' ) - path + 1;
+    memcpy( folder, path, length );
+    folder[length] = 0;
+}
+
+void set_application_folder( char const* application_path )
+{
+    get_folder( application_path, appplication_folder );
+}
+
+char const* get_application_folder()
+{
+    return appplication_folder;
+}
+
 
 FILE* gLog = 0;
-char gLogPath[] = "..\\temp\\autocompiler_log.txt";
-char gTempFolder[] = "..\\temp\\";
+char gLogPath[] = "..\\..\\temp\\autocompiler_log.txt";
+char gTempFolder[] = "..\\..\\temp\\";
+char gAssetTempFolder[MAX_PATH_LEN];
 
 char* get_temp_dir()
 {
 	return gTempFolder;
+}
+
+char* get_asset_temp_dir()
+{
+	return gAssetTempFolder;
+}
+
+void set_asset_name(char const* name)
+{
+	sprintf(gAssetTempFolder, "%s\\%s\\%s\\",  get_application_folder(), get_temp_dir(), name);
+
+	char cmd[MAX_PATH_LEN];
+	sprintf(cmd, "mkdir %s", gAssetTempFolder);
+	system(cmd);
 }
 
 void create_temp_dir()
@@ -123,22 +156,4 @@ bool run( char* command_line, bool fail_on_error, char const* format, ... )
 	}
 
 	return result;
-}
-
-char appplication_folder[MAX_PATH_LEN];
-void get_folder( char const* path, char* folder )
-{
-    int length = strrchr( path, '\\' ) - path + 1;
-    memcpy( folder, path, length );
-    folder[length] = 0;
-}
-
-void set_application_folder( char const* application_path )
-{
-    get_folder( application_path, appplication_folder );
-}
-
-char const* get_application_folder()
-{
-    return appplication_folder;
 }

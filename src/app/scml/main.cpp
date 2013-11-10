@@ -2098,8 +2098,8 @@ void build_scml(
     }
     
     // export builds
-    char build_xml_path[1024];
-    sprintf(build_xml_path, "%s\\build.xml", get_application_folder());
+    char build_xml_path[MAX_PATH_LEN];
+    sprintf(build_xml_path, "%s\\build.xml", get_asset_temp_dir());
     export_build(
         IN build_xml_path,
         IN build_name,
@@ -2116,8 +2116,8 @@ void build_scml(
 
 
     // export animations
-    char animation_xml_path[1024];
-    sprintf(animation_xml_path, "%s\\animation.xml", get_application_folder());
+    char animation_xml_path[MAX_PATH_LEN];
+    sprintf(animation_xml_path, "%s\\animation.xml", get_asset_temp_dir());
 
     if(anim_count > 0)
     {
@@ -2176,6 +2176,12 @@ int main( int argument_count, char** arguments )
 		error( "ERROR: Could not open '%s'!\n", input_file_path );
 	}
 
+	char asset_name[MAX_PATH_LEN];
+	char const* asset_name_start = strrchr(input_file_path, '\\') + 1;
+	memcpy( asset_name, asset_name_start, strlen(asset_name_start) - 5);
+	asset_name[strlen(asset_name_start) - 5] = 0;
+	set_asset_name( asset_name );
+
     char input_folder[2048];
     get_folder( input_file_path, input_folder );
 
@@ -2197,7 +2203,7 @@ int main( int argument_count, char** arguments )
         return 0;
     }
 
-    SCML::Data scml( input_file_path );
+    SCML::Data scml( input_file_path );	
 
 	char** image_paths = 0;
 	int image_path_count;
@@ -2205,11 +2211,11 @@ int main( int argument_count, char** arguments )
 	build_scml(scml, image_paths, image_path_count);
 
     char image_list_path[4096];
-    sprintf(image_list_path, "%s\\images.lst", get_application_folder());
+    sprintf(image_list_path, "%s\\images.lst", get_asset_temp_dir());
     FILE* image_list_file = fopen(image_list_path, "w");
     for(int i = 0; i < image_path_count; ++i)
     {
-        char path[4096];
+        char path[MAX_PATH_LEN];
         sprintf(path, "%s\\%s", input_folder, image_paths[i]);
         if(!exists(path))
         {
@@ -2220,7 +2226,7 @@ int main( int argument_count, char** arguments )
     fclose(image_list_file);
 
 	char command_line[32768];
-	sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\\build.xml\" \"%s\\animation.xml\" \"%s\" ", get_application_folder(), get_application_folder(), output_package_file_path, get_application_folder(), get_application_folder(), image_list_path );
+	sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\"", get_asset_temp_dir(), get_application_folder() );
 
 	run( command_line, true, "Packaging '%s'", strrchr(output_package_file_path, '\\') + 1 );
 
