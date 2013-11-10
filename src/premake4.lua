@@ -1,8 +1,8 @@
 os_properties = 
 {
-	windows = { dir = 'win32' },
-	macosx = { dir = 'osx' },
-	linux = { dir = 'linux' },
+	windows = { dir = 'win32', pythondir = 'windows' },
+	macosx = { dir = 'osx', pythondir = 'osx' },
+	linux = { dir = 'linux', pythondir = 'linux' },
 }
 
 props = {}
@@ -70,3 +70,4 @@ end
 extract('..\\pkg\\cmn\\mod_tools.zip', props.outdir..props.dir)
 extract('..\\pkg\\tst\\wand.zip', props.outdir..'dont_starve\\mods')
 extract('..\\pkg\\'..props.dir..'\\mod_tools.zip', props.outdir..props.dir)
+extract('..\\pkg\\'..props.dir..'\\Python27.zip', props.skuoutdir..'\\buildtools\\'..props.pythondir..'\\')
