@@ -20,8 +20,8 @@ end
 
 apps = 
 {
-	--'scml', 
-	--'png', 
+	'scml', 
+	'png', 
 	'autocompiler', 
 	--'textureconverter'
 }
@@ -40,9 +40,9 @@ solution('mod_tools')
   	targetdir ( props.skuoutdir )
 
     configuration { "debug" }
-        defines { "DEBUG" }	 
+        defines { "DEBUG", "_CRT_SECURE_NO_WARNINGS" }
    	configuration { "release" }
-        defines { "RELEASE" }
+        defines { "RELEASE", "_CRT_SECURE_NO_WARNINGS" }
         flags { "Optimize" }	
 
 	for k, app in pairs(apps) do	

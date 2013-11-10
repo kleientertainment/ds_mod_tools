@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <string.h>
 #include <stdio.h>
 #include <iostream>
@@ -8,6 +7,7 @@
 #include <sys/stat.h>
 #include "SCMLpp.h"
 #include <math.h>
+#include <modtoollib/modtool.h>
 
 using namespace std;
 
@@ -223,11 +223,6 @@ char appplication_folder[1024];
 char const* get_application_folder()
 {
     return appplication_folder;
-}
-
-bool run( char* command_line )
-{
-	return system(command_line) == 0;
 }
 
 struct xml_writer

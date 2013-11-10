@@ -4,8 +4,6 @@
 #include <tinydir/tinydir.h>
 #include <modtoollib/modtool.h>
 
-#define MAX_PATH_LEN 2048
-
 char appplication_folder[MAX_PATH_LEN];
 void set_application_folder( char const* application_path )
 {
@@ -17,11 +15,6 @@ void set_application_folder( char const* application_path )
 char const* get_application_folder()
 {
     return appplication_folder;
-}
-
-bool run( char* command_line )
-{
-	return system( command_line ) == 0;
 }
 
 void error( char const* format, ... )
@@ -40,7 +33,11 @@ struct compiler
     void compile( char const* asset_path, char const* output_folder )
     {
         char command_line[1024];
-        sprintf( command_line, "%s \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
+#		if defined(WIN32)
+			sprintf( command_line, "%s.exe \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
+#		else
+			sprintf( command_line, "%s \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
+#		endif
         run( command_line );    
     }
 
@@ -151,7 +148,7 @@ void get_asset_folders( compiler& c, file_list& asset_folders )
     std::string asset_list_path = c.path + std::string( ".txt" );
     std::ifstream in = std::ifstream( asset_list_path.c_str() );
 
-    char path[1024];
+    char path[MAX_PATH_LEN];
     while( !in.eof() )
     {
         in.getline( path, sizeof( path ) );
@@ -165,7 +162,7 @@ int main( int argument_count, char** arguments )
     set_application_folder( arguments[0] );
 
     file_list mod_folders;
-    char mods_folder[1024];
+    char mods_folder[MAX_PATH_LEN];
     
     sprintf( mods_folder, "%s..\\..\\mods", get_application_folder() );
     list_folders( mods_folder, mod_folders );
@@ -184,7 +181,7 @@ int main( int argument_count, char** arguments )
         {
             for( file_list::iterator asset_folder_iter = asset_folders.begin(); asset_folder_iter != asset_folders.end(); ++asset_folder_iter )
             {
-                char asset_folder[1024];
+                char asset_folder[MAX_PATH_LEN];
                 sprintf( asset_folder, "%s\\%s", mod_folder_iter->c_str(), asset_folder_iter->c_str() );
                 compile_folder( c, asset_folder, mod_folder_iter->c_str() );
             }

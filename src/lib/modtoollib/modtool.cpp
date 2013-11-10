@@ -1,4 +1,5 @@
 #include <modtoollib/modtool.h>
+#include <stdlib.h>
 
 int get_file_size(FILE* f)
 {
@@ -20,4 +21,9 @@ char* read_file_append_null(FILE* f)
 	fread(buffer, 1, size, f);
 	buffer[size] = 0;
 	return buffer;
+}
+
+bool run( char* command_line )
+{
+	return system(command_line) == 0;
 }

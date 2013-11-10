@@ -5,8 +5,8 @@
 #include <vector>
 #include <stdarg.h>
 #include <sys/stat.h>
-#include <Windows.h>
 #include <math.h>
+#include <modtoollib/modtool.h>
 
 using namespace std;
 
@@ -41,7 +41,6 @@ void error( char const* format, ... )
 	va_start( argptr, format );
 	vsprintf( message, format, argptr );
 	va_end( argptr );
-	OutputDebugString( message );
 	printf( message );
 
     fprintf( gErrorLog, message );
@@ -144,26 +143,6 @@ char const* get_application_folder()
     return appplication_folder;
 }
 
-BOOL run( char* command_line )
-{
-    STARTUPINFO si = {0};
-    PROCESS_INFORMATION pi = {0};
-    BOOL result = CreateProcess( 0, command_line, 0, 0, FALSE, 0, NULL, NULL, &si, &pi );
-
-    if( !result )
-    {
-        printf( "ERROR: Could not run '%s'!\n", command_line );
-        return -1;
-    }
-    else
-    {
-        WaitForSingleObject( pi.hProcess, INFINITE );
-        CloseHandle(pi.hThread);
-        CloseHandle(pi.hProcess);
-        return 0;
-    }
-}
-
 int main( int argument_count, char** arguments )
 {
     set_application_folder( arguments[0] );
@@ -184,7 +163,7 @@ int main( int argument_count, char** arguments )
     char input_folder[1024];
     get_folder( input_file_path, input_folder );
 
-    char output_package_file_path[MAX_PATH];
+    char output_package_file_path[MAX_PATH_LEN];
     get_output_file_path( input_file_path, output_package_file_path );
 
 	char build_tool_path[1024];
