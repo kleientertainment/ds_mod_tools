@@ -119,16 +119,16 @@ compiler_list get_compilers( char const* folder )
 
     compiler_list compilers;
 	char* buffer = read_file_append_null(in);
-	while(*buffer)
+	buffer = strtok(buffer, "\r\n");
+	do
 	{
-		buffer = strtok(buffer, "\r\n");
 		char* compiler_name = buffer;
 
 		char compiler_path[MAX_PATH_LEN];
 		sprintf(compiler_path, "%s\\%s", folder, compiler_name);
 
 		compilers.push_back( new compiler( compiler_path ) );
-	}
+	}while(buffer = strtok(0, "\r\n"));
 
 	return compilers;
 }
