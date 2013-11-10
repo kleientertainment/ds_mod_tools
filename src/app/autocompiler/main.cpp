@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <sys/stat.h>
-#include <Windows.h>
 #include <tinydir/tinydir.h>
 
 char appplication_folder[1024];
@@ -48,6 +47,28 @@ struct compiler
 typedef std::vector< std::string > file_list;
 typedef std::vector< compiler* > compiler_list;
 
+void list_folders( char const* path, file_list& folders )
+{
+	tinydir_dir dir;
+	if (tinydir_open(&dir, path) != -1)
+	{
+		while (dir.has_next)
+		{
+			tinydir_file file;
+			if(tinydir_readfile(&dir, &file) != -1)
+			{
+				if(file.is_dir && file.name[0] != '.')
+				{
+                    char subfolder[2048];
+                    sprintf( subfolder, "%s\\%s", path, file.name );
+                    folders.push_back( subfolder );	
+				}
+			}
+			tinydir_next(&dir);
+		}
+	}
+}
+
 void list_files( char const* folder, char const* extension, file_list& files )
 {
     char search_key[1024];
@@ -74,32 +95,6 @@ void list_files( char const* folder, char const* extension, file_list& files )
                     sprintf( subfolder, "%s\\%s", folder, find_data.cFileName );
 
                     list_files( subfolder, extension, files );
-                }
-            }
-        }while( FindNextFile( find_handle, &find_data ) );
-    }
-}
-
-void list_folders( char const* path, file_list& folders )
-{
-    char search_key[1024];
-    sprintf( search_key, "%s\\*", path );
-
-    WIN32_FIND_DATA find_data;
-    HANDLE find_handle = FindFirstFile( search_key, &find_data );
-
-    if( find_handle != INVALID_HANDLE_VALUE )
-    {
-        do
-        {
-            if( find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-            {
-                if( find_data.cFileName[0] != '.' )
-                {
-                    char subfolder[2048];
-                    sprintf( subfolder, "%s\\%s", path, find_data.cFileName );
-
-                    folders.push_back( subfolder );
                 }
             }
         }while( FindNextFile( find_handle, &find_data ) );
