@@ -2189,8 +2189,6 @@ int main( int argument_count, char** arguments )
     
 	char const* input_file_path = arguments[1];
 
-    log( "Exporting '%s'...", strrchr(input_file_path, '\\') + 1 );
-
 	if( !exists( input_file_path ) )
 	{
 		error( "ERROR: Could not open '%s'!\n", input_file_path );
@@ -2223,7 +2221,6 @@ int main( int argument_count, char** arguments )
 	int image_path_count;
 
 	build_scml(scml, image_paths, image_path_count);
-    log("SUCCESS!\n");
 
     char image_list_path[4096];
     sprintf(image_list_path, "%s\\images.lst", get_application_folder());
@@ -2240,30 +2237,13 @@ int main( int argument_count, char** arguments )
     }
     fclose(image_list_file);
 
-    log( "Packaging '%s'...", strrchr(output_package_file_path, '\\') + 1 );
 	char command_line[32768];
 	sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\\build.xml\" \"%s\\animation.xml\" \"%s\" ", get_application_folder(), get_application_folder(), output_package_file_path, get_application_folder(), get_application_folder(), image_list_path );
-	
-	if( !run( command_line ) )
-	{
-        error( "FAILED!\n" );
-	}
-    else
-    {
-        log("SUCCESS!\n");
-    }
 
-    log( "Building '%s'...", strrchr(output_package_file_path, '\\') + 1 );
+	run( command_line, true, "Packaging '%s'", strrchr(output_package_file_path, '\\') + 1 );
+
     sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s..\\exported\\export.py\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\\..\\data\" \"%s\"", get_application_folder(), get_application_folder(), output_dir, get_application_folder(), output_package_file_path );
-    
-    if( !run( command_line ) )
-    {
-        error( "FAILED!\n" );
-    }
-    else
-    {
-        log("SUCCESS!\n");
-    }
+    run( command_line, true, "Building '%s'", strrchr(output_package_file_path, '\\') + 1 );
 
     end_log();
 

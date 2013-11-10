@@ -26,8 +26,8 @@ char* read_file_append_null(FILE* f)
 
 
 FILE* gLog = 0;
-char gLogPath[] = "..\\..\\temp\\autocompiler_log.txt";
-char gTempFolder[] = "..\\..\\temp\\";
+char gLogPath[] = "..\\temp\\autocompiler_log.txt";
+char gTempFolder[] = "..\\temp\\";
 
 char* get_temp_dir()
 {
@@ -37,7 +37,7 @@ char* get_temp_dir()
 void create_temp_dir()
 {
 	char cmd[MAX_PATH_LEN];
-	sprintf(cmd, "mkdir ", get_temp_dir());
+	sprintf(cmd, "mkdir %s", get_temp_dir());
 	system(cmd);
 }
 
@@ -77,6 +77,7 @@ void log( char const* format, ... )
 		fprintf( gLog, message );
 	}
 }
+
 void error( char const* format, ... )
 {
 	char message[4096];
@@ -92,18 +93,33 @@ void error( char const* format, ... )
 		fflush( gLog );
 		fclose( gLog );
 	}
-    
-    system( gLogPath );
 
 	exit( -1 );
 }
 
-bool run( char* command_line )
+void show_error_log()
 {
-	log("running: %s\n", command_line);
+	end_log();
+    system( gLogPath );
+	exit( -1 );
+}
+
+bool run( char* command_line, bool fail_on_error, char const* format, ... )
+{
+	char message[4096];
+	va_list argptr;
+	va_start( argptr, format );
+	vsprintf( message, format, argptr );
+	va_end( argptr );
+
+	log("\n\n>> %s\n\n=================\n\n%s\n\n", message, command_line );
 	end_log();
 	bool result = system(command_line) == 0;
 	begin_log();
+	if(!result && fail_on_error)
+	{
+		error("ERROR: Command failed!");
+	}
 
 	return result;
 }

@@ -34,9 +34,9 @@ struct compiler
 #		else
 			sprintf( command_line, "%s \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
 #		endif
-        if(!run( command_line ))
+        if(!run( command_line, false, "Compiling %s.", asset_path ))
 		{
-			error("ERROR: Error running '%s'.", command_line);
+			show_error_log();
 		}
     }
 
@@ -158,6 +158,7 @@ void get_asset_folders( compiler& c, file_list& asset_folders )
 
 int main( int argument_count, char** arguments )
 {
+	create_temp_dir();
 	clear_log();
 	begin_log();
 
