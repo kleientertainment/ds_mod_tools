@@ -46,7 +46,7 @@ char const* get_application_folder()
 
 FILE* gLog = 0;
 char gLogPath[] = "..\\..\\temp\\autocompiler_log.txt";
-char gTempFolder[] = "..\\..\\temp\\";
+char gTempFolder[] = "..\\..\\temp";
 char gAssetTempFolder[MAX_PATH_LEN];
 
 char* get_temp_dir()
@@ -61,7 +61,7 @@ char* get_asset_temp_dir()
 
 void set_asset_name(char const* name)
 {
-	sprintf(gAssetTempFolder, "%s\\%s\\%s\\",  get_application_folder(), get_temp_dir(), name);
+	sprintf(gAssetTempFolder, "%s\\%s\\%s",  get_application_folder(), get_temp_dir(), name);
 
 	char cmd[MAX_PATH_LEN];
 	sprintf(cmd, "mkdir %s", gAssetTempFolder);

@@ -96,7 +96,7 @@ int main( int argument_count, char** arguments )
         output_dir = ".";
     }
 
-    sprintf( command_line, "%s..\\buildtools\\windows\\Python27\\python.exe \"%s\" \"%s\"", get_application_folder(), build_tool_path, input_file_path);
+    sprintf( command_line, "%s\\buildtools\\windows\\Python27\\python.exe \"%s\" \"%s\"", get_application_folder(), build_tool_path, input_file_path);
     
     run( command_line, true, "Compiling '%s'", input_file_path );
 
