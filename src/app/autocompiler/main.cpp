@@ -1,7 +1,6 @@
 #include <vector>
 #include <fstream>
 #include <string>
-#include <sys/stat.h>
 #include <tinydir/tinydir.h>
 #include <modtoollib/modtool.h>
 
@@ -65,7 +64,7 @@ void list_folders( char const* path, file_list& folders )
 			{
 				if(file.is_dir && file.name[0] != '.')
 				{
-                    char subfolder[2048];
+                    char subfolder[MAX_PATH_LEN];
                     sprintf( subfolder, "%s\\%s", path, file.name );
                     folders.push_back( subfolder );	
 				}
@@ -77,34 +76,38 @@ void list_folders( char const* path, file_list& folders )
 
 void list_files( char const* folder, char const* extension, file_list& files )
 {
-    char search_key[1024];
-    sprintf( search_key, "%s\\*", folder, extension );
-
-    WIN32_FIND_DATA find_data;
-    HANDLE find_handle = FindFirstFile( search_key, &find_data );
-    
-    if( find_handle != INVALID_HANDLE_VALUE )
-    {
-        do
-        {
-            if( strstr( find_data.cFileName, extension ) && strlen( strstr( find_data.cFileName, extension ) ) == strlen( extension ) )
-            {
-                char file_path[1024];
-                sprintf( file_path, "%s\\%s", folder, find_data.cFileName );
-                files.push_back( file_path );
-            }
-            else if( find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-            {
-                if( find_data.cFileName[0] != '.' )
-                {
-                    char subfolder[2048];
-                    sprintf( subfolder, "%s\\%s", folder, find_data.cFileName );
-
-                    list_files( subfolder, extension, files );
-                }
-            }
-        }while( FindNextFile( find_handle, &find_data ) );
-    }
+	int extension_length = strlen(extension);
+	tinydir_dir dir;
+	if (tinydir_open(&dir, folder) != -1)
+	{
+		while (dir.has_next)
+		{
+			tinydir_file file;
+			if(tinydir_readfile(&dir, &file) != -1)
+			{
+				if(file.is_dir)
+				{
+					if(file.name[0] != '.')
+					{
+						char subfolder[2048];
+						sprintf( subfolder, "%s\\%s", folder, file.name );
+						list_files(subfolder, extension, files);
+					}
+				}
+				else
+				{
+					int name_length = strlen(file.name);
+					if(name_length > extension_length && strcmp(file.name + name_length - extension_length, extension) == 0)
+					{
+						char file_path[MAX_PATH_LEN];
+						sprintf( file_path, "%s\\%s", folder, file.name );
+						files.push_back(file_path);
+					}
+				}
+			}
+			tinydir_next(&dir);
+		}
+	}
 }
 
 compiler_list get_compilers( char const* folder )
@@ -182,7 +185,7 @@ int main( int argument_count, char** arguments )
             for( file_list::iterator asset_folder_iter = asset_folders.begin(); asset_folder_iter != asset_folders.end(); ++asset_folder_iter )
             {
                 char asset_folder[1024];
-                sprintf( asset_folder, "%s/%s", mod_folder_iter->c_str(), asset_folder_iter->c_str() );
+                sprintf( asset_folder, "%s\\%s", mod_folder_iter->c_str(), asset_folder_iter->c_str() );
                 compile_folder( c, asset_folder, mod_folder_iter->c_str() );
             }
         }
