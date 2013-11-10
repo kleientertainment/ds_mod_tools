@@ -1,4 +1,5 @@
 #include <modtoollib/modtool.h>
+#include <stdarg.h>
 #include <stdlib.h>
 
 int get_file_size(FILE* f)
@@ -23,7 +24,70 @@ char* read_file_append_null(FILE* f)
 	return buffer;
 }
 
+
+FILE* gLog = 0;
+char gLogPath[] = "log.txt";
+void begin_log()
+{
+	gLog = fopen(gLogPath, "a");
+}
+
+void end_log()
+{
+    if(gLog)
+    {
+		fflush( gLog );
+		fclose( gLog );
+    }    
+
+	//system( gLogPath );
+}
+
+void clear_log()
+{
+	FILE* f = fopen(gLogPath, "w");
+	if(f)
+	{
+		fclose(f);
+	}
+}
+
+
+void log( char const* format, ... )
+{
+	if(gLog)
+	{
+		char message[4096];
+		va_list argptr;
+		va_start( argptr, format );
+		vsprintf( message, format, argptr );
+		va_end( argptr );
+		fprintf( gLog, message );
+	}
+}
+void error( char const* format, ... )
+{
+	char message[4096];
+	va_list argptr;
+	va_start( argptr, format );
+	vsprintf( message, format, argptr );
+	va_end( argptr );
+	printf( message );
+
+	if(gLog)
+	{
+		fprintf( gLog, message );
+		fflush( gLog );
+		fclose( gLog );
+	}
+    
+    system( gLogPath );
+
+	exit( -1 );
+}
+
 bool run( char* command_line )
 {
+	log("running: %s\n", command_line);
 	return system(command_line) == 0;
 }

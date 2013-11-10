@@ -3,54 +3,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <stdarg.h>
 #include <sys/stat.h>
 #include <math.h>
 #include <modtoollib/modtool.h>
 
 using namespace std;
-
-FILE* gErrorLog = 0;
-char gErrorLogPath[1024];
-
-void begin_log( char const* input_path )
-{
-    sprintf( gErrorLogPath, "%s.txt", input_path );
-    gErrorLog = 0;
-}
-
-void end_log()
-{
-    if( gErrorLog )
-    {
-        fclose( gErrorLog );
-    }
-    
-}
-
-void error( char const* format, ... )
-{
-    if( 0 == gErrorLog )
-    {
-        gErrorLog = fopen( gErrorLogPath, "w" );
-        fprintf( gErrorLog, "Building '%s'.\n", gErrorLogPath );
-    }
-
-	char message[4096];
-	va_list argptr;
-	va_start( argptr, format );
-	vsprintf( message, format, argptr );
-	va_end( argptr );
-	printf( message );
-
-    fprintf( gErrorLog, message );
-    fflush( gErrorLog );
-    fclose( gErrorLog );
-    
-    system( gErrorLogPath );
-
-	exit( -1 );
-}
 
 time_t get_last_modified( char const* path )
 {
@@ -146,7 +103,7 @@ char const* get_application_folder()
 int main( int argument_count, char** arguments )
 {
     set_application_folder( arguments[0] );
-    begin_log( arguments[1] );
+    begin_log();
 
 	if( argument_count != 3 )
 	{

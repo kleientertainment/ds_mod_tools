@@ -17,16 +17,12 @@ char const* get_application_folder()
     return appplication_folder;
 }
 
-void error( char const* format, ... )
-{
-	exit( -1 );
-}
-
 struct compiler
 {
     compiler( char const* compiler_path )
     :   path( compiler_path )
     {
+		log("compiler registered: %s\n", compiler_path);
         extension = strrchr(compiler_path, '\\') + 1;
     }
 
@@ -159,6 +155,9 @@ void get_asset_folders( compiler& c, file_list& asset_folders )
 
 int main( int argument_count, char** arguments )
 {
+	clear_log();
+	begin_log();
+
     set_application_folder( arguments[0] );
 
     file_list mod_folders;
@@ -187,6 +186,8 @@ int main( int argument_count, char** arguments )
             }
         }
    }
+
+	end_log();
 
     return 0;
 }

@@ -184,41 +184,6 @@ float lerp_angle( float start_angle, float end_angle, float blend, int spin )
 	return result;
 }
 
-
-
-FILE* gErrorLog = 0;
-char gErrorLogPath[1024];
-
-void begin_log( char const* input_path )
-{
-    sprintf( gErrorLogPath, "%s.txt", input_path );
-    gErrorLog = fopen( gErrorLogPath, "w" );
-    fprintf( gErrorLog, "Building '%s'.\n", input_path );
-}
-
-void end_log()
-{
-    fclose( gErrorLog );
-}
-
-void error( char const* format, ... )
-{
-	char message[4096];
-	va_list argptr;
-	va_start( argptr, format );
-	vsprintf( message, format, argptr );
-	va_end( argptr );
-	printf( message );
-
-    fprintf( gErrorLog, message );
-    fflush( gErrorLog );
-    fclose( gErrorLog );
-    
-    system( gErrorLogPath );
-
-	exit( -1 );
-}
-
 char appplication_folder[1024];
 char const* get_application_folder()
 {
@@ -304,7 +269,7 @@ struct xml_writer
 	void print_indent()
 	{
 		char tabs[256];
-		for( int i = 0; i < _tags.size() - 1; ++i )
+		for( int i = 0; i < (int)_tags.size() - 1; ++i )
 		{
 			tabs[i] = ' ';
 		}
@@ -2218,7 +2183,7 @@ bool gPrintCommandLines = false;
 int main( int argument_count, char** arguments )
 {    
     set_application_folder( arguments[0] );
-    begin_log( arguments[1] );
+    begin_log();
 
 	if( argument_count != 3 )
 	{
