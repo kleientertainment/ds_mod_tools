@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define MAX_PATH_LEN 2048
+#define MAX_PATH_LEN 32768
 
 int get_file_size(FILE* f);
 char* read_file_append_null(FILE* f);
@@ -9,3 +9,5 @@ void begin_log();
 void end_log();
 void error( char const* format, ... );
 void log( char const* format, ... );
+void create_temp_dir();
+char* get_temp_dir();

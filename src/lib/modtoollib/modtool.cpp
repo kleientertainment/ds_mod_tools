@@ -26,7 +26,21 @@ char* read_file_append_null(FILE* f)
 
 
 FILE* gLog = 0;
-char gLogPath[] = "log.txt";
+char gLogPath[] = "..\\..\\temp\\autocompiler_log.txt";
+char gTempFolder[] = "..\\..\\temp\\";
+
+char* get_temp_dir()
+{
+	return gTempFolder;
+}
+
+void create_temp_dir()
+{
+	char cmd[MAX_PATH_LEN];
+	sprintf(cmd, "mkdir ", get_temp_dir());
+	system(cmd);
+}
+
 void begin_log()
 {
 	gLog = fopen(gLogPath, "a");
@@ -39,8 +53,6 @@ void end_log()
 		fflush( gLog );
 		fclose( gLog );
     }    
-
-	//system( gLogPath );
 }
 
 void clear_log()
@@ -89,5 +101,9 @@ void error( char const* format, ... )
 bool run( char* command_line )
 {
 	log("running: %s\n", command_line);
-	return system(command_line) == 0;
+	end_log();
+	bool result = system(command_line) == 0;
+	begin_log();
+
+	return result;
 }

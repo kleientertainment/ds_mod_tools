@@ -142,8 +142,8 @@ int main( int argument_count, char** arguments )
     }
 
     sprintf( command_line, "%s..\\buildtools\\windows\\Python27\\python.exe \"%s\" \"%s\"", get_application_folder(), build_tool_path, input_file_path);
-    int result = run( command_line );
-    if( 0 != result )
+    
+    if( !run( command_line ) )
     {
         error( "ERROR: Could not run '%s'!\n", command_line );
     }

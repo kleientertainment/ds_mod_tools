@@ -34,7 +34,10 @@ struct compiler
 #		else
 			sprintf( command_line, "%s \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
 #		endif
-        run( command_line );    
+        if(!run( command_line ))
+		{
+			error("ERROR: Error running '%s'.", command_line);
+		}
     }
 
     std::string extension;

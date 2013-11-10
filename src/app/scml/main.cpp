@@ -2177,9 +2177,6 @@ void set_application_folder( char const* application_path )
     get_folder( application_path, appplication_folder );
 }
 
-#define MAX_PATH 32768
-
-bool gPrintCommandLines = false;
 int main( int argument_count, char** arguments )
 {    
     set_application_folder( arguments[0] );
@@ -2192,7 +2189,7 @@ int main( int argument_count, char** arguments )
     
 	char const* input_file_path = arguments[1];
 
-    printf( "Exporting '%s'...", strrchr(input_file_path, '\\') + 1 );
+    log( "Exporting '%s'...", strrchr(input_file_path, '\\') + 1 );
 
 	if( !exists( input_file_path ) )
 	{
@@ -2202,12 +2199,12 @@ int main( int argument_count, char** arguments )
     char input_folder[2048];
     get_folder( input_file_path, input_folder );
 
-    char output_package_file_path[MAX_PATH];
+    char output_package_file_path[MAX_PATH_LEN];
     get_output_file_path( input_file_path, output_package_file_path );
 
     char const* output_dir = arguments[2];
 
-    char built_package_path[MAX_PATH];
+    char built_package_path[MAX_PATH_LEN];
     sprintf( built_package_path, "%s\\anim\\%s", output_dir, strrchr( output_package_file_path, '\\' ) );
 
     if( exists( built_package_path ) &&
@@ -2216,7 +2213,7 @@ int main( int argument_count, char** arguments )
         is_more_recent( arguments[0], built_package_path ) && 
         is_more_recent( output_package_file_path, built_package_path ) )
     {
-        printf("SUCCESS!\n");
+        log("SUCCESS!\n");
         return 0;
     }
 
@@ -2226,7 +2223,7 @@ int main( int argument_count, char** arguments )
 	int image_path_count;
 
 	build_scml(scml, image_paths, image_path_count);
-    printf("SUCCESS!\n");
+    log("SUCCESS!\n");
 
     char image_list_path[4096];
     sprintf(image_list_path, "%s\\images.lst", get_application_folder());
@@ -2243,39 +2240,29 @@ int main( int argument_count, char** arguments )
     }
     fclose(image_list_file);
 
-    printf( "Packaging '%s'...", strrchr(output_package_file_path, '\\') + 1 );
+    log( "Packaging '%s'...", strrchr(output_package_file_path, '\\') + 1 );
 	char command_line[32768];
 	sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\\build.xml\" \"%s\\animation.xml\" \"%s\" ", get_application_folder(), get_application_folder(), output_package_file_path, get_application_folder(), get_application_folder(), image_list_path );
-
-    if(gPrintCommandLines)
-    {
-        printf("\n%s\n", command_line);
-    }
-
-	int result = run( command_line );
-	if( 0 != result )
+	
+	if( !run( command_line ) )
 	{
-        error( "FAILED!" );
+        error( "FAILED!\n" );
 	}
     else
     {
-        printf("SUCCESS!\n");
+        log("SUCCESS!\n");
     }
 
-    printf( "Building '%s'...", strrchr(output_package_file_path, '\\') + 1 );
+    log( "Building '%s'...", strrchr(output_package_file_path, '\\') + 1 );
     sprintf( command_line, "\"%s..\\buildtools\\windows\\Python27\\python.exe\" \"%s..\\exported\\export.py\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\\..\\data\" \"%s\"", get_application_folder(), get_application_folder(), output_dir, get_application_folder(), output_package_file_path );
-    if(gPrintCommandLines)
+    
+    if( !run( command_line ) )
     {
-        printf("\n%s\n", command_line);    
-    }    
-    result = run( command_line );
-    if( 0 != result )
-    {
-        error( "FAILED!" );
+        error( "FAILED!\n" );
     }
     else
     {
-        printf("SUCCESS!\n");
+        log("SUCCESS!\n");
     }
 
     end_log();
