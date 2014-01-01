@@ -2,6 +2,19 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <modtools_compat.hpp>
+
+#ifdef error
+#	undef error
+#endif
+
+#define DSSTR DIR_SEP_STR_MACRO
+
+#ifdef IS_WINDOWS
+#	define MKDIR "mkdir"
+#else
+#	define MKDIR "mkdir -p"
+#endif
 
 int get_file_size(FILE* f)
 {
@@ -28,7 +41,7 @@ char* read_file_append_null(FILE* f)
 char appplication_folder[MAX_PATH_LEN];
 void get_folder( char const* path, char* folder )
 {
-    int length = strrchr( path, '\\' ) - path + 1;
+    int length = strrchr( path, Compat::Path::SEPARATOR ) - path + 1;
     memcpy( folder, path, length );
     folder[length] = 0;
 }
@@ -44,10 +57,10 @@ char const* get_application_folder()
 }
 
 
-FILE* gLog = 0;
-char gLogPath[] = "..\\..\\temp\\autocompiler_log.txt";
-char gTempFolder[] = "..\\..\\temp";
-char gAssetTempFolder[MAX_PATH_LEN];
+static FILE* gLog = 0;
+static char gLogPath[] = ".."DSSTR".."DSSTR"temp"DSSTR"autocompiler_log.txt";
+static char gTempFolder[] = ".."DSSTR".."DSSTR"temp";
+static char gAssetTempFolder[MAX_PATH_LEN];
 
 char* get_temp_dir()
 {
@@ -61,17 +74,17 @@ char* get_asset_temp_dir()
 
 void set_asset_name(char const* name)
 {
-	sprintf(gAssetTempFolder, "%s\\%s\\%s",  get_application_folder(), get_temp_dir(), name);
+	sprintf(gAssetTempFolder, "%s"DSSTR"%s"DSSTR"%s",  get_application_folder(), get_temp_dir(), name);
 
 	char cmd[MAX_PATH_LEN];
-	sprintf(cmd, "mkdir %s", gAssetTempFolder);
+	sprintf(cmd, MKDIR" %s", gAssetTempFolder);
 	system(cmd);
 }
 
 void create_temp_dir()
 {
 	char cmd[MAX_PATH_LEN];
-	sprintf(cmd, "mkdir %s", get_temp_dir());
+	sprintf(cmd, MKDIR" %s", get_temp_dir());
 	system(cmd);
 }
 
@@ -134,7 +147,11 @@ void error( char const* format, ... )
 void show_error_log()
 {
 	end_log();
+#ifdef IS_WINDOWS
     system( gLogPath );
+#else
+	system( (std::string("echo; echo Log:; cat \"") + gLogPath + "\"; echo;").c_str() );
+#endif
 	exit( -1 );
 }
 
@@ -156,4 +173,29 @@ bool run( char* command_line, bool fail_on_error, char const* format, ... )
 	}
 
 	return result;
+}
+
+static Compat::Path cached_python_path;
+char const* get_python() {
+	if(cached_python_path.empty()) {
+#ifdef IS_WINDOWS
+		cached_python_path = Path(get_application_folder())/"buildtools"/"windows"/"Python27"/"python.exe";
+		if(!cached_python_path.exists()) {
+			error("Unable to find python!");
+		}
+#else
+		const char *possibilities[] = {"python2.7", "python2"};
+		for(size_t i = 0; i < sizeof(possibilities)/sizeof(possibilities[0]); i++) {
+			std::string attempt = std::string() + "which " + possibilities[i] + " &>/dev/null";
+			if(system(attempt.c_str()) == 0) {
+				cached_python_path = possibilities[i];
+				break;
+			}
+		}
+		if(cached_python_path.empty()) {
+			error("Unable to find python!");
+		}
+#endif
+	}
+	return cached_python_path.c_str();
 }

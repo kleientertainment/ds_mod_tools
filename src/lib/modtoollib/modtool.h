@@ -1,5 +1,10 @@
+#ifndef MODTOOLLIB_MODTOOL_H
+#define MODTOOLLIB_MODTOOL_H
+
 #include <stdio.h>
 #define MAX_PATH_LEN 32768
+
+#define MODTOOLS_DEBUG 1
 
 int get_file_size(FILE* f);
 char* read_file_append_null(FILE* f);
@@ -17,3 +22,10 @@ void set_asset_name(char const* name);
 void get_folder( char const* path, char* folder );
 void set_application_folder( char const* application_path );
 char const* get_application_folder();
+char const* get_python();
+
+#ifdef MODTOOLS_DEBUG
+#	define error(fmt, ...) {fprintf(stderr, __FILE__":%d ", __LINE__); error(fmt, ##__VA_ARGS__);}
+#endif
+
+#endif

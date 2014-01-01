@@ -2,6 +2,8 @@
 #define _SCMLPP_H__
 
 
+#include <modtools_compat.hpp>
+
 // Compile-time switches for container classes
 // Do you want the STL to be used?
 #ifndef SCML_NO_STL
