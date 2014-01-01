@@ -66,7 +66,7 @@ assert( targetIsUnix() or targetIsWindows() )
 
 local hostIsUnix, hostIsWindows
 do
-	local host = assert( deduceOS, "Unable to infer the host OS." )
+	local host = assert( deduceOS(), "Unable to infer the host OS." )
 
 	local function True() return true end
 	local function False() return false end
