@@ -227,7 +227,7 @@ solution('mod_tools')
 extract(catfile("..", "pkg", "tst", "wand.zip"), catfile(props.outdir, "dont_starve", "mods"))
 copyDirTree(catfile("..", "pkg", "cmn", "mod_tools"), catfile(props.outdir, props.dir))
 
-if hostIsWindows() then
+if targetIsWindows() then
 	extract(catfile("..", "pkg", props.dir, "mod_tools.zip"), catfile(props.outdir, props.dir))
 	extract(catfile("..", "pkg", props.dir, "Python27.zip"), catfile(props.skuoutdir, "buildtools", props.pythondir))
 end
