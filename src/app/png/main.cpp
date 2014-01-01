@@ -60,8 +60,6 @@ void get_output_file_path( char const* input_file_path, char* output_file_path )
 
 int main( int argument_count, char** arguments )
 {
-	puts("PNG!!!");
-
     set_application_folder( arguments[0] );
 	set_asset_name( "" );
     begin_log();

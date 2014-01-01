@@ -4,7 +4,7 @@
 #include <stdio.h>
 #define MAX_PATH_LEN 32768
 
-#define MODTOOLS_DEBUG 1
+//#define MODTOOLS_DEBUG 1
 
 int get_file_size(FILE* f);
 char* read_file_append_null(FILE* f);

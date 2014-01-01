@@ -69,7 +69,7 @@ void list_files( Path const& folder, char const* extension, file_list& files )
 			tinydir_file file;
 			if(tinydir_readfile(&dir, &file) != -1)
 			{
-				printf("testing file %s\n", file.name);
+				//printf("testing file %s\n", file.name);
 				if(file.is_dir)
 				{
 					if(file.name[0] != '.')
@@ -89,7 +89,6 @@ void list_files( Path const& folder, char const* extension, file_list& files )
 			tinydir_next(&dir);
 		}
 	}
-	else printf("FAIL at %s\n", folder.c_str());
 }
 
 compiler_list get_compilers( Path const& folder )
@@ -117,12 +116,12 @@ compiler_list get_compilers( Path const& folder )
 
 void compile_folder( compiler* c, Path const& asset_folder, Path const& mod_folder )
 {
-	printf("compiling folder: %s For ext: %s\n", asset_folder.c_str(), c->extension.c_str());
+	//printf("compiling folder: %s For ext: %s\n", asset_folder.c_str(), c->extension.c_str());
     file_list files;
     list_files( asset_folder, c->extension.c_str(), files );
     for( file_list::iterator file_iter = files.begin(); file_iter != files.end(); ++file_iter )
     {
-		printf("file: %s\n", file_iter->c_str());
+		//printf("file: %s\n", file_iter->c_str());
         c->compile( file_iter->c_str(), mod_folder.c_str() );
     }    
 }
@@ -170,7 +169,7 @@ int main( int argument_count, char** arguments )
     compiler_list compilers = get_compilers( get_application_folder() );
     for( compiler_list::iterator iter = compilers.begin(); iter != compilers.end(); ++iter )
     {
-		printf("compiler loop: %s\n", (*iter)->path.c_str());
+		//printf("compiler loop: %s\n", (*iter)->path.c_str());
         compiler* c = *iter;
         file_list asset_folders;
 
@@ -178,10 +177,10 @@ int main( int argument_count, char** arguments )
         
         for( file_list::iterator mod_folder_iter = mod_folders.begin(); mod_folder_iter != mod_folders.end(); ++mod_folder_iter )
         {
-			printf("mod folder loop: %s\n", mod_folder_iter->c_str());
+			//printf("mod folder loop: %s\n", mod_folder_iter->c_str());
             for( file_list::iterator asset_folder_iter = asset_folders.begin(); asset_folder_iter != asset_folders.end(); ++asset_folder_iter )
             {
-				printf("asset loop: %s\n", asset_folder_iter->c_str());
+				//printf("asset loop: %s\n", asset_folder_iter->c_str());
 				compile_folder( c, (*mod_folder_iter)/(*asset_folder_iter), *mod_folder_iter );
             }
         }
