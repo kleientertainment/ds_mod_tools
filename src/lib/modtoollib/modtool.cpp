@@ -179,7 +179,7 @@ static Compat::Path cached_python_path;
 char const* get_python() {
 	if(cached_python_path.empty()) {
 #ifdef IS_WINDOWS
-		cached_python_path = Path(get_application_folder())/"buildtools"/"windows"/"Python27"/"python.exe";
+		cached_python_path = Compat::Path(get_application_folder())/"buildtools"/"windows"/"Python27"/"python.exe";
 		if(!cached_python_path.exists()) {
 			error("Unable to find python!");
 		}

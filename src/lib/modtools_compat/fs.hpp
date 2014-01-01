@@ -6,15 +6,12 @@
 #define MODTOOLS_COMPAT_FS_HPP
 
 #include "modtools_compat/common.hpp"
+#include "modtools_compat/posix.hpp"
 
 #include <string>
 #include <algorithm>
 #include <iterator>
 #include <cassert>
-
-extern "C" {
-#	include <sys/stat.h>
-}
 
 namespace Compat {
 #ifdef IS_UNIX

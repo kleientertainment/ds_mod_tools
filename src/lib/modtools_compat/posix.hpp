@@ -6,10 +6,16 @@
  * This header provides a compatibility layer so they also work under Unix.
  */
 
+extern "C" {
+#	include <sys/stat.h>
+}
+
 #ifdef _MSC_VER
 # define stat _stat
 #else
-# define _stat stat
+# ifndef _stat
+#  define _stat stat
+# endif
 #endif
 
 #endif
