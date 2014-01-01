@@ -9,7 +9,7 @@ os_properties =
 -------------------------------------------------------------------------
 
 --[[
--- Tries to infer the OS if it was not specified as an option.
+-- Tries to infer the host OS.
 --]]
 local function deduceOS()
 	--[[
@@ -37,6 +37,8 @@ local function deduceOS()
 	end
 end
 
+
+
 if _OPTIONS.os == nil then
 	_OPTIONS.os = deduceOS()
 end
@@ -52,15 +54,29 @@ end
 -- Utility functions.
 --]]
 
-local function isUnix()
+local function targetIsUnix()
 	return _OPTIONS.os == "linux" or _OPTIONS.os == "macosx"
 end
 
-local function isWindows()
+local function targetIsWindows()
 	return _OPTIONS.os == "windows"
 end
 
-assert( isUnix() or isWindows() )
+assert( targetIsUnix() or targetIsWindows() )
+
+local hostIsUnix, hostIsWindows
+do
+	local host = assert( deduceOS, "Unable to infer the host OS." )
+
+	local function True() return true end
+	local function False() return false end
+
+	if host == "windows" then
+		hostIsUnix, hostIsWindows = False, True
+	else
+		hostIsUnix, hostIsWindows = True, False
+	end
+end
 
 -- Concatenates path components using the native directory separator.
 local function catfile(...)
@@ -73,7 +89,7 @@ local mkdir = (function()
 	-- Command formatting string.
 	--]]
 	local cmd_template
-	if isUnix() then
+	if hostIsUnix() then
 		cmd_template = "mkdir -p %q"
 	else
 		cmd_template = "mkdir %q"
@@ -93,7 +109,7 @@ end)()
 -- Windows, a similar behaviour occurs, since "." belongs to PATH.
 --]]
 local cmdExists = (function()
-	if isUnix() then
+	if hostIsUnix() then
 		return function(name)
 			return os.execute(("which %q &>/dev/null"):format(name))
 		end
@@ -110,7 +126,7 @@ local extract = (function()
 	--]]
 	local cmd_template
 
-	if isUnix() then
+	if hostIsUnix() then
 		--[[
 		-- Mac OS X and almost all Linux distributions have an unzip
 		-- command. The only Linux distros which don't come with unzip
@@ -141,7 +157,7 @@ end)()
 local copyDirTree = (function()
 	local cmd_template
 
-	if isUnix() then
+	if hostIsUnix() then
 		cmd_template = "cp -r %q %q"
 	else
 		cmd_template = "xcopy /s /t /e %q %q"
@@ -211,7 +227,7 @@ solution('mod_tools')
 extract(catfile("..", "pkg", "tst", "wand.zip"), catfile(props.outdir, "dont_starve", "mods"))
 copyDirTree(catfile("..", "pkg", "cmn", "mod_tools"), catfile(props.outdir, props.dir))
 
-if isWindows() then
+if hostIsWindows() then
 	extract(catfile("..", "pkg", props.dir, "mod_tools.zip"), catfile(props.outdir, props.dir))
 	extract(catfile("..", "pkg", props.dir, "Python27.zip"), catfile(props.skuoutdir, "buildtools", props.pythondir))
 end
