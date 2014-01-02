@@ -16,8 +16,12 @@
 #	define MKDIR "mkdir -p"
 #endif
 
+#ifndef PYTHONDIR
+#	error "The macro PYTHONDIR must be defined."
+#endif
+
 static Compat::Path get_python_root() {
-	return Compat::Path(get_application_folder())/"buildtools"/OS_STRING/"Python27";
+	return Compat::Path(get_application_folder())/"buildtools"/PYTHONDIR/"Python27";
 }
 
 int get_file_size(FILE* f)
@@ -66,7 +70,7 @@ static void initialize_compatibility_layer() {
 	const char * const old_pythonpath = getenv("PYTHONPATH");
 	Compat::Path basic_custom_pythonpath = absolute_python_root/"Lib";
 	Compat::Path site_custom_pythonpath = basic_custom_pythonpath/"site-packages";
-	std::string new_pythonpath = basic_custom_pythonpath.toString() + ":" + site_custom_pythonpath.toString();
+	std::string new_pythonpath = basic_custom_pythonpath + ":" + site_custom_pythonpath;
 	if(old_pythonpath != NULL) {
 		new_pythonpath += ":";
 		new_pythonpath += old_pythonpath;

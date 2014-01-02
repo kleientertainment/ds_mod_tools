@@ -32,7 +32,7 @@ local function deduceOS()
 		if kernel_name == "linux" then
 			return "linux"
 		elseif kernel_name == "darwin" then
-			return "macosx"
+			return "osx"
 		end
 	end
 end
@@ -54,8 +54,51 @@ end
 -- Utility functions.
 --]]
 
+local function runcmd(cmd)
+	io.write(cmd, "\n")
+	return os.execute(cmd)
+end
+
+--[[
+-- To be used as: definesMacros { "foo", bar = "qux" },
+-- i.e. array entries are simple defines, hash ones define values.
+--
+-- See http://sourceforge.net/p/premake/bugs/275/ for why it's needed.
+--]]
+local definesMacros = (function()
+	local function macro(name, value)
+		local ret = tostring(name)
+		if value then
+			if type(value) == "string" then
+				if _ACTION == "vs2010" then
+					ret = ret..('="%s"'):format(value)
+				else
+					ret = ret..('=\\"%s\\"'):format(value)
+				end
+			else
+				ret = ret..'='..tostring(value)
+			end
+		end
+		return ret
+	end
+
+	return function(t)
+		local u = {}
+		for k, v in pairs(t) do
+			local M
+			if type(k) == "number" then
+				M = macro(v)
+			else
+				M = macro(k, v)
+			end
+			table.insert(u, M)
+		end
+		return defines(u)
+	end
+end)()
+
 local function targetIsUnix()
-	return _OPTIONS.os == "linux" or _OPTIONS.os == "macosx"
+	return _OPTIONS.os == "linux" or _OPTIONS.os == "osx"
 end
 
 local function targetIsWindows()
@@ -80,7 +123,17 @@ end
 
 -- Concatenates path components using the native directory separator.
 local function catfile(...)
-	return table.concat({...}, package.config:sub(1,1))
+	local t = {...}
+	local u = {}
+
+	for i = 1, select('#', ...) do
+		local v = t[i]
+		if type(v) == "string" and #v > 0 and v ~= "." then
+			table.insert(u, v)
+		end
+	end
+
+	return table.concat(u, package.config:sub(1,1))
 end
 
 -- Creates a directory, including intermediate ones.
@@ -97,7 +150,7 @@ local mkdir = (function()
 
 	assert( cmd_template )
 	return function(path)
-		return os.execute(cmd_template:format(path))
+		return runcmd(cmd_template:format(path))
 	end
 end)()
 
@@ -111,19 +164,41 @@ end)()
 local cmdExists = (function()
 	if hostIsUnix() then
 		return function(name)
-			return os.execute(("which %q &>/dev/null"):format(name))
+			return runcmd(("which %q &>/dev/null"):format(name))
 		end
 	else
 		return function(name)
-			return os.execute(("where %q > nul 2> nul"):format(name))
+			return runcmd(("where %q > nul 2> nul"):format(name))
 		end
 	end
 end)()
 
-local extract = (function()
+local rmDirTree = (function()
 	--[[
 	-- Command formatting string.
 	--]]
+	local cmd_template
+
+	if hostIsUnix() then
+		cmd_template = "rm -rf %q"
+	else
+		cmd_template = "rmdir /s /q %q"
+	end
+
+	return function(path)
+		return runcmd( cmd_template:format(path) )
+	end
+end)()
+
+local function rmSecondArgument(x, y)
+	return rmDirTree(y)
+end
+
+local extract = (function()
+	if _ACTION == "clean" then
+		return rmSecondArgument
+	end
+
 	local cmd_template
 
 	if hostIsUnix() then
@@ -135,7 +210,7 @@ local extract = (function()
 		-- + The user will know how to install it otherwise.
 		--]]
 		if cmdExists("unzip") then
-			cmd_template = "unzip -o %q -d %q"
+			cmd_template = "unzip -q -o %q -d %q"
 		elseif cmdExists("7z") then
 			cmd_template = "7z -y x %q -o %q"
 		end
@@ -147,7 +222,7 @@ local extract = (function()
 	if cmd_template then
 		return function(file, folder)
 			mkdir(folder)
-			return os.execute(cmd_template:format(file, folder))
+			return runcmd(cmd_template:format(file, folder))
 		end
 	else
 		return error("Unable to determine an extraction method.")
@@ -155,6 +230,10 @@ local extract = (function()
 end)()
 
 local copyDirTree = (function()
+	if _ACTION == "clean" then
+		return rmSecondArgument
+	end
+
 	local cmd_template
 
 	if hostIsUnix() then
@@ -164,7 +243,7 @@ local copyDirTree = (function()
 	end
 	return function(src, dest)
 		mkdir(dest)
-		return os.execute(cmd_template:format(src, dest))
+		return runcmd(cmd_template:format(src, dest))
 	end
 end)()
 
@@ -207,10 +286,12 @@ solution('mod_tools')
 	includedirs { "lib", catfile("..", "lib") }
   	targetdir ( props.skuoutdir )
 
+	definesMacros { PYTHONDIR = props.pythondir }
+
     configuration { "debug" }
-        defines { "DEBUG", "_CRT_SECURE_NO_WARNINGS" }
+        definesMacros { "DEBUG", "_CRT_SECURE_NO_WARNINGS" }
    	configuration { "release" }
-        defines { "RELEASE", "_CRT_SECURE_NO_WARNINGS" }
+        definesMacros { "RELEASE", "_CRT_SECURE_NO_WARNINGS" }
         flags { "Optimize" }	
 
 	for k, app in pairs(apps) do	
@@ -242,7 +323,6 @@ for _, src_dir in ipairs(props.pkg_dirs) do
 	for src_subdir, dest_subdir in pairs(pkg_map) do
 		local src = catfile(src_base, src_subdir)
 		local dest = catfile(dest_base, dest_subdir)
-		print(src)
 		if os.isdir(src) then
 			copyDirTree(src, dest)
 		end

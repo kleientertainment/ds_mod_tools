@@ -4,6 +4,8 @@
 #include <stdio.h>
 #define MAX_PATH_LEN 32768
 
+#include <modtools_compat.hpp>
+
 //#define MODTOOLS_DEBUG 1
 
 int get_file_size(FILE* f);
@@ -24,7 +26,10 @@ void set_application_folder( char const* application_path );
 char const* get_application_folder();
 char const* get_python();
 
-#ifdef MODTOOLS_DEBUG
+#if defined(DEBUG) && defined(IS_UNIX)
+/*
+ * The '##' prefix for macro varargs is a gcc extension, so I'm just enabling it under Unix, since I don't know if VS supports it.
+ */
 #	define error(fmt, ...) {fprintf(stderr, __FILE__":%d ", __LINE__); error(fmt, ##__VA_ARGS__);}
 #endif
 

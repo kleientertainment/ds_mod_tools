@@ -128,7 +128,7 @@ void compile_folder( compiler* c, Path const& asset_folder, Path const& mod_fold
 
 void get_asset_folders( compiler& c, file_list& asset_folders )
 {
-    Path asset_list_path = static_cast<const std::string&>(c.path) + std::string(".txt");
+    Path asset_list_path = c.path + ".txt";
     std::ifstream in( asset_list_path.c_str() );
 	if(!in) {
 		error("Unable to open %s for reading.", asset_list_path.c_str());

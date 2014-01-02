@@ -101,42 +101,54 @@ namespace Compat {
 		/*
 		 * Appends a string, preceded by a directory separator if necessary.
 		 */
-		Path& append(const std::string& str) {
+		Path& appendPath(std::string str) {
 			if(str.length() == 0)
 				return *this;
 
-			std::string normalized_string = str;
-			normalizeDirSeps(normalized_string);
+			normalizeDirSeps(str);
 
 			const size_t old_len = this->length();
 
-			if(old_len != 0 || normalized_string[0] == DIRECTORY_SEPARATOR) {
+			if(old_len != 0 || str[0] == DIRECTORY_SEPARATOR) {
 				std::string::append(1, DIRECTORY_SEPARATOR);
 			}
 			std::string::const_iterator begin, end;
-			begin = normalized_string.begin();
-			end = normalized_string.end();
+			begin = str.begin();
+			end = str.end();
 			skip_extra_slashes(begin, end);
 
 			std::string::append(begin, end);
 			return *this;
 		}
 
-		Path& assign(const std::string& str) {
-			clear();
-			return append(str);
+		Path& assignPath(const std::string& str) {
+			std::string::clear();
+			return appendPath(str);
+		}
+
+		Path& operator=(const std::string& str) {
+			return assignPath(str);
+		}
+
+		Path& operator=(const char *str) {
+			return assignPath(str);
+		}
+
+		Path& operator=(const Path& p) {
+			std::string::assign(p);
+			return *this;
 		}
 
 		Path(const std::string& str) {
-			assign(str);
+			*this = str;
 		}
 
 		Path(const char* str) {
-			assign(str);
+			*this = str;
 		}
 
 		Path(const Path& p) {
-			std::string::assign(p);
+			*this = p;
 		}
 
 		Path() {}
@@ -145,44 +157,38 @@ namespace Compat {
 			return Path(*this);
 		}
 
-		Path& operator=(const std::string& str) {
-			return assign(str);
-		}
-
-		Path& operator=(const char *str) {
-			return assign(str);
-		}
-
 		Path& operator+=(const std::string& str) {
-			return append(str);
+			std::string::append(str);
+			return *this;
 		}
 
 		Path& operator+=(const char *str) {
-			return append(str);
+			std::string::append(str);
+			return *this;
 		}
 
 		Path operator+(const std::string& str) const {
-			return this->copy().append(str);
+			return this->copy() += str;
 		}
 
 		Path operator+(const char *str) const {
-			return this->copy().append(str);
+			return this->copy() += str;
 		}
 
 		Path& operator/=(const std::string& str) {
-			return append(str);
+			return appendPath(str);
 		}
 
 		Path& operator/=(const char *str) {
-			return append(str);
+			return appendPath(str);
 		}
 
 		Path operator/(const std::string& str) const {
-			return this->copy().append(str);
+			return this->copy() /= str;
 		}
 
 		Path operator/(const char *str) const {
-			return this->copy().append(str);
+			return this->copy() /= str;
 		}
 
 		/*
@@ -226,7 +232,7 @@ namespace Compat {
 		Path dirnameWithSlash() const {
 			Path p = dirname();
 			if(p != "/") {
-				static_cast<std::string&>(p).append(1, DIRECTORY_SEPARATOR);
+				p.append(1, DIRECTORY_SEPARATOR);
 			}
 			return p;
 		}
