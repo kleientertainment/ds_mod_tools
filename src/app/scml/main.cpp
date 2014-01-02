@@ -2174,7 +2174,7 @@ int main( int argument_count, char** arguments )
 	{
 		error( "ERROR: Could not open '%s'!\n", input_file_path.c_str() );
 	}
-	printf("input file: %s\n", input_file_path.basename().c_str());
+	//printf("input file: %s\n", input_file_path.basename().c_str());
 
 	Path asset_name = input_file_path.basename();
 	asset_name.removeExtension();
@@ -2187,13 +2187,13 @@ int main( int argument_count, char** arguments )
 
 	Path output_dir = arguments[2];
 
-	Path build_package_path = output_dir/"anim"/output_package_file_path.basename();
+	Path built_package_path = output_dir/"anim"/output_package_file_path.basename();
 
-    if(	build_package_path.exists()
+    if(	built_package_path.exists()
         && output_package_file_path.exists()
-        && input_file_path.isNewerThan(build_package_path)
-        && Path(arguments[0]).isNewerThan(build_package_path)
-        && output_package_file_path.isNewerThan(build_package_path)
+        && input_file_path.isNewerThan(built_package_path)
+        && Path(arguments[0]).isNewerThan(built_package_path)
+        && output_package_file_path.isNewerThan(built_package_path)
 	  ){
          return 0;
     }
@@ -2237,7 +2237,7 @@ int main( int argument_count, char** arguments )
 			(app_folder/"exported"/"export.py").c_str(),
 			output_dir.c_str(),
 			(app_folder/"data").c_str(),
-			output_package_file_path.basename().c_str()
+			output_package_file_path.c_str()
 	);
     run( command_line, true, "Building '%s'", output_package_file_path.basename().c_str() );
 

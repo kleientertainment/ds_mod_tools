@@ -73,8 +73,8 @@ def ConvertAnim(params):
 
     additional_options = ExportOptions.Options.get( anim_name, [] )
     cmd_args = [
-        os.path.join( SCRIPT_DIR, r"..\buildtools\windows\python27\python.exe" ),
-        os.path.join( SCRIPT_DIR, r"..\tools\scripts\buildanimation.py" ),
+        sys.executable,
+        os.path.abspath( os.path.join( SCRIPT_DIR, "..", "tools", "scripts", "buildanimation.py" ) ),
         "--scale=" + str( scale )
     ]
     
@@ -95,18 +95,19 @@ def ConvertAnim(params):
         except:
             pass
 
+    src_file = os.path.abspath( anim_path )
+
     os.chdir( SCRIPT_DIR )
 
-    src_file = anim_path    
     anim_dir = os.path.normpath( os.path.join("..", args.outputdir, "anim"))
     if not os.path.exists(anim_dir):
         os.makedirs(anim_dir)
     dest_file = os.path.join(anim_dir, anim)
 
-    if args.force or util.IsFileNewer( src_file, dest_file ):
+    if args.force or not os.path.exists( dest_file ) or util.IsFileNewer( src_file, dest_file ):
         cmd_args += additional_options
         cmd_args.append( src_file )
-        cmd_args.append( '--outputdir=' + args.outputdir )
+        cmd_args.append( '--outputdir=' + os.path.join("..", args.outputdir) )
 
         print( '\tExporting ' + anim )
         return subprocess.call(cmd_args)

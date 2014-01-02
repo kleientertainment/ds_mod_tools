@@ -191,6 +191,7 @@ def ExportAnim(endianstring, xmlstr, outzip, ignore_exceptions):
 
     info = zipfile.ZipInfo( "anim.bin", date_time=ZIP_ZERO_TIME )
     info.compress_type = zipfile.ZIP_DEFLATED
+    info.external_attr = 0644 << 16L
     outzip.writestr(info, outfile.getvalue())
 
 Vert = namedtuple("Vertex", "x y z u v w")
@@ -257,6 +258,7 @@ def AtlasImages(ims, outname, outzip, maxtexturesize=2048, antialias=True, platf
 
                 info = zipfile.ZipInfo( tex_filename, date_time=ZIP_ZERO_TIME )
                 info.compress_type = zipfile.ZIP_DEFLATED
+                info.external_attr = 0644 << 16L
                 outzip.writestr( info, open( dest_filename, 'rb' ).read() )
 
                 for mip_filename in valid_filenames:
@@ -437,6 +439,7 @@ def ExportBuild(endianstring, inzip, buildxml, outzip, antialias, platform, text
 
     info = zipfile.ZipInfo( "build.bin", date_time=ZIP_ZERO_TIME )
     info.compress_type = zipfile.ZIP_DEFLATED
+    info.external_attr = 0644 << 16L
     outzip.writestr(info, outfile.getvalue())
 
 SCALE_FACTOR = 1.0
@@ -494,9 +497,9 @@ if __name__ == "__main__":
 
         outzip.close()
 
-        outfilename = data_path + "/anim/" + base_name + ".zip"
-        if not os.path.exists( data_path + "/anim/" ):
-            os.makedirs( data_path + "/anim/" )
+        outfilename = os.path.join( data_path, "anim", base_name + ".zip" )
+        if not os.path.exists( os.path.join( data_path, "anim" ) ):
+            os.makedirs( os.path.join( data_path, "anim" ) )
         f = open(outfilename, "wb")
         f.write(outbuff.getvalue())
         f.close()
