@@ -1,8 +1,8 @@
 os_properties = 
 {
-	windows = { dir = 'win32', pythondir = 'windows' },
-	macosx = { dir = 'osx', pythondir = 'osx' },
-	linux = { dir = 'linux', pythondir = 'linux' },
+	windows = { dir = 'win32', modtools_dir = "win32", pythondir = 'windows' },
+	macosx = { dir = 'osx', modtools_dir = "unix", pythondir = 'osx' },
+	linux = { dir = 'linux', modtools_dir = "unix", pythondir = 'linux' },
 }
 
 
@@ -158,9 +158,9 @@ local copyDirTree = (function()
 	local cmd_template
 
 	if hostIsUnix() then
-		cmd_template = "cp -r %q %q"
+		cmd_template = "cp -rT %q %q"
 	else
-		cmd_template = "xcopy /s /t /e %q %q"
+		cmd_template = "xcopy /e /y %q %q"
 	end
 	return function(src, dest)
 		return os.execute(cmd_template:format(src, dest))
@@ -225,9 +225,6 @@ solution('mod_tools')
 
 
 extract(catfile("..", "pkg", "tst", "wand.zip"), catfile(props.outdir, "dont_starve", "mods"))
-copyDirTree(catfile("..", "pkg", "cmn", "mod_tools"), catfile(props.outdir, props.dir))
-
-if targetIsWindows() then
-	extract(catfile("..", "pkg", props.dir, "mod_tools.zip"), catfile(props.outdir, props.dir))
-	extract(catfile("..", "pkg", props.dir, "Python27.zip"), catfile(props.skuoutdir, "buildtools", props.pythondir))
-end
+extract(catfile("..", "pkg", props.dir, "Python27.zip"), catfile(props.skuoutdir, "buildtools", props.pythondir))
+copyDirTree(catfile("..", "pkg", "cmn", "mod_tools"), props.skuoutdir)
+copyDirTree(catfile("..", "pkg", props.modtools_dir, "mod_tools"), props.skuoutdir)

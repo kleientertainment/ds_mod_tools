@@ -16,6 +16,10 @@
 #	define MKDIR "mkdir -p"
 #endif
 
+static Compat::Path get_python_root() {
+	return Compat::Path(get_application_folder())/"buildtools"/OS_STRING/"Python27";
+}
+
 int get_file_size(FILE* f)
 {
 	if(!f)
@@ -38,7 +42,7 @@ char* read_file_append_null(FILE* f)
 	return buffer;
 }
 
-char appplication_folder[MAX_PATH_LEN];
+static char appplication_folder[MAX_PATH_LEN];
 void get_folder( char const* path, char* folder )
 {
     int length = strrchr( path, Compat::Path::SEPARATOR ) - path + 1;
@@ -46,9 +50,35 @@ void get_folder( char const* path, char* folder )
     folder[length] = 0;
 }
 
+static void initialize_compatibility_layer() {
+#ifdef IS_UNIX
+	/*
+	 * Extends the Python path for module searching.
+	 *
+	 * Works pretty much like the site.py script, but removes its dependency under Unix.
+	 * (and allows using a system wide Python installation instead of a custom one)
+	 */
+
+	char cstr_absolute_python_root[MAX_PATH_LEN];
+	realpath(get_python_root().c_str(), cstr_absolute_python_root);
+	Compat::Path absolute_python_root(cstr_absolute_python_root);
+
+	const char * const old_pythonpath = getenv("PYTHONPATH");
+	Compat::Path basic_custom_pythonpath = absolute_python_root/"Lib";
+	Compat::Path site_custom_pythonpath = basic_custom_pythonpath/"site-packages";
+	std::string new_pythonpath = basic_custom_pythonpath.toString() + ":" + site_custom_pythonpath.toString();
+	if(old_pythonpath != NULL) {
+		new_pythonpath += ":";
+		new_pythonpath += old_pythonpath;
+	}
+	setenv("PYTHONPATH", new_pythonpath.c_str(), 1);
+#endif
+}
+
 void set_application_folder( char const* application_path )
 {
     get_folder( application_path, appplication_folder );
+	initialize_compatibility_layer();
 }
 
 char const* get_application_folder()
@@ -179,7 +209,7 @@ static Compat::Path cached_python_path;
 char const* get_python() {
 	if(cached_python_path.empty()) {
 #ifdef IS_WINDOWS
-		cached_python_path = Compat::Path(get_application_folder())/"buildtools"/"windows"/"Python27"/"python.exe";
+		cached_python_path = get_python_root()/"python.exe";
 		if(!cached_python_path.exists()) {
 			error("Unable to find python!");
 		}

@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 
-exec premake4 gmake
+exec premake4 "${@:-gmake}"

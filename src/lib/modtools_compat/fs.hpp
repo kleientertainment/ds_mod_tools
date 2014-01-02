@@ -32,6 +32,14 @@ namespace Compat {
 
 		static const char SEPARATOR = DIRECTORY_SEPARATOR;
 
+		std::string& toString() {
+			return static_cast<std::string&>(*this);
+		}
+
+		const std::string& toString() const {
+			return static_cast<const std::string&>(*this);
+		}
+
 	private:
 		static void normalizeDirSeps(std::string& str, size_t offset = 0) {
 			std::string::iterator begin = str.begin();

@@ -3,10 +3,13 @@
 
 #if defined(_WIN32) || defined(WIN32)
 # define IS_WINDOWS 1
+# define OS_STRING "windows"
 #elif defined(__linux__)
 # define IS_LINUX 1
+# define OS_STRING "linux"
 #elif defined(__APPLE__) && defined(__MACH__)
 # define IS_MAC 1
+# define OS_STRING "osx"
 #else
 # error "Unknown operating system"
 #endif
