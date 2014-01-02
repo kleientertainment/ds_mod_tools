@@ -82,11 +82,16 @@ int main( int argument_count, char** arguments )
 
 	Path build_tool_path = Path(get_application_folder())/"compiler_scripts"/"image_build.py";
 
+	/*
+	 * Existence checks are implicit. See the comment in scml/main.cpp or the
+	 * Path class definition for more details.
+	 */
 	if(
-		input_file_path.isNewerThan(output_package_file_path)
-		&& Path(arguments[0]).isNewerThan(output_package_file_path)
-		&& build_tool_path.isNewerThan(output_package_file_path)
+		input_file_path.isOlderThan(output_package_file_path)
+		&& Path(arguments[0]).isOlderThan(output_package_file_path)
+		&& build_tool_path.isOlderThan(output_package_file_path)
 	) {
+		log_and_print("%s is up to date.\n", output_package_file_path.c_str());
         return 0;
     }
 

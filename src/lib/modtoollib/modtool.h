@@ -17,6 +17,8 @@ void end_log();
 void show_error_log();
 void error( char const* format, ... );
 void log( char const* format, ... );
+void log_and_print( char const* format, ... );
+void log_and_fprint( FILE* print_stream, char const* format, ... );
 void create_temp_dir();
 char* get_temp_dir();
 char* get_asset_temp_dir();

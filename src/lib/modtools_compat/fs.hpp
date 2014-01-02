@@ -70,6 +70,8 @@ namespace Compat {
 
 
 		int inner_stat(stat_t& buf) const {
+			if(empty())
+				return -1;
 			return ::stat(this->c_str(), &buf);
 		}
 
@@ -278,11 +280,37 @@ namespace Compat {
 			return inner_stat(buf) == 0;
 		}
 
+		operator bool() const {
+			return exists();
+		}
+
+		/*
+		 * If p doesn't exist and *this does, returns true.
+		 * Likewise, if *this doesn't exist and p does, returns false.
+		 */
 		bool isNewerThan(const Path& p) const {
 			stat_t mybuf, otherbuf;
 			stat(mybuf);
 			p.stat(otherbuf);
-			return mybuf.st_mtime < otherbuf.st_mtime;
+
+			if(mybuf.st_mtime > otherbuf.st_mtime) {
+				return true;
+			}
+			else if(mybuf.st_mtime == otherbuf.st_mtime) {
+				// Compares nanoseconds under Unix.
+#if defined(IS_LINUX)
+				return mybuf.st_mtim.tv_nsec > otherbuf.st_mtim.tv_nsec;
+#elif defined(IS_MAC)
+				return mybuf.st_mtimespec.tv_nsec > otherbuf.st_mtimespec.tv_nsec;
+#endif
+			}
+			else {
+				return false;
+			}
+		}
+
+		bool isOlderThan(const Path& p) const {
+			return p.isNewerThan(*this);
 		}
 	};
 }

@@ -2189,13 +2189,16 @@ int main( int argument_count, char** arguments )
 
 	Path built_package_path = output_dir/"anim"/output_package_file_path.basename();
 
-    if(	built_package_path.exists()
-        && output_package_file_path.exists()
-        && input_file_path.isNewerThan(built_package_path)
-        && Path(arguments[0]).isNewerThan(built_package_path)
-        && output_package_file_path.isNewerThan(built_package_path)
+	/*
+	 * Existence checks are implicit.
+	 * If neither compared files of a pair exist, the check fails, since the inequality is strict.
+	 */
+    if(	input_file_path.isOlderThan(built_package_path)
+        && Path(arguments[0]).isOlderThan(built_package_path)
+        && built_package_path.isNewerThan(output_package_file_path)
 	  ){
-         return 0;
+		log_and_print("%s is up to date.\n", built_package_path.c_str());
+        return 0;
     }
 
     SCML::Data scml( input_file_path.c_str() );	

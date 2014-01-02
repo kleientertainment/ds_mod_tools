@@ -1,7 +1,7 @@
 #include <modtoollib/modtool.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
 #include <modtools_compat.hpp>
 
 #ifdef error
@@ -91,7 +91,7 @@ char const* get_application_folder()
 }
 
 
-static FILE* gLog = 0;
+static FILE* gLog = NULL;
 static char gLogPath[] = ".."DSSTR".."DSSTR"temp"DSSTR"autocompiler_log.txt";
 static char gTempFolder[] = ".."DSSTR".."DSSTR"temp";
 static char gAssetTempFolder[MAX_PATH_LEN];
@@ -122,9 +122,17 @@ void create_temp_dir()
 	system(cmd);
 }
 
+
 void begin_log()
 {
+	static bool registered_exit = false;
+
+	end_log();
 	gLog = fopen(gLogPath, "a");
+
+	if(!registered_exit) {
+		registered_exit = (atexit(end_log) == 0);
+	}
 }
 
 void end_log()
@@ -133,47 +141,78 @@ void end_log()
     {
 		fflush( gLog );
 		fclose( gLog );
+		gLog = NULL;
     }    
 }
 
 void clear_log()
 {
+	bool was_logging = static_cast<bool>(gLog);
+	end_log();
 	FILE* f = fopen(gLogPath, "w");
 	if(f)
 	{
 		fclose(f);
 	}
+	if(was_logging) {
+		begin_log();
+	}
 }
 
-
-void log( char const* format, ... )
+static void vlog( char const* format, va_list ap )
 {
 	if(gLog)
 	{
-		char message[4096];
-		va_list argptr;
-		va_start( argptr, format );
-		vsprintf( message, format, argptr );
-		va_end( argptr );
-		fprintf( gLog, message );
+		fprintf( gLog, format, ap );
 	}
+}
+
+void log( char const* format, ... )
+{
+	va_list ap;
+	va_start( ap, format );
+	vlog( format, ap );
+	va_end( ap );
+}
+
+static void vlog_and_fprint( FILE* print_stream, char const* format, va_list ap )
+{
+	va_list ap1;
+	va_copy( ap1, ap );
+	vfprintf( print_stream, format, ap1 );
+	va_end( ap1 );
+
+	va_list ap2;
+	va_copy( ap2, ap );
+	vlog( format, ap2 );
+	va_end( ap2 );
+}
+
+void log_and_fprint( FILE* print_stream, char const* format, ... )
+{
+	va_list ap;
+	va_start( ap, format );
+	vlog_and_fprint( print_stream, format, ap );
+	va_end( ap );
+}
+
+void log_and_print( char const* format, ... )
+{
+	va_list ap;
+	va_start( ap, format );
+	vlog_and_fprint( stdout, format, ap );
+	va_end( ap );
 }
 
 void error( char const* format, ... )
 {
-	char message[4096];
-	va_list argptr;
-	va_start( argptr, format );
-	vsprintf( message, format, argptr );
-	va_end( argptr );
-	printf( message );
+	va_list ap;
+	va_start( ap, format );
+	vlog_and_fprint( stderr, format, ap );
+	va_end( ap );
 
-	if(gLog)
-	{
-		fprintf( gLog, message );
-		fflush( gLog );
-		fclose( gLog );
-	}
+	// Automatic: see begin_log().
+	//end_log();
 
 	exit( -1 );
 }
