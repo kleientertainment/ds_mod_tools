@@ -26,9 +26,9 @@ void set_application_folder( char const* application_path );
 char const* get_application_folder();
 char const* get_python();
 
-#if defined(DEBUG) && defined(IS_UNIX)
+#if defined(DEBUG) && defined(__GNUC__)
 /*
- * The '##' prefix for macro varargs is a gcc extension, so I'm just enabling it under Unix, since I don't know if VS supports it.
+ * The '##' prefix for macro varargs is a gcc extension, so I'm just enabling it under it, since I don't know if VS supports it.
  */
 #	define error(fmt, ...) {fprintf(stderr, __FILE__":%d ", __LINE__); error(fmt, ##__VA_ARGS__);}
 #endif
