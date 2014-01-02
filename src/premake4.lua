@@ -40,6 +40,7 @@ end
 
 
 if _OPTIONS.os == nil then
+	io.write("Target OS not specified. Assuming it's the host OS.", "\n")
 	_OPTIONS.os = deduceOS()
 end
 if _OPTIONS.os == nil then
@@ -128,7 +129,7 @@ local function catfile(...)
 
 	for i = 1, select('#', ...) do
 		local v = t[i]
-		if type(v) == "string" and #v > 0 and v ~= "." then
+		if type(v) == "string" and #v > 0 and (i == 1 or v ~= ".") then
 			table.insert(u, v)
 		end
 	end
