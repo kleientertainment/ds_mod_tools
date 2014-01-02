@@ -1,8 +1,8 @@
 os_properties = 
 {
-	windows = { dir = 'win32', modtools_dir = "win32", pythondir = 'windows' },
-	macosx = { dir = 'osx', modtools_dir = "unix", pythondir = 'osx' },
-	linux = { dir = 'linux', modtools_dir = "unix", pythondir = 'linux' },
+	windows = { dir = 'win32', pkg_dirs = {"cmn", "win32"}, pythondir = 'windows' },
+	macosx = { dir = 'osx', pkg_dirs = {"cmn", "unix"}, pythondir = 'osx' },
+	linux = { dir = 'linux', pkg_dirs = {"cmn", "unix"}, pythondir = 'linux' },
 }
 
 
@@ -163,6 +163,7 @@ local copyDirTree = (function()
 		cmd_template = "xcopy /e /y %q %q"
 	end
 	return function(src, dest)
+		mkdir(dest)
 		return os.execute(cmd_template:format(src, dest))
 	end
 end)()
@@ -175,6 +176,15 @@ props = os_properties[_OPTIONS.os]
 props.outdir = catfile("..", "..", "ds_mod_tools_out")
 props.skuoutdir = catfile(props.outdir, props.dir, "mod_tools")
 props.tooldir = catfile("..", "tools", "bin", props.dir)
+
+--[[
+-- Maps subdirectories of pkg/{pkg_dir}/ to subdirectories of mod_tools.
+--]]
+pkg_map = {
+	[catfile("mod_tools")] = catfile("."),
+	[catfile("Python27")] = catfile("buildtools", props.pythondir, "Python27"),
+}
+
 
 apps = 
 {
@@ -225,6 +235,16 @@ solution('mod_tools')
 
 
 extract(catfile("..", "pkg", "tst", "wand.zip"), catfile(props.outdir, "dont_starve", "mods"))
-extract(catfile("..", "pkg", props.dir, "Python27.zip"), catfile(props.skuoutdir, "buildtools", props.pythondir))
-copyDirTree(catfile("..", "pkg", "cmn", "mod_tools"), props.skuoutdir)
-copyDirTree(catfile("..", "pkg", props.modtools_dir, "mod_tools"), props.skuoutdir)
+
+for _, src_dir in ipairs(props.pkg_dirs) do
+	local src_base = catfile("..", "pkg", src_dir)
+	local dest_base = props.skuoutdir
+	for src_subdir, dest_subdir in pairs(pkg_map) do
+		local src = catfile(src_base, src_subdir)
+		local dest = catfile(dest_base, dest_subdir)
+		print(src)
+		if os.isdir(src) then
+			copyDirTree(src, dest)
+		end
+	end
+end
