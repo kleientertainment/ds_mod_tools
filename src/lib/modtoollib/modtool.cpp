@@ -24,24 +24,37 @@ static Compat::Path get_python_root() {
 	return Compat::Path(get_application_folder())/"buildtools"/PYTHONDIR/"Python27";
 }
 
-int get_file_size(FILE* f)
+/*
+ * Changed this to work correctly for files opened in text mode.
+ * And returning zero avoids an out of bounds error on indexing the
+ * pointer returned by read_file_append_null(), as well as allowing the
+ * use of size_t.
+ */
+size_t get_file_size(FILE* f)
 {
 	if(!f)
 	{
-		return -1;
+		return 0;
 	}
-
+	/*
 	fseek(f, 0, SEEK_END);
 	int size = ftell(f);
 	fseek(f, 0, SEEK_SET);
 	return size;
+	*/
+	int fd = fileno(f);
+	struct stat buf;
+	if(fd < 0 || fstat(fd, &buf) != 0) {
+		return 0;
+	}
+	return buf.st_size;
 }
 
 char* read_file_append_null(FILE* f)
 {
-	int size = get_file_size(f);
+	size_t size = get_file_size(f);
 	char* buffer = new char[size + 1];
-	fread(buffer, 1, size, f);
+	if(size > 0) fread(buffer, 1, size, f);
 	buffer[size] = 0;
 	return buffer;
 }

@@ -10,12 +10,28 @@ extern "C" {
 #	include <sys/stat.h>
 }
 
+#include <cstdio>
+
 #ifdef _MSC_VER
-# define stat _stat
+#	ifndef stat
+#		define stat _stat
+#	endif
+#	ifndef fstat
+#		define fstat _fstat
+#	endif
+#	ifndef fileno
+#		define fileno _fileno
+#	endif
 #else
-# ifndef _stat
-#  define _stat stat
-# endif
+#	ifndef _stat
+#		define _stat stat
+#	endif
+#	ifndef _fstat
+#		define _fstat fstat
+#	endif
+#	ifndef _fileno
+#		define _fileno fileno
+#	endif
 #endif
 
 #endif

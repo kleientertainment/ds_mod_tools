@@ -8,7 +8,7 @@
 
 //#define MODTOOLS_DEBUG 1
 
-int get_file_size(FILE* f);
+size_t get_file_size(FILE* f);
 char* read_file_append_null(FILE* f);
 bool run( char* command_line, bool fail_on_error, char const* format, ... );
 void clear_log();

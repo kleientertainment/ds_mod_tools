@@ -101,7 +101,8 @@ compiler_list get_compilers( Path const& folder )
 	}
 
     compiler_list compilers;
-	char* buffer = read_file_append_null(in);
+	char* original_buffer = read_file_append_null(in);
+	char* buffer = original_buffer;
 	buffer = strtok(buffer, "\r\n");
 	do
 	{
@@ -110,6 +111,8 @@ compiler_list get_compilers( Path const& folder )
 			compilers.push_back( new compiler( folder/compiler_name ) );
 		}
 	}while(buffer = strtok(NULL, "\r\n"));
+
+	delete[] original_buffer;
 
 	return compilers;
 }
@@ -184,6 +187,8 @@ int main( int argument_count, char** arguments )
 				compile_folder( c, (*mod_folder_iter)/(*asset_folder_iter), *mod_folder_iter );
             }
         }
+
+		delete c;
    }
 
 	end_log();
