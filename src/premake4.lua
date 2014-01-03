@@ -257,6 +257,8 @@ props.outdir = catfile("..", "build")
 props.skuoutdir = catfile(props.outdir, props.dir, "mod_tools")
 props.tooldir = catfile("..", "tools", "bin", props.dir)
 
+mkdir( props.outdir )
+
 --[[
 -- Maps subdirectories of pkg/{pkg_dir}/ to subdirectories of mod_tools.
 --]]
