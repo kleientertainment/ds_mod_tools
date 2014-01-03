@@ -253,7 +253,7 @@ end)()
 
 
 props = os_properties[_OPTIONS.os]
-props.outdir = catfile("..", "..", "ds_mod_tools_out")
+props.outdir = catfile("..", "build")
 props.skuoutdir = catfile(props.outdir, props.dir, "mod_tools")
 props.tooldir = catfile("..", "tools", "bin", props.dir)
 
