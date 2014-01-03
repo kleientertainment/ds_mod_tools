@@ -22,6 +22,10 @@ namespace Compat {
 #	define DIR_SEP_STR_MACRO "\\"
 #endif
 
+#if !defined(S_ISDIR)
+#	error "The POSIX macro S_ISDIR is not defined."
+#endif
+
 	static const char DIRECTORY_SEPARATOR = DIR_SEP_MACRO;	
 
 	static const char DUAL_DIRECTORY_SEPARATOR = (DIRECTORY_SEPARATOR == '/' ? '\\' : '/');
@@ -42,9 +46,9 @@ namespace Compat {
 
 	private:
 		static void normalizeDirSeps(std::string& str, size_t offset = 0) {
-			std::string::iterator begin = str.begin();
-			std::advance(begin, offset);
-			std::replace(begin, str.end(), DUAL_DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+			std::string::iterator _begin = str.begin();
+			std::advance(_begin, offset);
+			std::replace(_begin, str.end(), DUAL_DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 		}
 
 		/*
@@ -78,7 +82,8 @@ namespace Compat {
 
 		size_t get_extension_position() const {
 			const size_t dot_pos = find_last_of('.');
-			if(dot_pos == npos || dot_pos < find_last_of(SEPARATOR)) {
+			const size_t last_sep_pos = find_last_of(SEPARATOR);
+			if(dot_pos == npos || (last_sep_pos != npos && dot_pos < last_sep_pos)) {
 				return npos;
 			}
 			else {
@@ -87,16 +92,23 @@ namespace Compat {
 		}
 		
 	public:
-		void stat(stat_t& buf) const {
+		bool stat(stat_t& buf) const {
 			if(inner_stat(buf)) {
 				buf = stat_t();
+				return false;
 			}
+			return true;
 		}
 
 		stat_t stat() const {
 			stat_t buf;
 			stat(buf);
 			return buf;
+		}
+
+		bool isDirectory() const {
+			stat_t buf;
+			return stat(buf) && S_ISDIR(buf.st_mode);
 		}
 
 
@@ -114,12 +126,12 @@ namespace Compat {
 			if(old_len != 0 || str[0] == DIRECTORY_SEPARATOR) {
 				std::string::append(1, DIRECTORY_SEPARATOR);
 			}
-			std::string::const_iterator begin, end;
-			begin = str.begin();
-			end = str.end();
-			skip_extra_slashes(begin, end);
+			std::string::const_iterator _begin, _end;
+			_begin = str.begin();
+			_end = str.end();
+			skip_extra_slashes(_begin, _end);
 
-			std::string::append(begin, end);
+			std::string::append(_begin, _end);
 			return *this;
 		}
 
@@ -141,15 +153,15 @@ namespace Compat {
 			return *this;
 		}
 
-		Path(const std::string& str) {
+		Path(const std::string& str) : std::string() {
 			*this = str;
 		}
 
-		Path(const char* str) {
+		Path(const char* str) : std::string() {
 			*this = str;
 		}
 
-		Path(const Path& p) {
+		Path(const Path& p) : std::string() {
 			*this = p;
 		}
 
@@ -273,6 +285,7 @@ namespace Compat {
 				assert( start >= 1 );
 				std::string::erase(start - 1);
 			}
+			return *this;
 		}
 
 		bool exists() const {

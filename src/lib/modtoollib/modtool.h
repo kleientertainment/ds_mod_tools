@@ -32,7 +32,7 @@ char const* get_python();
 /*
  * The '##' prefix for macro varargs is a gcc extension, so I'm just enabling it under it, since I don't know if VS supports it.
  */
-#	define error(fmt, ...) {fprintf(stderr, __FILE__":%d ", __LINE__); error(fmt, ##__VA_ARGS__);}
+#	define error(fmt, ...) {log_and_fprint(stderr, __FILE__":%d ", __LINE__); error(fmt, ##__VA_ARGS__);}
 #endif
 
 #endif
