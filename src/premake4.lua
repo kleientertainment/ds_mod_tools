@@ -8,6 +8,21 @@ os_properties =
 
 -------------------------------------------------------------------------
 
+-- Concatenates path components using the native directory separator.
+local function catfile(...)
+	local t = {...}
+	local u = {}
+
+	for i = 1, select('#', ...) do
+		local v = t[i]
+		if type(v) == "string" and #v > 0 and (i == 1 or v ~= ".") then
+			table.insert(u, v)
+		end
+	end
+
+	return table.concat(u, package.config:sub(1,1))
+end
+
 --[[
 -- Tries to infer the host OS.
 --]]
@@ -48,6 +63,12 @@ if _OPTIONS.os == nil then
 elseif os_properties[_OPTIONS.os] == nil then
 	error('Unsupported os!')
 end
+
+
+props = os_properties[_OPTIONS.os]
+props.outdir = catfile("..", "build")
+props.skuoutdir = catfile(props.outdir, props.dir, "mod_tools")
+props.tooldir = catfile("..", "tools", "bin", props.dir)
 
 
 -------------------------------------------------------------------------
@@ -122,21 +143,6 @@ do
 	end
 end
 
--- Concatenates path components using the native directory separator.
-local function catfile(...)
-	local t = {...}
-	local u = {}
-
-	for i = 1, select('#', ...) do
-		local v = t[i]
-		if type(v) == "string" and #v > 0 and (i == 1 or v ~= ".") then
-			table.insert(u, v)
-		end
-	end
-
-	return table.concat(u, package.config:sub(1,1))
-end
-
 -- Creates a directory, including intermediate ones.
 local mkdir = (function()
 	--[[
@@ -144,9 +150,9 @@ local mkdir = (function()
 	--]]
 	local cmd_template
 	if hostIsUnix() then
-		cmd_template = "mkdir -p %q"
+		cmd_template = 'mkdir -p %q'
 	else
-		cmd_template = "mkdir %q"
+		cmd_template = 'mkdir "%s"'
 	end
 
 	assert( cmd_template )
@@ -165,11 +171,11 @@ end)()
 local cmdExists = (function()
 	if hostIsUnix() then
 		return function(name)
-			return runcmd(("which %q &>/dev/null"):format(name))
+			return runcmd(('which %q &>/dev/null'):format(name))
 		end
 	else
 		return function(name)
-			return runcmd(("where %q > nul 2> nul"):format(name))
+			return runcmd(('where "%s" > nul 2> nul'):format(name))
 		end
 	end
 end)()
@@ -181,9 +187,9 @@ local rmDirTree = (function()
 	local cmd_template
 
 	if hostIsUnix() then
-		cmd_template = "rm -rf %q"
+		cmd_template = 'rm -rf %q'
 	else
-		cmd_template = "rmdir /s /q %q"
+		cmd_template = 'rmdir /s /q "%s"'
 	end
 
 	return function(path)
@@ -213,11 +219,11 @@ local extract = (function()
 		if cmdExists("unzip") then
 			cmd_template = "unzip -q -o %q -d %q"
 		elseif cmdExists("7z") then
-			cmd_template = "7z -y x %q -o %q"
+			cmd_template = '7z -y x %q "-o%s"'
 		end
 	else
 		local bundled_extractor = catfile(props.tooldir, "7z.exe")
-		cmd_template = bundled_extractor.." -y x %q -o %q"
+		cmd_template = bundled_extractor..' -y x "%s" "-o%s"'
 	end
 
 	if cmd_template then
@@ -240,7 +246,7 @@ local copyDirTree = (function()
 	if hostIsUnix() then
 		cmd_template = "cp -rT %q %q"
 	else
-		cmd_template = "xcopy /e /y %q %q"
+		cmd_template = 'xcopy /e /y "%s" "%s"'
 	end
 	return function(src, dest)
 		mkdir(dest)
@@ -251,11 +257,6 @@ end)()
 
 -------------------------------------------------------------------------
 
-
-props = os_properties[_OPTIONS.os]
-props.outdir = catfile("..", "build")
-props.skuoutdir = catfile(props.outdir, props.dir, "mod_tools")
-props.tooldir = catfile("..", "tools", "bin", props.dir)
 
 mkdir( props.outdir )
 
