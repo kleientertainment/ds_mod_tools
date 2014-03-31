@@ -6,9 +6,12 @@
 #include <sys/stat.h>
 #include <math.h>
 #include <modtoollib/modtool.h>
+#include <modtools_compat.hpp>
 
 using namespace std;
+using namespace Compat;
 
+/*
 time_t get_last_modified( char const* path )
 {
     struct stat info;
@@ -53,6 +56,7 @@ void get_output_file_path( char const* input_file_path, char* output_file_path )
     strcpy( output_file_path, input_file_path );
     strcpy( strrchr( output_file_path, '.' ), ".xml" );
 }
+*/
 
 int main( int argument_count, char** arguments )
 {
@@ -65,40 +69,47 @@ int main( int argument_count, char** arguments )
 		error( "ERROR: Invalid number of arguments!\n" );
 	}
 
-	char const* input_file_path = arguments[1];
+	Path input_file_path = arguments[1];
 
-	if( !exists( input_file_path ) )
+	if( !input_file_path.exists() )
 	{
-		error( "ERROR: Could not open '%s'!\n", input_file_path );
+		error( "ERROR: Could not open '%s'!\n", input_file_path.c_str() );
 	}
 
-    char input_folder[1024];
-    get_folder( input_file_path, input_folder );
+    Path input_folder = input_file_path.dirname();
 
-    char output_package_file_path[MAX_PATH_LEN];
-    get_output_file_path( input_file_path, output_package_file_path );
+	Path output_package_file_path = input_file_path.copy().replaceExtension("xml");
 
-	char build_tool_path[1024];
-	sprintf(build_tool_path, "%scompiler_scripts/image_build.py", get_application_folder());
+	Path build_tool_path = Path(get_application_folder())/"compiler_scripts"/"image_build.py";
 
-    if( is_more_recent( input_file_path, output_package_file_path ) && is_more_recent( arguments[0], output_package_file_path ) && is_more_recent( build_tool_path, output_package_file_path  ) )
-    {
+	/*
+	 * Existence checks are implicit. See the comment in scml/main.cpp or the
+	 * Path class definition for more details.
+	 */
+	if(
+		input_file_path.isOlderThan(output_package_file_path)
+		&& Path(arguments[0]).isOlderThan(output_package_file_path)
+		&& build_tool_path.isOlderThan(output_package_file_path)
+	) {
+		log_and_print("%s is up to date.\n", output_package_file_path.c_str());
         return 0;
     }
 
-    std::vector< char const* > image_paths;
+    // std::vector< char const* > image_paths;
 
 	char command_line[4096];
 
-    char const* output_dir = "data";
-    if( strstr( input_folder, "mods" ) )
+	/*
+    Path output_dir = "data";
+    if( input_folder.find("mods") )
     {
         output_dir = ".";
     }
+	*/
 
-    sprintf( command_line, "%s\\buildtools\\windows\\Python27\\python.exe \"%s\" \"%s\"", get_application_folder(), build_tool_path, input_file_path);
+    sprintf( command_line, "\"%s\" \"%s\" \"%s\"", get_python(), build_tool_path.c_str(), input_file_path.c_str());
     
-    run( command_line, true, "Compiling '%s'", input_file_path );
+    run( command_line, true, "Compiling '%s'", input_file_path.c_str() );
 
     end_log();
 

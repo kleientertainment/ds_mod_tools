@@ -10,6 +10,7 @@
 #include <modtoollib/modtool.h>
 
 using namespace std;
+using namespace Compat;
 
 #define IN
 #define OUT
@@ -149,7 +150,7 @@ float lerp( float a, float b, float l )
     return a + ( b - a ) * l;
 }
 
-float2 lerp( float2& a, float2& b, float l )
+float2 lerp( float2 const& a, float2 const& b, float l )
 {
     float2 result;
     result.x = lerp(a.x, b.x, l);
@@ -273,6 +274,7 @@ struct xml_writer
 };
 
 
+/*
 time_t get_last_modified( char const* path )
 {
     struct stat info;
@@ -312,11 +314,13 @@ char const* get_file_name( char const* path )
 	return name;
 }
 
+
 void get_output_file_path( char const* input_file_path, char* output_file_path )
 {
     strcpy( output_file_path, input_file_path );
     strcpy( strrchr( output_file_path, '.' ), ".zip" );
 }
+*/
 
 char const* skip_slash( char const* name )
 {
@@ -406,7 +410,7 @@ void import_build(
     OUT symbol_id*  ids  
     )
 {
-    strcpy(build_name, strrchr(scml.name.c_str(), '\\') + 1);
+    strcpy(build_name, Path(scml.name).basename().c_str());
 
     int symbol_index = 0;
     int symbol_frame_index = 0;
@@ -433,7 +437,7 @@ void import_build(
 }
 
 void convert_image_path_to_name(
-    IN char*    path,
+    IN char const*    path,
     OUT char*   name
     )
 {
@@ -459,10 +463,10 @@ void convert_image_path_to_name(
 }
 
 void create_trans_rot_scale_pivot_matrix(
-	IN  float2&  pos,
-	IN  float	 angle,
-	IN  float2&  scale,
-	IN  float2&	 pivot,
+	IN  float2 const&	pos,
+	IN  float			angle,
+	IN  float2 const&	scale,
+	IN  float2 const&	pivot,
 	OUT matrix3& m
 	)
 {
@@ -483,12 +487,12 @@ void create_trans_rot_scale_pivot_matrix(
 
 
 void convert_timeline_frame_to_element_frame(
-    IN  int2&    image_dimensions,
-    IN  float2&  pivot,   
-    IN  float2&  scale,
-    IN  float2&  pos,
-    IN  float    angle,
-    OUT matrix3& m
+    IN  int2 const&		image_dimensions,
+    IN  float2 const&	pivot,   
+    IN  float2 const&	scale,
+    IN  float2 const&	pos,
+    IN  float			angle,
+    OUT matrix3&		m
     )
 {
     float scaled_pivot_x = pivot.x * (float)image_dimensions.x;
@@ -504,24 +508,24 @@ void convert_timeline_frame_to_element_frame(
 }
 
 void convert_timeline_to_frames(
-    IN  int     anim_length,
-	IN  bool	looping,
-    IN  int     frame_num, 
-    IN  int     key_count,
-    IN  int*    times,
-    IN  float2* positions,
-	IN  int2*	dimensions,
-	IN  float2* pivots,
-	IN  float2* scales,
-	IN  float*	angles,
-	IN  int*	spins,
-	IN  float*	alphas,
-    OUT float2& frame_position,
-	OUT int2&	frame_dimension,
-	OUT float2& frame_pivot,
-	OUT float2& frame_scale,
-	OUT float&	frame_angle,
-	OUT float&	frame_alpha
+    IN  int				anim_length,
+	IN  bool			looping,
+    IN  int				frame_num, 
+    IN  int				key_count,
+    IN  int const*		times,
+    IN  float2 const*	positions,
+	IN  int2 const*		dimensions,
+	IN  float2 const*	pivots,
+	IN  float2 const*	scales,
+	IN  float const*	angles,
+	IN  int const*		spins,
+	IN  float const*	alphas,
+    OUT float2&			frame_position,
+	OUT int2&			frame_dimension,
+	OUT float2&			frame_pivot,
+	OUT float2&			frame_scale,
+	OUT float&			frame_angle,
+	OUT float&			frame_alpha
     )
 {
     int start_key = 0;
@@ -658,11 +662,11 @@ void convert_anim_timelines_to_frames(
 
 void export_symbol_frame(
     IN xml_writer&  writer,
-    IN int          num,
-    IN int          duration,
-    IN char*        image,
-    IN int2&        dimensions,
-    IN float2&      position
+    IN int				num,
+    IN int				duration,
+    IN char const*		image,
+    IN int2 const&		dimensions,
+    IN float2 const&	position
     )
 {
     writer.push("Frame")
@@ -677,14 +681,14 @@ void export_symbol_frame(
 }
 
 void export_symbol(
-    IN xml_writer&  writer, 
-    IN char*        name,
-    IN int          frame_count, 
-    IN int*         frame_nums, 
-    IN int*         frame_durations,
-    IN char**       frame_images,
-    IN int2*        frame_dimensions,
-    IN float2*      frame_positions
+    IN xml_writer&			writer, 
+    IN char const*			name,
+    IN int					frame_count, 
+    IN int const*			frame_nums, 
+    IN int const*			frame_durations,
+    IN char const* const*	frame_images,
+    IN int2 const*			frame_dimensions,
+    IN float2 const*		frame_positions
     )
 {
     writer.push("Symbol")
@@ -705,17 +709,17 @@ void export_symbol(
 }
 
 void export_build(
-    IN char*    build_xml_path,
-    IN char*    build_name,
-    IN int      symbol_count, 
-    IN char**   symbol_names, 
-    IN int*     symbol_frame_counts, 
-    IN int*     symbol_frame_indices, 
-    IN int*     frame_nums, 
-    IN int*     frame_durations, 
-    IN char**   frame_images, 
-    IN int2*    frame_dimensions, 
-    IN float2*  frame_positions
+    IN char const*			build_xml_path,
+    IN char const*			build_name,
+    IN int					symbol_count, 
+    IN char const* const*	symbol_names, 
+    IN int const*			symbol_frame_counts, 
+    IN int const*			symbol_frame_indices, 
+    IN int const*			frame_nums, 
+    IN int const*			frame_durations, 
+    IN char const * const*	frame_images, 
+    IN int2 const*			frame_dimensions, 
+    IN float2 const*		frame_positions
     )
 {
     xml_writer writer;
@@ -2098,10 +2102,8 @@ void build_scml(
     }
     
     // export builds
-    char build_xml_path[MAX_PATH_LEN];
-    sprintf(build_xml_path, "%s\\build.xml", get_asset_temp_dir());
     export_build(
-        IN build_xml_path,
+        IN (Path(get_asset_temp_dir())/"build.xml").c_str(),
         IN build_name,
         IN symbol_count, 
         IN symbol_names, 
@@ -2116,13 +2118,10 @@ void build_scml(
 
 
     // export animations
-    char animation_xml_path[MAX_PATH_LEN];
-    sprintf(animation_xml_path, "%s\\animation.xml", get_asset_temp_dir());
-
     if(anim_count > 0)
     {
         xml_writer animation_writer;
-        animation_writer.begin_doc(animation_xml_path);
+        animation_writer.begin_doc( (Path(get_asset_temp_dir())/"animation.xml").c_str() );
         animation_writer.push("Anims");
 
         for(int i = 0; i < anim_count; ++i)
@@ -2169,68 +2168,88 @@ int main( int argument_count, char** arguments )
 		error( "ERROR: Invalid number of arguments!\n" );
 	}
     
-	char const* input_file_path = arguments[1];
+	Path input_file_path = arguments[1];
 
-	if( !exists( input_file_path ) )
+	if( !input_file_path.exists() )
 	{
-		error( "ERROR: Could not open '%s'!\n", input_file_path );
+		error( "ERROR: Could not open '%s'!\n", input_file_path.c_str() );
 	}
+	//printf("input file: %s\n", input_file_path.basename().c_str());
 
-	char asset_name[MAX_PATH_LEN];
-	char const* asset_name_start = strrchr(input_file_path, '\\') + 1;
-	memcpy( asset_name, asset_name_start, strlen(asset_name_start) - 5);
-	asset_name[strlen(asset_name_start) - 5] = 0;
-	set_asset_name( asset_name );
+	Path asset_name = input_file_path.basename();
+	asset_name.removeExtension();
+	set_asset_name( asset_name.c_str() );
 
-    char input_folder[2048];
-    get_folder( input_file_path, input_folder );
+	Path input_folder = input_file_path.dirname();
 
-    char output_package_file_path[MAX_PATH_LEN];
-    get_output_file_path( input_file_path, output_package_file_path );
+	Path output_package_file_path = input_file_path;
+	output_package_file_path.replaceExtension("zip");
 
-    char const* output_dir = arguments[2];
+	Path output_dir = arguments[2];
 
-    char built_package_path[MAX_PATH_LEN];
-    sprintf( built_package_path, "%s\\anim\\%s", output_dir, strrchr( output_package_file_path, '\\' ) );
+	Path built_package_path = output_dir/"anim"/output_package_file_path.basename();
 
-    if( exists( built_package_path ) &&
-        exists( output_package_file_path ) &&
-        is_more_recent( input_file_path, built_package_path ) &&
-        is_more_recent( arguments[0], built_package_path ) && 
-        is_more_recent( output_package_file_path, built_package_path ) )
-    {
-         return 0;
-    }
-
-    SCML::Data scml( input_file_path );	
+    SCML::Data scml( input_file_path.c_str() );	
 
 	char** image_paths = 0;
 	int image_path_count;
 
 	build_scml(scml, image_paths, image_path_count);
 
-    char image_list_path[MAX_PATH_LEN];
-    sprintf(image_list_path, "%s\\images.lst", get_asset_temp_dir());
-    FILE* image_list_file = fopen(image_list_path, "w");
+	bool up_to_date = false;
+	/*
+	 * Existence checks are implicit.
+	 * If neither compared files of a pair exist, the check fails, since the inequality is strict.
+	 */
+    if(	input_file_path.isOlderThan(built_package_path)
+        && Path(arguments[0]).isOlderThan(built_package_path)
+        && built_package_path.isNewerThan(output_package_file_path)
+	  ){
+		up_to_date = true;
+	}
+
+	Path image_list_path = Path(get_asset_temp_dir())/"images.lst";
+    FILE* image_list_file = fopen(image_list_path.c_str(), "w");
     for(int i = 0; i < image_path_count; ++i)
     {
-        char path[MAX_PATH_LEN];
-        sprintf(path, "%s\\%s", input_folder, image_paths[i]);
-        if(!exists(path))
+		Path path = input_folder/image_paths[i];
+        if(!path.exists())
         {
-            error("ERROR: Missing image '%s' referenced by '%s'.\n", image_paths[i], strrchr(input_file_path, '\\') + 1);
+            error("ERROR: Missing image '%s' referenced by '%s'.\n", image_paths[i], input_file_path.basename().c_str());
         }
-        fprintf(image_list_file, "%s\n", path);
+		else if(path.isNewerThan(built_package_path)) {
+			up_to_date = false;
+		}
+        fprintf(image_list_file, "%s\n", path.c_str());
     }
     fclose(image_list_file);
 
+    if(up_to_date){
+		log_and_print("%s is up to date.\n", built_package_path.c_str());
+        return 0;
+    }
+
+	Path app_folder(get_application_folder());
+
 	char command_line[32768];
-	sprintf( command_line, "\"\"%s\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\"\"", get_application_folder(), get_application_folder(), get_asset_temp_dir(), output_package_file_path );
+	sprintf(command_line,
+			"\"%s\" \"%s\" \"%s\" \"%s\"",
+			get_python(),
+			(app_folder/"compiler_scripts"/"zipanim.py").c_str(),
+			get_asset_temp_dir(),
+			output_package_file_path.c_str()
+	);
+	run( command_line, true, "Packaging '%s'", output_package_file_path.basename().c_str() );
 
-	run( command_line, true, "Packaging '%s'", strrchr(output_package_file_path, '\\') + 1 );
-
-    sprintf( command_line, "\"\"%s\\buildtools\\windows\\Python27\\python.exe\" \"%s\\exported\\export.py\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\\data\" \"%s\"\"", get_application_folder(), get_application_folder(), output_dir, get_application_folder(), output_package_file_path );
-    run( command_line, true, "Building '%s'", strrchr(output_package_file_path, '\\') + 1 );
+	sprintf(command_line,
+			"\"%s\" \"%s\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\" \"%s\"",
+			get_python(),
+			(app_folder/"exported"/"export.py").c_str(),
+			output_dir.c_str(),
+			(app_folder/"data").c_str(),
+			output_package_file_path.c_str()
+	);
+    run( command_line, true, "Building '%s'", output_package_file_path.basename().c_str() );
 
     end_log();
 

@@ -1,0 +1,2 @@
+# Ignores everything in build/
+build/**
