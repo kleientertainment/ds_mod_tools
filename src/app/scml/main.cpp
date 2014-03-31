@@ -2189,6 +2189,14 @@ int main( int argument_count, char** arguments )
 
 	Path built_package_path = output_dir/"anim"/output_package_file_path.basename();
 
+    SCML::Data scml( input_file_path.c_str() );	
+
+	char** image_paths = 0;
+	int image_path_count;
+
+	build_scml(scml, image_paths, image_path_count);
+
+	bool up_to_date = false;
 	/*
 	 * Existence checks are implicit.
 	 * If neither compared files of a pair exist, the check fails, since the inequality is strict.
@@ -2197,16 +2205,8 @@ int main( int argument_count, char** arguments )
         && Path(arguments[0]).isOlderThan(built_package_path)
         && built_package_path.isNewerThan(output_package_file_path)
 	  ){
-		log_and_print("%s is up to date.\n", built_package_path.c_str());
-        return 0;
-    }
-
-    SCML::Data scml( input_file_path.c_str() );	
-
-	char** image_paths = 0;
-	int image_path_count;
-
-	build_scml(scml, image_paths, image_path_count);
+		up_to_date = true;
+	}
 
 	Path image_list_path = Path(get_asset_temp_dir())/"images.lst";
     FILE* image_list_file = fopen(image_list_path.c_str(), "w");
@@ -2217,10 +2217,17 @@ int main( int argument_count, char** arguments )
         {
             error("ERROR: Missing image '%s' referenced by '%s'.\n", image_paths[i], input_file_path.basename().c_str());
         }
+		else if(path.isNewerThan(built_package_path)) {
+			up_to_date = false;
+		}
         fprintf(image_list_file, "%s\n", path.c_str());
     }
     fclose(image_list_file);
 
+    if(up_to_date){
+		log_and_print("%s is up to date.\n", built_package_path.c_str());
+        return 0;
+    }
 
 	Path app_folder(get_application_folder());
 
