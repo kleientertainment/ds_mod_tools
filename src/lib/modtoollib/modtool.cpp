@@ -176,7 +176,7 @@ static void vlog( char const* format, va_list ap )
 {
 	if(gLog)
 	{
-		fprintf( gLog, format, ap );
+		vfprintf( gLog, format, ap );
 	}
 }
 

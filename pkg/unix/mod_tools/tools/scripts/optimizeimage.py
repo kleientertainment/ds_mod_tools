@@ -1,6 +1,6 @@
 import argparse
 from collections import namedtuple
-import Image, ImageDraw
+from PIL import Image, ImageDraw
 import sys
 
 BBox = namedtuple("Bbox", 'x y w h')
