@@ -215,13 +215,17 @@ static const char * getLogPath() {
 	return gLogPath;
 }
 
+FILE* open_log(const char * mode) {
+	end_log();
+	return fopen(getLogPath(), mode);
+}
+
 void begin_log()
 {
 	static bool registered_exit = false;
 	
-	end_log();
+	gLog = open_log("a");
 
-	gLog = fopen(getLogPath(), "a");
 	if(gLog == NULL) {
 		error("ERROR: Failed to open log file %s.");
 	}
@@ -245,7 +249,7 @@ void clear_log()
 {
 	bool was_logging = (gLog != NULL);
 	end_log();
-	FILE* f = fopen(getLogPath(), "w");
+	FILE* f = open_log("w");
 	if(f)
 	{
 		fclose(f);
@@ -309,8 +313,7 @@ void error( char const* format, ... )
 
 	log_and_fprint(stderr, "\n");
 
-	// Automatic: see begin_log().
-	//end_log();
+	end_log();
 
 	exit( -1 );
 }
@@ -321,7 +324,19 @@ void show_error_log()
 #ifdef IS_WINDOWS
     system( getLogPath() );
 #else
-	system( (std::string("echo; echo Log:; cat \"") + getLogPath() + "\"; echo;").c_str() );
+	FILE* f = open_log("r");
+	if(f != NULL) {
+		fprintf(stderr, "\nLog:\n");
+
+		int c;
+		while((c = getc(f)) != EOF) {
+			putc(c, stderr);
+		}
+		putc('\n', stderr);
+
+		fclose(f);
+	}
+	end_log();
 #endif
 	exit( -1 );
 }
@@ -381,6 +396,10 @@ bool extract_arg(int& argc, char** argv, const char* name) {
 	opt[0] = '-';
 	if(namelen > 1) {
 		opt[1] = '-';
+		opt[2] = '\0';
+	}
+	else {
+		opt[1] = '\0';
 	}
 	strcat(opt, name);
 

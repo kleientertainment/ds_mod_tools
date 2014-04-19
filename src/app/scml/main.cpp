@@ -2366,7 +2366,7 @@ int main( int argument_count, char** arguments )
     fclose(image_list_file);
 
     if(up_to_date){
-		log_and_print("%s is up to date.\n", built_package_path.c_str());
+		log_and_fprint(stderr, "%s is up to date.\n", built_package_path.c_str());
         return 0;
     }
 
