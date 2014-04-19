@@ -52,7 +52,7 @@ struct PlanarPoint
     T x;
     T y;
 
-	PlanarPoint() {}
+	PlanarPoint() : x(0), y(0) {}
 	PlanarPoint(T _x, T _y) : x(_x), y(_y) {}
 	PlanarPoint(const PlanarPoint& p) : x(p.x), y(p.y) {}
 
@@ -850,13 +850,17 @@ void export_element(
 // Per element.
 static bool extend_bounding_box(
 	IN const symbol_metadata_t& symbol_metadata,
+	IN const char * symbol_name,
 	IN bool first,
 	OUT rectangle& rect,
 	IN int frame,
 	IN const matrix3& m
 	)
 {
-	if(symbol_metadata.size() <= frame) return false;
+	if(symbol_metadata.size() <= frame) {
+		log_and_fprint(stderr, "WARNING: frame %0d of animation symbol %s is being used by the animation but not defined by the build.\n");
+		return false;
+	}
 
 	const symbol_frame_metadata_t& frame_metadata = symbol_metadata[frame];
 
@@ -917,6 +921,7 @@ void export_animation_frame(
 			if(symbol_searcher != build_metadata.end()) {
 				if(extend_bounding_box(
 					IN symbol_searcher->second,
+					IN element_names[i],
 					IN uninitialized_rect,
 					IN bounding_rectangle,
 					IN element_frames[i],
@@ -2300,6 +2305,7 @@ int main( int argument_count, char** arguments )
     begin_log();
 
 	bool force = extract_arg(argument_count, arguments, "f");
+	bool ignore_self_date = extract_arg(argument_count, arguments, "ignore-self-date");
 
 	if( argument_count != 3 )
 	{
@@ -2343,7 +2349,7 @@ int main( int argument_count, char** arguments )
 	 */
     if(	!force
 		&& input_file_path.isOlderThan(built_package_path)
-        && Path(arguments[0]).isOlderThan(built_package_path)
+        && (ignore_self_date || Path(arguments[0]).isOlderThan(built_package_path))
         && built_package_path.isNewerThan(output_package_file_path)
 	  ){
 		up_to_date = true;
