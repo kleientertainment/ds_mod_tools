@@ -8,7 +8,6 @@ import math
 import os
 import sys
 from PIL import Image
-from clint.textui import progress
 from PIL import ImageDraw
 import optimizeimage
 import tempfile
@@ -177,7 +176,8 @@ def ExportAnim(endianstring, xmlstr, outzip, ignore_exceptions):
 
     nodes = doc.getElementsByTagName("anim")
     if not ignore_exceptions:
-        for anim_node in progress.bar(nodes, "Exporting Animation" ):
+        print("Exporting Animation")
+        for anim_node in nodes:
             LocalExport( anim_node )
     else:
         for anim_node in nodes:
@@ -478,7 +478,6 @@ if __name__ == "__main__":
 
         if ext != ".zip":
             sys.stderr.write( "I only accept zip files, and you tried to make me process " + results.infile + "\n" )
-            raw_input("Press ENTER to exit")
             sys.exit()
 
         data_path = os.path.abspath(os.path.join(path, "..", results.outputdir))
@@ -522,7 +521,7 @@ if __name__ == "__main__":
         sys.stderr.write( "Error Exporting {}\n".format(results.infile) + str(e) )
         traceback.print_exc(file=sys.stderr)
         if not results.ignoreexceptions:
-            raw_input("There was an export error!\n")
+            print("There was an export error!")
             exit(-1)
 
 

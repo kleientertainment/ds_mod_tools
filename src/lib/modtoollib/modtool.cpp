@@ -59,15 +59,22 @@ char* read_file_append_null(FILE* f)
 	return buffer;
 }
 
-static char appplication_folder[MAX_PATH_LEN];
 void get_folder( char const* path, char* folder )
 {
-    int length = strrchr( path, Compat::Path::SEPARATOR ) - path + 1;
+	const char * last_dirsep = strrchr(path, Compat::Path::SEPARATOR);
+	if(last_dirsep == NULL) {
+		strcpy(folder, ".");
+		return;
+	}
+    int length = strrchr( path, Compat::Path::SEPARATOR ) - path;
     memcpy( folder, path, length );
     folder[length] = 0;
 }
 
 static void initialize_compatibility_layer() {
+	static bool initialized = false;
+	if(initialized) return;
+	initialized = true;
 #ifdef IS_UNIX
 	/*
 	 * Extends the Python path for module searching.
@@ -92,6 +99,17 @@ static void initialize_compatibility_layer() {
 #endif
 }
 
+
+static char appplication_folder[MAX_PATH_LEN] = "";
+static FILE* gLog = NULL;
+static char assetName[1024] = "";
+
+// Suffix of the temporary directory.
+#define TEMP_FOLDER_SUFFIX ".."DSSTR".."DSSTR"temp"
+
+// Name of the log.
+#define LOG_NAME "autocompiler_log.txt"
+
 void set_application_folder( char const* application_path )
 {
     get_folder( application_path, appplication_folder );
@@ -100,48 +118,113 @@ void set_application_folder( char const* application_path )
 
 char const* get_application_folder()
 {
+	if(appplication_folder[0] == '\0') {
+		error("ERROR: the application folder has not been set before calling get_application_folder().");
+	}
     return appplication_folder;
 }
 
 
-static FILE* gLog = NULL;
-static char gLogPath[] = ".."DSSTR".."DSSTR"temp"DSSTR"autocompiler_log.txt";
-static char gTempFolder[] = ".."DSSTR".."DSSTR"temp";
-static char gAssetTempFolder[MAX_PATH_LEN];
 
 char* get_temp_dir()
 {
+	static char gTempFolder[MAX_PATH_LEN] = "";
+
+	if(gTempFolder[0] == '\0') {
+#ifdef IS_UNIX
+		const char * env_path = getenv("MODTOOLS_TEMP_DIR");
+		if(env_path) {
+			if(strlen(env_path) >= sizeof(gTempFolder)) {
+				error("ERROR: buffer overflow on setting temp directory from environment.");
+			}
+			strcpy(gTempFolder, env_path);
+		}
+		if(gTempFolder[0] == '\0') {
+#endif
+			strcpy(gTempFolder, get_application_folder());
+			strcat(gTempFolder, DSSTR TEMP_FOLDER_SUFFIX);
+#ifdef IS_UNIX
+		}
+#endif
+
+		char cmd[MAX_PATH_LEN];
+		sprintf(cmd, MKDIR" %s", gTempFolder);
+		if(system(cmd) != 0) {
+			error("ERROR: Failed to create directory %s.", gTempFolder);
+		}
+	}
 	return gTempFolder;
 }
 
 char* get_asset_temp_dir()
 {
+	static char gAssetTempFolder[MAX_PATH_LEN] = "";
+	static bool created = false;
+	if(!created) {
+		if(assetName[0] == '\0') {
+			error("ERROR: the asset name has not been specified before get_asset_temp_dir() was called.");
+		}
+
+		created = true;
+
+		sprintf(gAssetTempFolder, "%s"DSSTR"%s",  get_temp_dir(), assetName);
+
+		char cmd[MAX_PATH_LEN];
+		sprintf(cmd, MKDIR" %s", gAssetTempFolder);
+		if(system(cmd) != 0) {
+			error("ERROR: Failed to create directory %s.", gAssetTempFolder);
+		}
+	}
 	return gAssetTempFolder;
 }
 
 void set_asset_name(char const* name)
 {
-	sprintf(gAssetTempFolder, "%s"DSSTR"%s"DSSTR"%s",  get_application_folder(), get_temp_dir(), name);
-
-	char cmd[MAX_PATH_LEN];
-	sprintf(cmd, MKDIR" %s", gAssetTempFolder);
-	system(cmd);
+	if(strlen(name) >= sizeof(assetName)) {
+		error("ERROR: buffer overflow on setting the asset name.");
+	}
+	strcpy(assetName, name);
 }
 
-void create_temp_dir()
-{
-	char cmd[MAX_PATH_LEN];
-	sprintf(cmd, MKDIR" %s", get_temp_dir());
-	system(cmd);
+void create_temp_dir() {
+	(void)get_temp_dir();
 }
 
+static const char * getLogPath() {
+	static char gLogPath[MAX_PATH_LEN] = "";
+
+	if(gLogPath[0] == '\0') {
+#ifdef IS_UNIX
+		const char * env_path = getenv("MODTOOLS_LOG");
+		if(env_path) {
+			if(strlen(env_path) >= sizeof(gLogPath)) {
+				error("ERROR: buffer overflow on setting log path from environment.");
+			}
+			strcpy(gLogPath, env_path);
+		}
+		if(gLogPath[0] == '\0') {
+#endif
+			strcpy(gLogPath, get_temp_dir());
+			strcat(gLogPath, DSSTR LOG_NAME);
+#ifdef IS_UNIX
+		}
+#endif
+
+	}
+
+	return gLogPath;
+}
 
 void begin_log()
 {
 	static bool registered_exit = false;
-
+	
 	end_log();
-	gLog = fopen(gLogPath, "a");
+
+	gLog = fopen(getLogPath(), "a");
+	if(gLog == NULL) {
+		error("ERROR: Failed to open log file %s.");
+	}
 
 	if(!registered_exit) {
 		registered_exit = (atexit(end_log) == 0);
@@ -160,9 +243,9 @@ void end_log()
 
 void clear_log()
 {
-	bool was_logging = static_cast<bool>(gLog);
+	bool was_logging = (gLog != NULL);
 	end_log();
-	FILE* f = fopen(gLogPath, "w");
+	FILE* f = fopen(getLogPath(), "w");
 	if(f)
 	{
 		fclose(f);
@@ -224,6 +307,8 @@ void error( char const* format, ... )
 	vlog_and_fprint( stderr, format, ap );
 	va_end( ap );
 
+	log_and_fprint(stderr, "\n");
+
 	// Automatic: see begin_log().
 	//end_log();
 
@@ -234,9 +319,9 @@ void show_error_log()
 {
 	end_log();
 #ifdef IS_WINDOWS
-    system( gLogPath );
+    system( getLogPath() );
 #else
-	system( (std::string("echo; echo Log:; cat \"") + gLogPath + "\"; echo;").c_str() );
+	system( (std::string("echo; echo Log:; cat \"") + getLogPath() + "\"; echo;").c_str() );
 #endif
 	exit( -1 );
 }

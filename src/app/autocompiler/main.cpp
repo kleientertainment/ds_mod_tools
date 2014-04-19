@@ -152,13 +152,13 @@ void get_asset_folders( compiler& c, file_list& asset_folders )
 
 int main( int argument_count, char** arguments )
 {
+    set_application_folder( arguments[0] );
+	Path app_folder = get_application_folder();
+
 	create_temp_dir();
 	clear_log();
 	begin_log();
 
-
-    set_application_folder( arguments[0] );
-	Path app_folder = get_application_folder();
 
     file_list mod_folders;
 	Path mods_folder = app_folder/".."/".."/"mods";

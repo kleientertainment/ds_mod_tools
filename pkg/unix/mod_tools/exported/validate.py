@@ -1,11 +1,10 @@
 import zipfile, sys, os, glob 
 import xml.etree.ElementTree as ET
-from clint.textui import progress
 from collections import defaultdict
 
 anim_map = defaultdict( list )
 
-for zipfilename in progress.bar( glob.glob( "*.zip" ) ):
+for zipfilename in glob.glob( "*.zip" ):
     try:
         with zipfile.ZipFile( zipfilename, "r" ) as zf:
             root = ET.fromstring( zf.read( "animation.xml" ) )

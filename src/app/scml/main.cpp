@@ -3,6 +3,9 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <utility>
+#include <algorithm>
+#include <map>
 #include <stdarg.h>
 #include <sys/stat.h>
 #include "SCMLpp.h"
@@ -43,27 +46,67 @@ typedef SCML_MAP( int, s_timeline_key* ) s_timeline_key_map;
 typedef SCML::Data::Entity::Animation::Timeline::Key::Object s_timeline_object;
 typedef SCML::Data::Entity::Animation::Timeline::Key::Bone s_timeline_bone;
 
-struct float2
+template<typename T>
+struct PlanarPoint
 {
-	float2()
-	{
+    T x;
+    T y;
 
-	}
+	PlanarPoint() {}
+	PlanarPoint(T _x, T _y) : x(_x), y(_y) {}
+	PlanarPoint(const PlanarPoint& p) : x(p.x), y(p.y) {}
 
-	float2( float _x, float _y)
-	: x(_x)
-	, y(_y)
-	{
-	}
-    float x;
-    float y;
+	template<typename U>
+	explicit PlanarPoint(const PlanarPoint<U>& p) : x(p.x), y(p.y) {}
 };
 
-struct int2
-{
-    int x;
-    int y;
+typedef PlanarPoint<float> float2;
+typedef PlanarPoint<int> int2;
+
+struct rectangle {
+	float x1, x2;
+	float y1, y2;
 };
+
+struct bounding_box
+{
+	float x;
+	float y;
+	int w;
+	int h;
+
+private:
+	void set_values(float _x, float _y, int _w, int _h) {
+		x = _x;
+		y = _y;
+		w = _w;
+		h = _h;
+	}
+
+public:
+	bounding_box() {}
+	bounding_box(float _x, float _y, int _w, int _h) {
+		set_values(_x, _y, _w, _h);
+	}
+	bounding_box(const float2& pos, const int2& dim) {
+		set_values(pos.x, pos.y, dim.x, dim.y);
+	}
+	explicit bounding_box(const rectangle& r) {
+		set_values(r.x1, r.y1, int(ceil(r.x2 - r.x1)), int(ceil(r.y2 - r.y1)));
+	}
+
+	void split(float2& pos, int2& dim) const {
+		pos.x = x;
+		pos.y = y;
+		dim.x = w;
+		dim.y = h;
+	}
+};
+
+
+typedef bounding_box symbol_frame_metadata_t;
+typedef std::vector<symbol_frame_metadata_t> symbol_metadata_t;
+typedef std::map<std::string, symbol_metadata_t> build_metadata_t;
 
 struct matrix2
 {
@@ -661,6 +704,7 @@ void convert_anim_timelines_to_frames(
 }
 
 void export_symbol_frame(
+	OUT symbol_frame_metadata_t& frame_metadata,
     IN xml_writer&  writer,
     IN int				num,
     IN int				duration,
@@ -669,6 +713,11 @@ void export_symbol_frame(
     IN float2 const&	position
     )
 {
+	frame_metadata.x = position.x;
+	frame_metadata.y = position.y;
+	frame_metadata.w = dimensions.x;
+	frame_metadata.h = dimensions.y;
+
     writer.push("Frame")
         .attribute( "framenum", num )
         .attribute( "duration", duration )
@@ -681,6 +730,7 @@ void export_symbol_frame(
 }
 
 void export_symbol(
+	OUT symbol_metadata_t&	symbol_metadata,
     IN xml_writer&			writer, 
     IN char const*			name,
     IN int					frame_count, 
@@ -694,9 +744,14 @@ void export_symbol(
     writer.push("Symbol")
         .attribute("name", skip_slash(name));
 
+		symbol_metadata.resize(frame_count);
+
         for(int i = 0; i < frame_count; ++i)
         {
+			symbol_frame_metadata_t& frame_metadata = symbol_metadata[i];
+
             export_symbol_frame(
+				OUT frame_metadata,
                 IN writer,
                 IN frame_nums[i],
                 IN frame_durations[i],
@@ -709,6 +764,7 @@ void export_symbol(
 }
 
 void export_build(
+	OUT build_metadata_t&	build_metadata,
     IN char const*			build_xml_path,
     IN char const*			build_name,
     IN int					symbol_count, 
@@ -731,7 +787,11 @@ void export_build(
         for(int i = 0; i < symbol_count; ++i)
         {                
             int frame_index = symbol_frame_indices[i];
+
+			symbol_metadata_t& symbol_metadata = build_metadata[symbol_names[i]];
+
             export_symbol(
+				OUT symbol_metadata,
                 IN writer, 
                 IN symbol_names[i], 
                 IN symbol_frame_counts[i], 
@@ -766,11 +826,11 @@ void get_build_counts(
 
 void export_element(
     IN xml_writer&  writer,
-    IN char*        name,
-    IN char*        layer_name, 
+    IN const char*        name,
+    IN const char*        layer_name, 
     IN int          frame,
     IN int          z_index,
-    IN matrix3&     m
+    IN const matrix3&     m
     )
 {
     writer.push( "element" )
@@ -787,7 +847,52 @@ void export_element(
     writer.pop( true );
 }
 
+// Per element.
+static bool extend_bounding_box(
+	IN const symbol_metadata_t& symbol_metadata,
+	IN bool first,
+	OUT rectangle& rect,
+	IN int frame,
+	IN const matrix3& m
+	)
+{
+	if(symbol_metadata.size() <= frame) return false;
+
+	const symbol_frame_metadata_t& frame_metadata = symbol_metadata[frame];
+
+	float x1, x2, y1, y2;
+
+	x1 = m.m00*frame_metadata.x + m.m01*frame_metadata.y + m.m02;
+	x2 = x1 + m.m00*frame_metadata.w + m.m01*frame_metadata.h;
+
+	y1 = m.m10*frame_metadata.x + m.m11*frame_metadata.y + m.m12;
+	y2 = x1 + m.m10*frame_metadata.w + m.m11*frame_metadata.h;
+
+	if(x2 < x1) {
+		std::swap(x1, x2);
+	}
+	if(y2 < y1) {
+		std::swap(y1, y2);
+	}
+
+	if(first || x1 < rect.x1) {
+		rect.x1 = x1;
+	}
+	if(first || x2 > rect.x2) {
+		rect.x2 = x2;
+	}
+	if(first || y1 < rect.y1) {
+		rect.y1 = y1;
+	}
+	if(first || y2 > rect.y2) {
+		rect.y2 = y2;
+	}
+
+	return true;
+}
+
 void export_animation_frame(
+	IN const build_metadata_t& build_metadata,
     IN xml_writer&  writer,
     IN int          index,
     IN int2&        dimensions,
@@ -801,6 +906,31 @@ void export_animation_frame(
     IN matrix3*     element_matrices
     )
 {
+	rectangle bounding_rectangle;
+	bool uninitialized_rect = true;
+
+	for(int i = 0; i < element_count; ++i)
+	{
+		if(element_alphas[i] >= 0.5)
+		{
+			build_metadata_t::const_iterator symbol_searcher = build_metadata.find(element_names[i]);
+			if(symbol_searcher != build_metadata.end()) {
+				if(extend_bounding_box(
+					IN symbol_searcher->second,
+					IN uninitialized_rect,
+					IN bounding_rectangle,
+					IN element_frames[i],
+					IN element_matrices[i]
+					))
+				{
+					uninitialized_rect = false;
+				}
+			}
+		}
+	}
+
+	bounding_box(bounding_rectangle).split( position, dimensions );
+
     writer.push( "frame" )
         .attribute( "idx", index * 1000 / FRAME_RATE )
         .attribute( "w", dimensions.x )
@@ -827,6 +957,7 @@ void export_animation_frame(
 }
 
 void export_animation(
+	IN const build_metadata_t& build_metadata,
     IN xml_writer&  writer,
     IN char*        name,
     IN char*        root,
@@ -855,6 +986,7 @@ void export_animation(
     {
         int element_start_index = frame_element_start_indices[i];
         export_animation_frame(
+			IN build_metadata,
             IN writer,
             IN frame_indices[i],
             IN frame_dimensions[i],
@@ -2100,9 +2232,12 @@ void build_scml(
             symbol_frame_pivots[i].y = 0;
         }
     }
+
+	build_metadata_t build_metadata;
     
     // export builds
     export_build(
+		OUT build_metadata,
         IN (Path(get_asset_temp_dir())/"build.xml").c_str(),
         IN build_name,
         IN symbol_count, 
@@ -2130,6 +2265,7 @@ void build_scml(
             {
                 int frame_start_index = anim_frame_start_indices[i];
                 export_animation(
+					IN build_metadata,
                     IN animation_writer,
                     IN anim_names[i],
                     IN anim_roots[i],
@@ -2169,6 +2305,7 @@ int main( int argument_count, char** arguments )
 	}
     
 	Path input_file_path = arguments[1];
+	input_file_path.makeAbsolute();
 
 	if( !input_file_path.exists() )
 	{
@@ -2186,6 +2323,7 @@ int main( int argument_count, char** arguments )
 	output_package_file_path.replaceExtension("zip");
 
 	Path output_dir = arguments[2];
+	output_dir.makeAbsolute();
 
 	Path built_package_path = output_dir/"anim"/output_package_file_path.basename();
 
