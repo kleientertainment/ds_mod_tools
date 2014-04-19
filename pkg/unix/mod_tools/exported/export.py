@@ -110,9 +110,10 @@ def ConvertAnim(params):
         cmd_args.append( '--outputdir=' + os.path.join("..", args.outputdir) )
 
         print( '\tExporting ' + anim )
-        return subprocess.call(cmd_args)
-    else:
-        return 0
+        status = subprocess.call(cmd_args)
+        if status != 0:
+            exit(status)
+    return 0
 
 if __name__ == "__main__":
     CWD = os.getcwd()
@@ -146,9 +147,9 @@ if __name__ == "__main__":
     anims = sorted( set( anims ) )
     anims = [ ( anim, prefabs, args ) for anim in anims ]
 
-    from multiprocessing import Pool
-    pool = Pool(processes=1)
-    pool.map( ConvertAnim, anims )
+    #from multiprocessing import Pool
+    #pool = Pool(processes=1)
+    map( ConvertAnim, anims )
 
     # Ensure that the prefabs.xml file is up to date
     if not args.skip_update_prefabs:
