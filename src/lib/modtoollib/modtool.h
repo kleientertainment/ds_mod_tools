@@ -8,6 +8,10 @@
 
 //#define MODTOOLS_DEBUG 1
 
+// Returns true if the argument was found (in which case it is extracted).
+// Only supports arguments (short of long) with no arguments.
+bool extract_arg(int& argc, char** argv, const char *name);
+
 size_t get_file_size(FILE* f);
 char* read_file_append_null(FILE* f);
 bool run( char* command_line, bool fail_on_error, char const* format, ... );

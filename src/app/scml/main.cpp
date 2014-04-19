@@ -2299,6 +2299,8 @@ int main( int argument_count, char** arguments )
     set_application_folder( arguments[0] );
     begin_log();
 
+	bool force = extract_arg(argument_count, arguments, "f");
+
 	if( argument_count != 3 )
 	{
 		error( "ERROR: Invalid number of arguments!\n" );
@@ -2339,7 +2341,8 @@ int main( int argument_count, char** arguments )
 	 * Existence checks are implicit.
 	 * If neither compared files of a pair exist, the check fails, since the inequality is strict.
 	 */
-    if(	input_file_path.isOlderThan(built_package_path)
+    if(	!force
+		&& input_file_path.isOlderThan(built_package_path)
         && Path(arguments[0]).isOlderThan(built_package_path)
         && built_package_path.isNewerThan(output_package_file_path)
 	  ){

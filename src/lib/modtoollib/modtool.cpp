@@ -370,3 +370,32 @@ char const* get_python() {
 	}
 	return cached_python_path.c_str();
 }
+
+bool extract_arg(int& argc, char** argv, const char* name) {
+	char opt[128];
+	const size_t namelen = strlen(name);
+	if(namelen >= sizeof(opt)) {
+		error("ERROR: buffer overflow on option extracting.");
+	}
+
+	opt[0] = '-';
+	if(namelen > 1) {
+		opt[1] = '-';
+	}
+	strcat(opt, name);
+
+	int howmany = 0;
+	for(int i = 1; i < argc;) {
+		if(strcmp(argv[i], opt) == 0) {
+			for(int j = i + 1; j < argc; j++) {
+				argv[j - 1] = argv[j];
+			}
+			howmany++;
+			argc--;
+		}
+		else {
+			i++;
+		}
+	}
+	return howmany > 0;
+}
