@@ -159,7 +159,7 @@ namespace Compat {
 		}
 
 		void makeAbsolute() {
-#if !defined(_MSC_VER)
+#if IS_UNIX
 			char resolved_path[PATH_MAX];
 			if( realpath(c_str(), resolved_path) != NULL ) {
 				assignPath(resolved_path);
