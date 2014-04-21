@@ -11,7 +11,6 @@
 #endif
 
 #include <algorithm>
-const int MAX_PATH = 65536;
 
 #ifndef PATH_MAX
     #define PATH_MAX MAX_PATH
