@@ -20,6 +20,10 @@
 #	error "The macro PYTHONDIR must be defined."
 #endif
 
+#if !defined(va_copy)
+#	define va_copy(a, b) ((a) = (b))
+#endif
+
 static Compat::Path get_python_root() {
 	return Compat::Path(get_application_folder())/"buildtools"/PYTHONDIR/"Python27";
 }

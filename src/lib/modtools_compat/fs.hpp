@@ -159,10 +159,12 @@ namespace Compat {
 		}
 
 		void makeAbsolute() {
+#ifdef IS_UNIX
 			char resolved_path[PATH_MAX];
 			if( realpath(c_str(), resolved_path) != NULL ) {
 				assignPath(resolved_path);
 			}
+#endif
 		}
 
 		Path(const std::string& str) : std::string() {
