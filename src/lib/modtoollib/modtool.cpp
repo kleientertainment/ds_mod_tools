@@ -10,12 +10,6 @@
 
 #define DSSTR DIR_SEP_STR_MACRO
 
-#ifdef IS_WINDOWS
-#	define MKDIR "mkdir"
-#else
-#	define MKDIR "mkdir -p"
-#endif
-
 #ifndef PYTHONDIR
 #	error "The macro PYTHONDIR must be defined."
 #endif
@@ -151,9 +145,7 @@ char* get_temp_dir()
 		}
 #endif
 
-		char cmd[MAX_PATH_LEN];
-		sprintf(cmd, MKDIR" %s", gTempFolder);
-		if(system(cmd) != 0) {
+		if(!Compat::Path(gTempFolder).mkdir()) {
 			error("ERROR: Failed to create directory %s.", gTempFolder);
 		}
 	}
@@ -173,9 +165,7 @@ char* get_asset_temp_dir()
 
 		sprintf(gAssetTempFolder, "%s"DSSTR"%s",  get_temp_dir(), assetName);
 
-		char cmd[MAX_PATH_LEN];
-		sprintf(cmd, MKDIR" %s", gAssetTempFolder);
-		if(system(cmd) != 0) {
+		if(Compat::Path(gAssetTempFolder).mkdir()) {
 			error("ERROR: Failed to create directory %s.", gAssetTempFolder);
 		}
 	}

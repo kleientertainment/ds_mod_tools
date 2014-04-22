@@ -13,6 +13,7 @@
 #include <iterator>
 #include <cassert>
 #include <cstdlib>
+#include <cerrno>
 
 #ifndef PATH_MAX
 #	define PATH_MAX 65536
@@ -112,8 +113,13 @@ namespace Compat {
 		}
 
 		bool isDirectory() const {
+#ifdef IS_WINDOWS
+			DWORD dwAttrib = GetFileAttributes(c_str());
+			return dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
+#else
 			stat_t buf;
 			return stat(buf) && S_ISDIR(buf.st_mode);
+#endif
 		}
 
 
@@ -158,13 +164,21 @@ namespace Compat {
 			return *this;
 		}
 
-		void makeAbsolute() {
-#ifdef IS_UNIX
-			char resolved_path[PATH_MAX];
-			if( realpath(c_str(), resolved_path) != NULL ) {
-				assignPath(resolved_path);
-			}
+		bool makeAbsolute() {
+			char resolved_path[PATH_MAX + 1];
+			const char * status;
+#ifdef IS_WINDOWS
+			status = _fullpath(resolved_path, c_str(), sizeof(resolved_path) - 1);
+#else
+			status = realpath(c_str(), resolved_path);
 #endif
+			if( status != NULL ) {
+				assignPath(resolved_path);
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 
 		Path(const std::string& str) : std::string() {
@@ -338,6 +352,25 @@ namespace Compat {
 
 		bool isOlderThan(const Path& p) const {
 			return p.isNewerThan(*this);
+		}
+
+		bool mkdir(bool fail_on_existence = false) const {
+			int status;
+#if defined(IS_WINDOWS)
+			status = ::_mkdir(c_str());
+#else
+			status = ::mkdir(c_str(), 0755);
+#endif
+			if(status != 0) {
+				if(!fail_on_existence && errno == EEXIST) {
+					return isDirectory();
+				}
+				else {
+					return false;
+				}
+			}
+			
+			return true;
 		}
 	};
 }
