@@ -14,8 +14,11 @@ extern "C" {
 #	include <direct.h>
 #	include <windows.h>
 #	include <tchar.h>
-#	include <strsafe.h>
 #	include <io.h>
+#endif
+
+#ifdef _MSC_VER
+#	include <strsafe.h>
 #endif
 
 #include <cstdio>
