@@ -22,7 +22,7 @@ using namespace Compat;
 
 
 //#define ANIMDEBUG 1
-#define NEWPIVOTS 1
+//#define NEWPIVOTS 1
 
 
 typedef SCML::Data s_data;
