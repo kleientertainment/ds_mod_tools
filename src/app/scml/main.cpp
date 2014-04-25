@@ -20,6 +20,11 @@ using namespace Compat;
 #define MAX_NAME_LENGTH 256
 #define FRAME_RATE 40
 
+
+//#define ANIMDEBUG 1
+#define NEWPIVOTS 1
+
+
 typedef SCML::Data s_data;
 typedef SCML::Data::Folder s_folder;
 typedef SCML_MAP( int, s_folder* ) s_folder_map;
@@ -145,6 +150,15 @@ struct matrix3
         return *this;
     }
 
+	matrix3& set_translation( const float2& v )
+	{
+		return set_translation( v.x, v.y );
+	}
+
+	float2 get_translation() const {
+		return float2(m02, m12);
+	}
+
     matrix3& set_scale( float x, float y )
     {
         m00 = x;
@@ -161,6 +175,21 @@ struct matrix3
 
         return *this;
     }
+
+	matrix3 operator-() const
+	{
+		matrix3 M;
+		M.m00 = -m00;
+		M.m01 = -m01;
+		M.m02 = -m02;
+		M.m10 = -m10;
+		M.m11 = -m11;
+		M.m12 = -m12;
+		M.m20 = -m20;
+		M.m21 = -m21;
+		M.m22 = -m22;
+		return M;
+	}
 
     float m00;
     float m01;
@@ -186,6 +215,20 @@ matrix3 operator*( matrix3 const& a, matrix3 const& b )
     r.m21 = a.m20 * b.m01 + a.m21 * b.m11 + a.m22 * b.m21;
     r.m22 = a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22;
     return r;
+}
+
+matrix3 operator+( const matrix3& A, const matrix3& B ) {
+	matrix3 R;
+    R.m00 = A.m00 + B.m00;
+    R.m01 = A.m01 + B.m01;
+    R.m02 = A.m02 + B.m02;
+    R.m10 = A.m10 + B.m10;
+    R.m11 = A.m11 + B.m11;
+    R.m12 = A.m12 + B.m12;
+    R.m20 = A.m20 + B.m20;
+    R.m21 = A.m21 + B.m21;
+    R.m22 = A.m22 + B.m22;
+	return R;
 }
 
 float lerp( float a, float b, float l )
@@ -513,8 +556,16 @@ void create_trans_rot_scale_pivot_matrix(
 	OUT matrix3& m
 	)
 {
+#ifdef NEWPIVOTS
+	/*
+	 * Now the pivots are being properly placed as xy coordinates of the build symbol, within build.xml.
+	 */
+	(void)pivot;
+#else
     matrix3 pivot_trans;
     pivot_trans.set_translation(pivot.x, pivot.y);
+
+#endif
 
     matrix3 scale_mat;
     scale_mat.set_scale(scale.x, scale.y);
@@ -525,7 +576,11 @@ void create_trans_rot_scale_pivot_matrix(
     matrix3 rot;
     rot.set_rotation(angle);
 
-	m = trans * rot * scale_mat * pivot_trans; 
+#ifdef NEWPIVOTS
+	m = trans * rot * scale_mat; 
+#else
+	m = trans* rot * scale_mat * pivot_trans;
+#endif
 }
 
 
@@ -612,7 +667,7 @@ void convert_timeline_to_frames(
 	frame_dimension = dimensions[start_key];
 	frame_pivot = lerp(pivots[start_key], pivots[end_key], blend);
 	frame_scale = lerp(scales[start_key], scales[end_key], blend);
-	frame_angle = lerp_angle(angles[start_key], angles[end_key], blend, spins[start_key]);
+	frame_angle = lerp_angle(angles[start_key], angles[end_key], blend, spins[end_key]);
 	frame_alpha = lerp(alphas[start_key], alphas[end_key], blend);
 }
 
@@ -1195,10 +1250,16 @@ void import_timeline_maps(
         for(s_animation_map::iterator anim_iter = entity.animations.begin(); anim_iter != entity.animations.end(); ++anim_iter)
         { 
             s_animation& anim = *anim_iter->second;
+#ifdef ANIMDEBUG
+			cout << "Animation: " << anim.name << endl;
+#endif
             if(is_valid_animation(anim))
             {                
                 for(s_timeline_map::iterator timeline_iter = anim.timelines.begin(); timeline_iter != anim.timelines.end(); ++timeline_iter)
-                {  
+                { 
+#ifdef ANIMDEBUG
+					cout << "\tTimeline: " << timeline_iter->first << endl;
+#endif
 					s_timeline& timeline = *timeline_iter->second;
 					if(is_valid_timeline(timeline))
 					{
@@ -1217,6 +1278,9 @@ void import_timeline_maps(
 						int first_key_id = timeline.keys.begin()->second->id;
 						for(s_timeline_key_map::iterator key_iter = timeline.keys.begin(); key_iter != timeline.keys.end(); ++key_iter)
 						{
+#ifdef ANIMDEBUG
+							cout << "\t\tKey: " << key_iter->first << endl;
+#endif
 							s_timeline_key& key = *key_iter->second;
 							s_timeline_object& object = key.object;
 							int mainline_start_index = mainline_key_start_indices[anim_index];
@@ -1242,6 +1306,11 @@ void import_timeline_maps(
 								symbol_ids,
 								timeline_symbol_map[timeline_key_index]
 								);
+
+#ifdef ANIMDEBUG
+							const size_t sym_index = timeline_symbol_map[timeline_key_index];
+							cout << "Got symbol index " << timeline_symbol_map[timeline_key_index] << " (folder: " << symbol_ids[sym_index].folder << ", file: " << symbol_ids[sym_index].file << ")" << endl;
+#endif
 
 							++timeline_key_index;
 						}
@@ -1274,6 +1343,7 @@ void import_timeline_key(
     scale.y = object.scale_y;
     
 	time = key.time;
+	// LOOK AT ME
 	symbol_frame_num = object.file;
 
     position.x = object.x;
@@ -2230,12 +2300,24 @@ void build_scml(
     }
     else
     {
+#ifdef NEWPIVOTS
+        // convert_symbol_frame_pivots
+        for(int i = 0; i < symbol_frame_count; ++i)
+        {
+            convert_pivot(
+                IN  symbol_frame_dimensions[i],
+                IN  symbol_frame_pivots[i],
+                OUT symbol_frame_pivots[i]
+                );
+        }
+#else
         // clear_symbol_frame_pivots
         for(int i = 0; i < symbol_frame_count; ++i)
         {
             symbol_frame_pivots[i].x = 0;
             symbol_frame_pivots[i].y = 0;
         }
+#endif
     }
 
 	build_metadata_t build_metadata;

@@ -302,7 +302,7 @@ solution('mod_tools')
 	   	project(app)
 			kind "ConsoleApp"
 			language "C++"   	   
-	      	files { catfile("app", app, "**.h"), catfile("app", app, "**.hpp"), catfile("app", app, "**.cpp") }	 
+	      	files { "app/"..app.."/**.h", "app/"..app.."/**.hpp", "app/"..app.."/**.cpp" }	 
 	      	for lib, settings in pairs(libs) do
 	      		links{ lib }
 	      	end
@@ -312,9 +312,9 @@ solution('mod_tools')
 	   	project(lib)
 			kind "StaticLib"
 			language "C++"   	   
-	      	files { catfile("lib", lib, "**.h"), catfile("lib", lib, "**.hpp"), catfile("lib", lib, "**.cpp") }
+	      	files { "lib/"..lib.."/**.h", "lib/"..lib.."/**.hpp", "lib/"..lib.."/**.cpp" }
 	      	if settings.include_lib then
-	      		includedirs { catfile("lib", lib) }
+	      		includedirs { "lib/"..lib }
 	      	end
 	end
 
