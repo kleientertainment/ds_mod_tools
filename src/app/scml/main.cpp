@@ -623,10 +623,12 @@ void convert_timeline_to_frames(
 	OUT float2&			frame_pivot,
 	OUT float2&			frame_scale,
 	OUT float&			frame_angle,
-	OUT float&			frame_alpha
+	OUT float&			frame_alpha,
+	OUT int&			start_key
     )
 {
-    int start_key = 0;
+    //int start_key = 0;
+	start_key = 0;
     int end_key = 0;
     for(int i = 0; i < key_count; ++i)
     {
@@ -736,7 +738,8 @@ void convert_anim_timelines_to_frames(
 				timeline_frame_pivots[element_index],
 				timeline_frame_scales[element_index],
 				timeline_frame_angles[element_index],
-				timeline_frame_alphas[element_index]
+				timeline_frame_alphas[element_index],
+				key_start_index
 				);
 			char timeline_layer_name[1024];
 			sprintf(timeline_layer_name, "timeline_%i", i);
@@ -744,6 +747,10 @@ void convert_anim_timelines_to_frames(
 			strcpy(timeline_frame_layer_names[element_index], timeline_layer_name);
 			timeline_frame_z_indices[element_index] = timeline_key_z_indices[key_start_index];
 			timeline_frame_symbol_frame_nums[element_index] = timeline_key_symbol_frame_nums[key_start_index];
+#ifdef ANIMDEBUG
+			cout << "Key start index is: " << key_start_index << endl;
+			cout << "Set frame to: " << timeline_key_symbol_frame_nums[key_start_index] << endl;
+#endif
 			timeline_frame_parent_ids[element_index] = timeline_key_parent_ids[key_start_index];
 
 			frame_dimensions[frame_index] = timeline_key_dimensions[key_start_index];
@@ -1387,6 +1394,9 @@ void import_timelines(
             s_animation& anim = *anim_iter->second;
             if(is_valid_animation(anim))
             {
+#ifdef ANIMDEBUG
+				cout << "Importing timelines for anim " << anim.name << endl;
+#endif
 				anim_timeline_start_indices[anim_index] = timeline_index;
 				anim_timeline_counts[anim_index] = 0;
                 for(s_timeline_map::iterator timeline_iter = anim.timelines.begin(); timeline_iter != anim.timelines.end(); ++timeline_iter)
