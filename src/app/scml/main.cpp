@@ -2440,9 +2440,9 @@ int main( int argument_count, char** arguments )
 	 * If neither compared files of a pair exist, the check fails, since the inequality is strict.
 	 */
     if(	!force
-		&& input_file_path.isOlderThan(built_package_path)
-        && (ignore_self_date || Path(arguments[0]).isOlderThan(built_package_path))
-        && built_package_path.isNewerThan(output_package_file_path)
+		&& built_package_path.isNewerThan(input_file_path)
+        && (ignore_self_date || built_package_path.isNewerThan(arguments[0]))
+        && (!output_package_file_path.exists() || built_package_path.isNewerThan(output_package_file_path))
 	  ){
 		up_to_date = true;
 	}
