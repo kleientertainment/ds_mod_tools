@@ -719,6 +719,7 @@ void convert_anim_timelines_to_frames(
         for(int i = 0; i < timeline_count; ++i)
         {
             int key_start_index = timeline_key_start_indices[i];
+			int key_offset = 0;
 
             convert_timeline_to_frames(
 				length,
@@ -739,21 +740,26 @@ void convert_anim_timelines_to_frames(
 				timeline_frame_scales[element_index],
 				timeline_frame_angles[element_index],
 				timeline_frame_alphas[element_index],
-				key_start_index
+				key_offset
 				);
+
+			const int key_index = key_start_index + key_offset;
+
 			char timeline_layer_name[1024];
 			sprintf(timeline_layer_name, "timeline_%i", i);
-			strcpy(timeline_frame_names[element_index], timeline_key_names[key_start_index]);
+			strcpy(timeline_frame_names[element_index], timeline_key_names[key_index]);
 			strcpy(timeline_frame_layer_names[element_index], timeline_layer_name);
-			timeline_frame_z_indices[element_index] = timeline_key_z_indices[key_start_index];
-			timeline_frame_symbol_frame_nums[element_index] = timeline_key_symbol_frame_nums[key_start_index];
-#ifdef ANIMDEBUG
-			cout << "Key start index is: " << key_start_index << endl;
-			cout << "Set frame to: " << timeline_key_symbol_frame_nums[key_start_index] << endl;
-#endif
-			timeline_frame_parent_ids[element_index] = timeline_key_parent_ids[key_start_index];
+			timeline_frame_z_indices[element_index] = timeline_key_z_indices[key_index];
+			timeline_frame_symbol_frame_nums[element_index] = timeline_key_symbol_frame_nums[key_index];
+			timeline_frame_parent_ids[element_index] = timeline_key_parent_ids[key_index];
 
-			frame_dimensions[frame_index] = timeline_key_dimensions[key_start_index];
+			frame_dimensions[frame_index] = timeline_key_dimensions[key_index];
+
+#ifdef ANIMDEBUG
+			cout << "Key index is: " << key_index << " = " << key_start_index << " + " << key_offset << endl;
+			cout << "Set frame to: " << timeline_key_symbol_frame_nums[key_index] << endl;
+#endif
+
 			++element_index;
         }
 		frame_positions[frame_index].x = 0;
