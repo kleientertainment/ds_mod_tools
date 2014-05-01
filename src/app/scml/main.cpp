@@ -251,20 +251,39 @@ float to_rads(float deg)
 
 float lerp_angle( float start_angle, float end_angle, float blend, int spin )
 {
-    if( spin < 0 )
-    {
-        if( end_angle > start_angle )
-        {
-            end_angle -= 360.f;
-        }
-    }
-    else
-    {
-        if( end_angle < start_angle )
-        {
-            end_angle += 360.0f;
-        }
-    }
+	/*
+	 * Spriter b5 ignores spins altogether. The correct direction is the one
+	 * minimizing arc length.
+	 */
+
+	/*
+		if( spin == 0 ) {
+			end_angle = start_angle;
+		}
+		else if( spin > 0 )
+		{
+			if( end_angle < start_angle )
+			{
+				end_angle += 360.0f;
+			}
+		}
+		else //if( spin < 0 )
+		{
+			if( end_angle > start_angle )
+			{
+				end_angle -= 360.f;
+			}
+		}
+	*/
+
+	if(fabsf(end_angle - start_angle) > 180.f) {
+		if(end_angle < start_angle) {
+			end_angle += 360.f;
+		}
+		else {
+			end_angle -= 360.f;
+		}
+	}
 
     float result = lerp( start_angle, end_angle, blend );
     result = to_rads(result);
