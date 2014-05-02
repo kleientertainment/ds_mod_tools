@@ -62,7 +62,7 @@ struct PlanarPoint
 	PlanarPoint(const PlanarPoint& p) : x(p.x), y(p.y) {}
 
 	template<typename U>
-	explicit PlanarPoint(const PlanarPoint<U>& p) : x(p.x), y(p.y) {}
+	explicit PlanarPoint(const PlanarPoint<U>& p) : x(static_cast<T>(p.x)), y(static_cast<T>(p.y)) {}
 };
 
 typedef PlanarPoint<float> float2;
@@ -646,8 +646,13 @@ void convert_timeline_to_frames(
 	OUT int&			start_key
     )
 {
-    //int start_key = 0;
 	start_key = 0;
+
+	if(times[0] > frame_num || key_count <= 0 || times[key_count - 1] + 1000/FRAME_RATE < frame_num) {
+		frame_alpha = 0;
+		return;
+	}
+
     int end_key = 0;
     for(int i = 0; i < key_count; ++i)
     {
@@ -668,7 +673,7 @@ void convert_timeline_to_frames(
             break;
         }
     }
-
+	
     int start_time = times[start_key];
     int end_time = times[end_key];
 
@@ -1118,38 +1123,104 @@ void import_animation(
 }
 
 void import_mainline_key(
-    s_object_ref&   object,
-    OUT float2&     position,
-    OUT float2&     pivot,
-    OUT float&      angle,
-    OUT float2&     scale,
-    OUT int&        z_index,
-    OUT int&        spin,
-    OUT int&        id,
-    OUT int&        timeline_id,
-	OUT int&		parent_id
+    const s_object_ref&		object_ref,
+	const s_animation&		anim,
+	const s_data&			scml,
+    OUT float2&				position,
+    OUT float2&			    pivot,
+    OUT float&				angle,
+    OUT float2&				scale,
+    OUT int&				z_index,
+    OUT int&				spin,
+    OUT int&				id,
+    OUT int&				timeline_id,
+	OUT int&				parent_id
     )
 {
-    position.x = object.abs_x;
-    position.y = object.abs_y;
-    scale.x = object.abs_scale_x;
-    scale.y = object.abs_scale_y;
-    angle = object.abs_angle;
-    z_index = object.z_index;
+    id = object_ref.key;
+    timeline_id = object_ref.timeline;
+	parent_id = object_ref.parent;
+
+    z_index = object_ref.z_index;
     spin = 0;
 
-    if(object.found_pivot_x)
-    {
-        pivot.x = object.abs_pivot_x;
-    }
-    if(object.found_pivot_y)
-    {
-        pivot.y = object.abs_pivot_y;
-    }
+	// Spriter b5 doesn't use the geometrical data in object_ref's.
+	/*
+    position.x = object_ref.abs_x;
+    position.y = object_ref.abs_y;
 
-    id = object.key;
-    timeline_id = object.timeline;
-	parent_id = object.parent;
+    scale.x = object_ref.abs_scale_x;
+    scale.y = object_ref.abs_scale_y;
+
+    angle = object_ref.abs_angle;
+
+    if(object_ref.found_pivot_x)
+    {
+        pivot.x = object_ref.abs_pivot_x;
+    }
+    if(object_ref.found_pivot_y)
+    {
+        pivot.y = object_ref.abs_pivot_y;
+    }
+	*/
+
+	s_timeline_map::const_iterator timeline_match = anim.timelines.find(timeline_id);
+	if(timeline_match == anim.timelines.end() || timeline_match->second == NULL) {
+		return;
+	}
+
+	const s_timeline& timeline = *timeline_match->second;
+
+	s_timeline_key_map::const_iterator key_match = timeline.keys.find(id);
+	if(key_match == timeline.keys.end() || key_match->second == NULL) {
+		return;
+	}
+
+	const s_timeline_key& key = *key_match->second;
+
+	if(!key.has_object) {
+		return;
+	}
+
+	const s_timeline_object& object = key.object;
+
+
+
+	s_folder_map::const_iterator folder_match = scml.folders.find(object.folder);
+	if(folder_match != scml.folders.end() && folder_match->second != NULL) {
+		const s_folder& folder = *folder_match->second;
+		s_file_map::const_iterator file_match = folder.files.find(object.file);
+		if(file_match != folder.files.end() && file_match->second != NULL) {
+			const s_file& file = *file_match->second;
+
+			position.x = file.offset_x;
+			position.y = file.offset_y;
+
+			pivot.x = file.pivot_x;
+			pivot.y = file.pivot_y;
+		}
+	}
+	
+
+
+	if(object.found_x) {
+		position.x = object.x;
+	}
+	if(object.found_y) {
+		position.y = object.y;
+	}
+
+	scale.x = object.scale_x;
+	scale.y = object.scale_y;
+
+	angle = object.angle;
+
+	if(object.found_pivot_x) {
+		pivot.x = object.pivot_x;
+	}
+	if(object.found_pivot_y) {
+		pivot.y = object.pivot_y;
+	}
 }
 
 bool is_valid_animation(s_animation& anim)
@@ -1200,6 +1271,8 @@ void import_mainline(
                         s_object_ref& object = *object_iter->second.object_ref;
                         import_mainline_key(
                             IN  object,
+							IN  anim,
+							IN  scml,
                             OUT mainline_key_positions[mainline_key_index],
                             OUT mainline_key_pivots[mainline_key_index],
                             OUT mainline_key_angles[mainline_key_index],
