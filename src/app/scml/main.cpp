@@ -298,6 +298,8 @@ class xml_writer
 	bool _is_tag_open;
 
 public:
+	xml_writer() : _file(NULL), _is_tag_open(false) {}
+
 	xml_writer& begin_doc( char const* path )
 	{
 		end_doc();
