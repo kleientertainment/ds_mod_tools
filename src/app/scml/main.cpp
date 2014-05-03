@@ -639,6 +639,7 @@ void convert_timeline_frame_to_element_frame(
 
 void convert_timeline_to_frames(
     IN  int				anim_length,
+	IN	int				max_key_time,
 	IN  bool			looping,
     IN  int				frame_num, 
     IN  int				key_count,
@@ -661,7 +662,18 @@ void convert_timeline_to_frames(
 {
 	start_key = 0;
 
-	if(times[0] > frame_num || key_count <= 0 || times[key_count - 1] + 1000/FRAME_RATE < frame_num) {
+	bool should_export = true;
+
+	if(times[0] > frame_num || key_count <= 0) {
+		should_export = false;
+	}
+	else if(times[key_count - 1] + 1000/FRAME_RATE < frame_num) {
+		if(times[key_count - 1] < max_key_time) {
+			should_export = false;
+		}
+	}
+
+	if(!should_export) {
 		frame_alpha = 0;
 		return;
 	}
@@ -749,17 +761,33 @@ void convert_anim_timelines_to_frames(
 	OUT int&	element_index
     )
 {
+	// Maximum starting time of a key throughout all timelines.
+	int max_key_time = 0;
+	for(int timeline_idx = 0; timeline_idx < timeline_count; timeline_idx++) {
+		const int key_start_index = timeline_key_start_indices[timeline_idx];
+		const int numkeys = timeline_key_counts[timeline_idx];
+		const int key_end_index = key_start_index + numkeys;
+
+		for(int i = key_start_index; i < key_end_index; i++) {
+			const int t = timeline_key_times[i];
+			if(t > max_key_time) {
+				max_key_time = t;
+			}
+		}
+	}
+
     int frame_index = 0;
     for(int frame_num = 0; frame_num < length; frame_num+=1000/FRAME_RATE)
     {
 		frame_element_start_indices[frame_index] = element_index;
         for(int i = 0; i < timeline_count; ++i)
         {
-            int key_start_index = timeline_key_start_indices[i];
+            const int key_start_index = timeline_key_start_indices[i];
 			int key_offset = 0;
 
             convert_timeline_to_frames(
 				length,
+				max_key_time,
 				looping,
                 frame_num, 
                 timeline_key_counts[i],
