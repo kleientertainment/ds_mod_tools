@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <deque>
 #include <utility>
 #include <algorithm>
 #include <map>
@@ -290,25 +291,37 @@ float lerp_angle( float start_angle, float end_angle, float blend, int spin )
 	return result;
 }
 
-struct xml_writer
+class xml_writer
 {
-	std::vector<char const*> _tags;
+	std::deque<char const*> _tags;
 	FILE* _file;
 	bool _is_tag_open;
 
+public:
 	xml_writer& begin_doc( char const* path )
 	{
+		end_doc();
+
 		_file = fopen( path, "w" );
-		_tags.clear();
-		_is_tag_open = false;
 
 		return *this;
 	}
 
-	void end_doc()
+	xml_writer& end_doc()
 	{
-        fflush( _file );
-		fclose( _file );		
+		if(_file != NULL) {
+			fflush( _file );
+			fclose( _file );
+		}
+		_tags.clear();
+		_is_tag_open = false;
+		_file = NULL;
+
+		return *this;
+	}
+
+	~xml_writer() {
+		end_doc();
 	}
 
 	xml_writer& push( char const* tag_name )
@@ -337,7 +350,7 @@ struct xml_writer
 
     xml_writer& attribute( char const* name, int value )
     {
-        fprintf( _file, " %s=\"%i\"", name, value );
+        fprintf( _file, " %s=\"%d\"", name, value );
         return *this;
     }
     xml_writer& attribute( char const* name, float value )
@@ -349,7 +362,7 @@ struct xml_writer
 
 	xml_writer& pop( bool empty = false)
 	{
-		if( empty )
+		if( empty || _is_tag_open )
 		{
 			fprintf( _file, "/>\n" );
 		}
@@ -366,15 +379,13 @@ struct xml_writer
 		return *this;
 	}
 
+private:
 	void print_indent()
 	{
-		char tabs[256];
-		for( int i = 0; i < (int)_tags.size() - 1; ++i )
+		for( size_t i = 1; i < _tags.size(); ++i )
 		{
-			tabs[i] = ' ';
+			putc(' ', _file);
 		}
-		tabs[max( (int)_tags.size() - 1, 0 )] = 0;
-		fprintf( _file, tabs );
 	}
 };
 
