@@ -7,6 +7,7 @@
 #include <utility>
 #include <algorithm>
 #include <map>
+#include <set>
 #include <stdarg.h>
 #include <sys/stat.h>
 #include "SCMLpp.h"
@@ -639,7 +640,8 @@ void convert_timeline_frame_to_element_frame(
 
 void convert_timeline_to_frames(
     IN  int				anim_length,
-	IN	int				max_key_time,
+	IN	int				timeline_id,
+	IN	const	std::set< std::pair<int, int> >& forceexport,
 	IN  bool			looping,
     IN  int				frame_num, 
     IN  int				key_count,
@@ -664,13 +666,11 @@ void convert_timeline_to_frames(
 
 	bool should_export = true;
 
-	if(times[0] > frame_num || key_count <= 0) {
+	if(key_count <= 0 || (!forceexport.count( make_pair(timeline_id, 0) ) && times[0] > frame_num)) {
 		should_export = false;
 	}
-	else if(times[key_count - 1] + 1000/FRAME_RATE < frame_num) {
-		if(times[key_count - 1] < max_key_time) {
-			should_export = false;
-		}
+	else if(!forceexport.count( make_pair(timeline_id, key_count - 1) ) && times[key_count - 1] + 1000/FRAME_RATE < frame_num) {
+		should_export = false;
 	}
 
 	if(!should_export) {
@@ -726,6 +726,7 @@ void convert_timeline_to_frames(
 void convert_anim_timelines_to_frames(
     IN  int     length,
 	IN  bool	looping,
+	IN	const	std::set< std::pair<int, int> >& timeline_key_forceexport,
     IN  int     timeline_count,
     IN  int*    timeline_key_start_indices,
     IN  int*    timeline_key_counts,
@@ -787,7 +788,8 @@ void convert_anim_timelines_to_frames(
 
             convert_timeline_to_frames(
 				length,
-				max_key_time,
+				i,
+				timeline_key_forceexport,
 				looping,
                 frame_num, 
                 timeline_key_counts[i],
@@ -1288,7 +1290,8 @@ void import_mainline(
     OUT int*    mainline_key_spins,
     OUT int*    mainline_key_ids,
     OUT int*    mainline_key_timeline_ids,   
-	OUT int*    parent_ids
+	OUT int*    parent_ids,
+	OUT std::set< std::pair<int, int> >* anim_timeline_key_forceexport
     )
 {
     int anim_index = 0;
@@ -1304,9 +1307,22 @@ void import_mainline(
                 s_mainline_key_map& keys = anim.mainline.keys;                
                 mainline_key_start_indices[anim_index] = mainline_key_index;
 
+				std::set< std::pair<int, int> >& timeline_key_forceexport = anim_timeline_key_forceexport[anim_index];
+
+				int max_key_time = 0;
+				s_mainline_key* max_key = NULL;
+
+				const int mainline_key_index_begin = mainline_key_index;
+
                 for(s_mainline_key_map::iterator iter = keys.begin(); iter != keys.end(); ++iter)
                 {
                     s_mainline_key& key = *iter->second;
+
+					if(key.time > max_key_time) {
+						max_key_time = key.time;
+						max_key = &key;
+					}
+
                     for(s_object_container_map::iterator object_iter = key.objects.begin(); object_iter != key.objects.end(); ++object_iter )
                     {
                         s_object_ref& object = *object_iter->second.object_ref;
@@ -1328,7 +1344,19 @@ void import_mainline(
                         mainline_key_index++;
                     }
                 }
-                mainline_key_counts[anim_index] = mainline_key_index - mainline_key_start_indices[anim_index];
+
+				const int mainline_key_index_end = mainline_key_index;
+
+                mainline_key_counts[anim_index] = mainline_key_index_end - mainline_key_index_begin;
+
+				if(max_key != NULL) {
+					for(s_object_container_map::iterator object_iter = max_key->objects.begin(); object_iter != max_key->objects.end(); ++object_iter )
+                    {
+                        s_object_ref& object = *object_iter->second.object_ref;
+
+						timeline_key_forceexport.insert( make_pair(object.timeline, object.key) );
+                    }
+				}
 
                 ++anim_index;
             }
@@ -2046,6 +2074,9 @@ void build_scml(
 	bone* anim_bone_frames = new bone[bone_frame_count];
 	bone* anim_flattened_bone_frames = new bone[bone_frame_count];
 
+	// (timeline_id, timeline_key_id)
+	std::set< std::pair<int, int> >* anim_timeline_key_forceexport = new std::set< std::pair<int, int> >[anim_count];
+
     import_animations(
         IN  scml,
         OUT anim_names,
@@ -2067,7 +2098,8 @@ void build_scml(
         OUT mainline_key_spins, 
         OUT mainline_key_ids,
         OUT mainline_key_timeline_ids,
-		OUT mainline_parent_ids
+		OUT mainline_parent_ids,
+		OUT	anim_timeline_key_forceexport
         );
 
     import_timeline_maps(
@@ -2106,7 +2138,7 @@ void build_scml(
         OUT timeline_key_angles,
         OUT timeline_key_scales,
         OUT timeline_key_z_indices,
-        OUT timeline_key_spins        
+        OUT timeline_key_spins
         );
 
     apply_mainline_keys(
@@ -2191,6 +2223,7 @@ void build_scml(
         convert_anim_timelines_to_frames(
             anim_lengths[i],
 			anim_loopings[i],
+			anim_timeline_key_forceexport[i],
             anim_timeline_counts[i],
             &anim_timeline_key_start_indices[timeline_start_index],
             &anim_timeline_key_counts[timeline_start_index],
