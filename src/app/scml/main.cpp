@@ -762,21 +762,6 @@ void convert_anim_timelines_to_frames(
 	OUT int&	element_index
     )
 {
-	// Maximum starting time of a key throughout all timelines.
-	int max_key_time = 0;
-	for(int timeline_idx = 0; timeline_idx < timeline_count; timeline_idx++) {
-		const int key_start_index = timeline_key_start_indices[timeline_idx];
-		const int numkeys = timeline_key_counts[timeline_idx];
-		const int key_end_index = key_start_index + numkeys;
-
-		for(int i = key_start_index; i < key_end_index; i++) {
-			const int t = timeline_key_times[i];
-			if(t > max_key_time) {
-				max_key_time = t;
-			}
-		}
-	}
-
     int frame_index = 0;
     for(int frame_num = 0; frame_num < length; frame_num+=1000/FRAME_RATE)
     {
