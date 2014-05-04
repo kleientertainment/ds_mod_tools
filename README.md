@@ -50,6 +50,4 @@ Alternatively, the scml compiler may be used directly. I takes two arguments: th
 
 Todo
 ============
-- calculate proper pivots in scml so it's no longer necessary to name things 'build' or 'player_build'
 - setup better way for specifying frame numbers and durations
-- add support to scml for hidden timeline objects
