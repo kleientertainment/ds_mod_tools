@@ -108,6 +108,20 @@ public:
 		dim.x = w;
 		dim.y = h;
 	}
+
+	void scale(float f) {
+		float xoff = w/2.0f;
+		float yoff = h/2.0f;
+
+		w = int(ceilf(f*w));
+		h = int(ceilf(f*h));
+
+		xoff -= w/2.0f;
+		yoff -= h/2.0f;
+
+		x += xoff;
+		y += yoff;
+	}
 };
 
 
@@ -1054,7 +1068,10 @@ void export_animation_frame(
 		}
 	}
 
-	bounding_box(bounding_rectangle).split( position, dimensions );
+	bounding_box bbox(bounding_rectangle);
+	bbox.scale(1.2);
+
+	bbox.split( position, dimensions );
 
     writer.push( "frame" )
         .attribute( "idx", index * 1000 / FRAME_RATE )

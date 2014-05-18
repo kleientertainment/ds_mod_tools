@@ -1,6 +1,8 @@
 #ifndef _SCMLPP_H__
 #define _SCMLPP_H__
 
+// For DEFINE's.
+#include <modtools_compat.hpp>
 
 // Compile-time switches for container classes
 // Do you want the STL to be used?
