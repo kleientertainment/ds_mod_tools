@@ -345,9 +345,7 @@ namespace Compat {
 				return mybuf.st_mtimespec.tv_nsec > otherbuf.st_mtimespec.tv_nsec;
 #endif
 			}
-			else {
-				return false;
-			}
+			return false;
 		}
 
 		bool isOlderThan(const Path& p) const {
