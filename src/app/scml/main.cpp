@@ -3,6 +3,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <deque>
+#include <utility>
+#include <algorithm>
+#include <map>
+#include <set>
 #include <stdarg.h>
 #include <sys/stat.h>
 #include "SCMLpp.h"
@@ -10,11 +15,17 @@
 #include <modtoollib/modtool.h>
 
 using namespace std;
+using namespace Compat;
 
 #define IN
 #define OUT
 #define MAX_NAME_LENGTH 256
 #define FRAME_RATE 40
+
+
+//#define ANIMDEBUG 1
+//#define NEWPIVOTS 1
+
 
 typedef SCML::Data s_data;
 typedef SCML::Data::Folder s_folder;
@@ -42,27 +53,81 @@ typedef SCML_MAP( int, s_timeline_key* ) s_timeline_key_map;
 typedef SCML::Data::Entity::Animation::Timeline::Key::Object s_timeline_object;
 typedef SCML::Data::Entity::Animation::Timeline::Key::Bone s_timeline_bone;
 
-struct float2
+template<typename T>
+struct PlanarPoint
 {
-	float2()
-	{
+    T x;
+    T y;
 
-	}
+	PlanarPoint() : x(0), y(0) {}
+	PlanarPoint(T _x, T _y) : x(_x), y(_y) {}
+	PlanarPoint(const PlanarPoint& p) : x(p.x), y(p.y) {}
 
-	float2( float _x, float _y)
-	: x(_x)
-	, y(_y)
-	{
-	}
-    float x;
-    float y;
+	template<typename U>
+	explicit PlanarPoint(const PlanarPoint<U>& p) : x(static_cast<T>(p.x)), y(static_cast<T>(p.y)) {}
 };
 
-struct int2
-{
-    int x;
-    int y;
+typedef PlanarPoint<float> float2;
+typedef PlanarPoint<int> int2;
+
+struct rectangle {
+	float x1, x2;
+	float y1, y2;
 };
+
+struct bounding_box
+{
+	float x;
+	float y;
+	int w;
+	int h;
+
+private:
+	void set_values(float _x, float _y, int _w, int _h) {
+		x = _x;
+		y = _y;
+		w = _w;
+		h = _h;
+	}
+
+public:
+	bounding_box() {}
+	bounding_box(float _x, float _y, int _w, int _h) {
+		set_values(_x, _y, _w, _h);
+	}
+	bounding_box(const float2& pos, const int2& dim) {
+		set_values(pos.x, pos.y, dim.x, dim.y);
+	}
+	explicit bounding_box(const rectangle& r) {
+		set_values(r.x1, r.y1, int(ceil(r.x2 - r.x1)), int(ceil(r.y2 - r.y1)));
+	}
+
+	void split(float2& pos, int2& dim) const {
+		pos.x = x;
+		pos.y = y;
+		dim.x = w;
+		dim.y = h;
+	}
+
+	void scale(float f) {
+		float xoff = w/2.0f;
+		float yoff = h/2.0f;
+
+		w = int(ceilf(f*w));
+		h = int(ceilf(f*h));
+
+		xoff -= w/2.0f;
+		yoff -= h/2.0f;
+
+		x += xoff;
+		y += yoff;
+	}
+};
+
+
+typedef bounding_box symbol_frame_metadata_t;
+typedef std::vector<symbol_frame_metadata_t> symbol_metadata_t;
+typedef std::map<std::string, symbol_metadata_t> build_metadata_t;
 
 struct matrix2
 {
@@ -101,6 +166,15 @@ struct matrix3
         return *this;
     }
 
+	matrix3& set_translation( const float2& v )
+	{
+		return set_translation( v.x, v.y );
+	}
+
+	float2 get_translation() const {
+		return float2(m02, m12);
+	}
+
     matrix3& set_scale( float x, float y )
     {
         m00 = x;
@@ -117,6 +191,21 @@ struct matrix3
 
         return *this;
     }
+
+	matrix3 operator-() const
+	{
+		matrix3 M;
+		M.m00 = -m00;
+		M.m01 = -m01;
+		M.m02 = -m02;
+		M.m10 = -m10;
+		M.m11 = -m11;
+		M.m12 = -m12;
+		M.m20 = -m20;
+		M.m21 = -m21;
+		M.m22 = -m22;
+		return M;
+	}
 
     float m00;
     float m01;
@@ -144,12 +233,26 @@ matrix3 operator*( matrix3 const& a, matrix3 const& b )
     return r;
 }
 
+matrix3 operator+( const matrix3& A, const matrix3& B ) {
+	matrix3 R;
+    R.m00 = A.m00 + B.m00;
+    R.m01 = A.m01 + B.m01;
+    R.m02 = A.m02 + B.m02;
+    R.m10 = A.m10 + B.m10;
+    R.m11 = A.m11 + B.m11;
+    R.m12 = A.m12 + B.m12;
+    R.m20 = A.m20 + B.m20;
+    R.m21 = A.m21 + B.m21;
+    R.m22 = A.m22 + B.m22;
+	return R;
+}
+
 float lerp( float a, float b, float l )
 {
     return a + ( b - a ) * l;
 }
 
-float2 lerp( float2& a, float2& b, float l )
+float2 lerp( float2 const& a, float2 const& b, float l )
 {
     float2 result;
     result.x = lerp(a.x, b.x, l);
@@ -164,45 +267,78 @@ float to_rads(float deg)
 
 float lerp_angle( float start_angle, float end_angle, float blend, int spin )
 {
-    if( spin < 0 )
-    {
-        if( end_angle > start_angle )
-        {
-            end_angle -= 360.f;
-        }
-    }
-    else
-    {
-        if( end_angle < start_angle )
-        {
-            end_angle += 360.0f;
-        }
-    }
+	/*
+	 * Spriter b5 ignores spins altogether. The correct direction is the one
+	 * minimizing arc length.
+	 */
+
+	/*
+		if( spin == 0 ) {
+			end_angle = start_angle;
+		}
+		else if( spin > 0 )
+		{
+			if( end_angle < start_angle )
+			{
+				end_angle += 360.0f;
+			}
+		}
+		else //if( spin < 0 )
+		{
+			if( end_angle > start_angle )
+			{
+				end_angle -= 360.f;
+			}
+		}
+	*/
+
+	if(fabsf(end_angle - start_angle) > 180.f) {
+		if(end_angle < start_angle) {
+			end_angle += 360.f;
+		}
+		else {
+			end_angle -= 360.f;
+		}
+	}
 
     float result = lerp( start_angle, end_angle, blend );
     result = to_rads(result);
 	return result;
 }
 
-struct xml_writer
+class xml_writer
 {
-	std::vector<char const*> _tags;
+	std::deque<char const*> _tags;
 	FILE* _file;
 	bool _is_tag_open;
 
+public:
+	xml_writer() : _file(NULL), _is_tag_open(false) {}
+
 	xml_writer& begin_doc( char const* path )
 	{
+		end_doc();
+
 		_file = fopen( path, "w" );
-		_tags.clear();
-		_is_tag_open = false;
 
 		return *this;
 	}
 
-	void end_doc()
+	xml_writer& end_doc()
 	{
-        fflush( _file );
-		fclose( _file );		
+		if(_file != NULL) {
+			fflush( _file );
+			fclose( _file );
+		}
+		_tags.clear();
+		_is_tag_open = false;
+		_file = NULL;
+
+		return *this;
+	}
+
+	~xml_writer() {
+		end_doc();
 	}
 
 	xml_writer& push( char const* tag_name )
@@ -231,7 +367,7 @@ struct xml_writer
 
     xml_writer& attribute( char const* name, int value )
     {
-        fprintf( _file, " %s=\"%i\"", name, value );
+        fprintf( _file, " %s=\"%d\"", name, value );
         return *this;
     }
     xml_writer& attribute( char const* name, float value )
@@ -243,7 +379,7 @@ struct xml_writer
 
 	xml_writer& pop( bool empty = false)
 	{
-		if( empty )
+		if( empty || _is_tag_open )
 		{
 			fprintf( _file, "/>\n" );
 		}
@@ -260,19 +396,18 @@ struct xml_writer
 		return *this;
 	}
 
+private:
 	void print_indent()
 	{
-		char tabs[256];
-		for( int i = 0; i < (int)_tags.size() - 1; ++i )
+		for( size_t i = 1; i < _tags.size(); ++i )
 		{
-			tabs[i] = ' ';
+			putc(' ', _file);
 		}
-		tabs[max( (int)_tags.size() - 1, 0 )] = 0;
-		fprintf( _file, tabs );
 	}
 };
 
 
+/*
 time_t get_last_modified( char const* path )
 {
     struct stat info;
@@ -312,11 +447,13 @@ char const* get_file_name( char const* path )
 	return name;
 }
 
+
 void get_output_file_path( char const* input_file_path, char* output_file_path )
 {
     strcpy( output_file_path, input_file_path );
     strcpy( strrchr( output_file_path, '.' ), ".zip" );
 }
+*/
 
 char const* skip_slash( char const* name )
 {
@@ -406,7 +543,7 @@ void import_build(
     OUT symbol_id*  ids  
     )
 {
-    strcpy(build_name, strrchr(scml.name.c_str(), '\\') + 1);
+    strcpy(build_name, Path(scml.name).basename().c_str());
 
     int symbol_index = 0;
     int symbol_frame_index = 0;
@@ -433,7 +570,7 @@ void import_build(
 }
 
 void convert_image_path_to_name(
-    IN char*    path,
+    IN char const*    path,
     OUT char*   name
     )
 {
@@ -459,15 +596,23 @@ void convert_image_path_to_name(
 }
 
 void create_trans_rot_scale_pivot_matrix(
-	IN  float2&  pos,
-	IN  float	 angle,
-	IN  float2&  scale,
-	IN  float2&	 pivot,
+	IN  float2 const&	pos,
+	IN  float			angle,
+	IN  float2 const&	scale,
+	IN  float2 const&	pivot,
 	OUT matrix3& m
 	)
 {
+#ifdef NEWPIVOTS
+	/*
+	 * Now the pivots are being properly placed as xy coordinates of the build symbol, within build.xml.
+	 */
+	(void)pivot;
+#else
     matrix3 pivot_trans;
     pivot_trans.set_translation(pivot.x, pivot.y);
+
+#endif
 
     matrix3 scale_mat;
     scale_mat.set_scale(scale.x, scale.y);
@@ -478,17 +623,21 @@ void create_trans_rot_scale_pivot_matrix(
     matrix3 rot;
     rot.set_rotation(angle);
 
-	m = trans * rot * scale_mat * pivot_trans; 
+#ifdef NEWPIVOTS
+	m = trans * rot * scale_mat; 
+#else
+	m = trans* rot * scale_mat * pivot_trans;
+#endif
 }
 
 
 void convert_timeline_frame_to_element_frame(
-    IN  int2&    image_dimensions,
-    IN  float2&  pivot,   
-    IN  float2&  scale,
-    IN  float2&  pos,
-    IN  float    angle,
-    OUT matrix3& m
+    IN  int2 const&		image_dimensions,
+    IN  float2 const&	pivot,   
+    IN  float2 const&	scale,
+    IN  float2 const&	pos,
+    IN  float			angle,
+    OUT matrix3&		m
     )
 {
     float scaled_pivot_x = pivot.x * (float)image_dimensions.x;
@@ -504,27 +653,45 @@ void convert_timeline_frame_to_element_frame(
 }
 
 void convert_timeline_to_frames(
-    IN  int     anim_length,
-	IN  bool	looping,
-    IN  int     frame_num, 
-    IN  int     key_count,
-    IN  int*    times,
-    IN  float2* positions,
-	IN  int2*	dimensions,
-	IN  float2* pivots,
-	IN  float2* scales,
-	IN  float*	angles,
-	IN  int*	spins,
-	IN  float*	alphas,
-    OUT float2& frame_position,
-	OUT int2&	frame_dimension,
-	OUT float2& frame_pivot,
-	OUT float2& frame_scale,
-	OUT float&	frame_angle,
-	OUT float&	frame_alpha
+    IN  int				anim_length,
+	IN	int				timeline_id,
+	IN	const	std::set< std::pair<int, int> >& forceexport,
+	IN  bool			looping,
+    IN  int				frame_num, 
+    IN  int				key_count,
+    IN  int const*		times,
+    IN  float2 const*	positions,
+	IN  int2 const*		dimensions,
+	IN  float2 const*	pivots,
+	IN  float2 const*	scales,
+	IN  float const*	angles,
+	IN  int const*		spins,
+	IN  float const*	alphas,
+    OUT float2&			frame_position,
+	OUT int2&			frame_dimension,
+	OUT float2&			frame_pivot,
+	OUT float2&			frame_scale,
+	OUT float&			frame_angle,
+	OUT float&			frame_alpha,
+	OUT int&			start_key
     )
 {
-    int start_key = 0;
+	start_key = 0;
+
+	bool should_export = true;
+
+	if(key_count <= 0 || (!forceexport.count( make_pair(timeline_id, 0) ) && times[0] > frame_num)) {
+		should_export = false;
+	}
+	else if(!forceexport.count( make_pair(timeline_id, key_count - 1) ) && times[key_count - 1] + 1000/FRAME_RATE < frame_num) {
+		should_export = false;
+	}
+
+	if(!should_export) {
+		frame_alpha = 0;
+		return;
+	}
+
     int end_key = 0;
     for(int i = 0; i < key_count; ++i)
     {
@@ -545,7 +712,7 @@ void convert_timeline_to_frames(
             break;
         }
     }
-
+	
     int start_time = times[start_key];
     int end_time = times[end_key];
 
@@ -565,7 +732,7 @@ void convert_timeline_to_frames(
 	frame_dimension = dimensions[start_key];
 	frame_pivot = lerp(pivots[start_key], pivots[end_key], blend);
 	frame_scale = lerp(scales[start_key], scales[end_key], blend);
-	frame_angle = lerp_angle(angles[start_key], angles[end_key], blend, spins[start_key]);
+	frame_angle = lerp_angle(angles[start_key], angles[end_key], blend, spins[end_key]);
 	frame_alpha = lerp(alphas[start_key], alphas[end_key], blend);
 }
 
@@ -573,6 +740,7 @@ void convert_timeline_to_frames(
 void convert_anim_timelines_to_frames(
     IN  int     length,
 	IN  bool	looping,
+	IN	const	std::set< std::pair<int, int> >& timeline_key_forceexport,
     IN  int     timeline_count,
     IN  int*    timeline_key_start_indices,
     IN  int*    timeline_key_counts,
@@ -614,10 +782,13 @@ void convert_anim_timelines_to_frames(
 		frame_element_start_indices[frame_index] = element_index;
         for(int i = 0; i < timeline_count; ++i)
         {
-            int key_start_index = timeline_key_start_indices[i];
+            const int key_start_index = timeline_key_start_indices[i];
+			int key_offset = 0;
 
             convert_timeline_to_frames(
 				length,
+				i,
+				timeline_key_forceexport,
 				looping,
                 frame_num, 
                 timeline_key_counts[i],
@@ -634,17 +805,27 @@ void convert_anim_timelines_to_frames(
 				timeline_frame_pivots[element_index],
 				timeline_frame_scales[element_index],
 				timeline_frame_angles[element_index],
-				timeline_frame_alphas[element_index]
+				timeline_frame_alphas[element_index],
+				key_offset
 				);
+
+			const int key_index = key_start_index + key_offset;
+
 			char timeline_layer_name[1024];
 			sprintf(timeline_layer_name, "timeline_%i", i);
-			strcpy(timeline_frame_names[element_index], timeline_key_names[key_start_index]);
+			strcpy(timeline_frame_names[element_index], timeline_key_names[key_index]);
 			strcpy(timeline_frame_layer_names[element_index], timeline_layer_name);
-			timeline_frame_z_indices[element_index] = timeline_key_z_indices[key_start_index];
-			timeline_frame_symbol_frame_nums[element_index] = timeline_key_symbol_frame_nums[key_start_index];
-			timeline_frame_parent_ids[element_index] = timeline_key_parent_ids[key_start_index];
+			timeline_frame_z_indices[element_index] = timeline_key_z_indices[key_index];
+			timeline_frame_symbol_frame_nums[element_index] = timeline_key_symbol_frame_nums[key_index];
+			timeline_frame_parent_ids[element_index] = timeline_key_parent_ids[key_index];
 
-			frame_dimensions[frame_index] = timeline_key_dimensions[key_start_index];
+			frame_dimensions[frame_index] = timeline_key_dimensions[key_index];
+
+#ifdef ANIMDEBUG
+			cout << "Key index is: " << key_index << " = " << key_start_index << " + " << key_offset << endl;
+			cout << "Set frame to: " << timeline_key_symbol_frame_nums[key_index] << endl;
+#endif
+
 			++element_index;
         }
 		frame_positions[frame_index].x = 0;
@@ -657,14 +838,20 @@ void convert_anim_timelines_to_frames(
 }
 
 void export_symbol_frame(
+	OUT symbol_frame_metadata_t& frame_metadata,
     IN xml_writer&  writer,
-    IN int          num,
-    IN int          duration,
-    IN char*        image,
-    IN int2&        dimensions,
-    IN float2&      position
+    IN int				num,
+    IN int				duration,
+    IN char const*		image,
+    IN int2 const&		dimensions,
+    IN float2 const&	position
     )
 {
+	frame_metadata.x = position.x;
+	frame_metadata.y = position.y;
+	frame_metadata.w = dimensions.x;
+	frame_metadata.h = dimensions.y;
+
     writer.push("Frame")
         .attribute( "framenum", num )
         .attribute( "duration", duration )
@@ -677,22 +864,28 @@ void export_symbol_frame(
 }
 
 void export_symbol(
-    IN xml_writer&  writer, 
-    IN char*        name,
-    IN int          frame_count, 
-    IN int*         frame_nums, 
-    IN int*         frame_durations,
-    IN char**       frame_images,
-    IN int2*        frame_dimensions,
-    IN float2*      frame_positions
+	OUT symbol_metadata_t&	symbol_metadata,
+    IN xml_writer&			writer, 
+    IN char const*			name,
+    IN int					frame_count, 
+    IN int const*			frame_nums, 
+    IN int const*			frame_durations,
+    IN char const* const*	frame_images,
+    IN int2 const*			frame_dimensions,
+    IN float2 const*		frame_positions
     )
 {
     writer.push("Symbol")
         .attribute("name", skip_slash(name));
 
+		symbol_metadata.resize(frame_count);
+
         for(int i = 0; i < frame_count; ++i)
         {
+			symbol_frame_metadata_t& frame_metadata = symbol_metadata[i];
+
             export_symbol_frame(
+				OUT frame_metadata,
                 IN writer,
                 IN frame_nums[i],
                 IN frame_durations[i],
@@ -705,17 +898,18 @@ void export_symbol(
 }
 
 void export_build(
-    IN char*    build_xml_path,
-    IN char*    build_name,
-    IN int      symbol_count, 
-    IN char**   symbol_names, 
-    IN int*     symbol_frame_counts, 
-    IN int*     symbol_frame_indices, 
-    IN int*     frame_nums, 
-    IN int*     frame_durations, 
-    IN char**   frame_images, 
-    IN int2*    frame_dimensions, 
-    IN float2*  frame_positions
+	OUT build_metadata_t&	build_metadata,
+    IN char const*			build_xml_path,
+    IN char const*			build_name,
+    IN int					symbol_count, 
+    IN char const* const*	symbol_names, 
+    IN int const*			symbol_frame_counts, 
+    IN int const*			symbol_frame_indices, 
+    IN int const*			frame_nums, 
+    IN int const*			frame_durations, 
+    IN char const * const*	frame_images, 
+    IN int2 const*			frame_dimensions, 
+    IN float2 const*		frame_positions
     )
 {
     xml_writer writer;
@@ -727,7 +921,11 @@ void export_build(
         for(int i = 0; i < symbol_count; ++i)
         {                
             int frame_index = symbol_frame_indices[i];
+
+			symbol_metadata_t& symbol_metadata = build_metadata[symbol_names[i]];
+
             export_symbol(
+				OUT symbol_metadata,
                 IN writer, 
                 IN symbol_names[i], 
                 IN symbol_frame_counts[i], 
@@ -762,11 +960,11 @@ void get_build_counts(
 
 void export_element(
     IN xml_writer&  writer,
-    IN char*        name,
-    IN char*        layer_name, 
+    IN const char*        name,
+    IN const char*        layer_name, 
     IN int          frame,
     IN int          z_index,
-    IN matrix3&     m
+    IN const matrix3&     m
     )
 {
     writer.push( "element" )
@@ -783,7 +981,56 @@ void export_element(
     writer.pop( true );
 }
 
+// Per element.
+static bool extend_bounding_box(
+	IN const symbol_metadata_t& symbol_metadata,
+	IN const char * symbol_name,
+	IN bool first,
+	OUT rectangle& rect,
+	IN int frame,
+	IN const matrix3& m
+	)
+{
+	if(symbol_metadata.size() <= frame) {
+		log_and_fprint(stderr, "WARNING: frame %0d of animation symbol %s is being used by the animation but not defined by the build.\n");
+		return false;
+	}
+
+	const symbol_frame_metadata_t& frame_metadata = symbol_metadata[frame];
+
+	float x1, x2, y1, y2;
+
+	x1 = m.m00*frame_metadata.x + m.m01*frame_metadata.y + m.m02;
+	x2 = x1 + m.m00*frame_metadata.w + m.m01*frame_metadata.h;
+
+	y1 = m.m10*frame_metadata.x + m.m11*frame_metadata.y + m.m12;
+	y2 = x1 + m.m10*frame_metadata.w + m.m11*frame_metadata.h;
+
+	if(x2 < x1) {
+		std::swap(x1, x2);
+	}
+	if(y2 < y1) {
+		std::swap(y1, y2);
+	}
+
+	if(first || x1 < rect.x1) {
+		rect.x1 = x1;
+	}
+	if(first || x2 > rect.x2) {
+		rect.x2 = x2;
+	}
+	if(first || y1 < rect.y1) {
+		rect.y1 = y1;
+	}
+	if(first || y2 > rect.y2) {
+		rect.y2 = y2;
+	}
+
+	return true;
+}
+
 void export_animation_frame(
+	IN const build_metadata_t& build_metadata,
     IN xml_writer&  writer,
     IN int          index,
     IN int2&        dimensions,
@@ -797,6 +1044,35 @@ void export_animation_frame(
     IN matrix3*     element_matrices
     )
 {
+	rectangle bounding_rectangle;
+	bool uninitialized_rect = true;
+
+	for(int i = 0; i < element_count; ++i)
+	{
+		if(element_alphas[i] >= 0.5)
+		{
+			build_metadata_t::const_iterator symbol_searcher = build_metadata.find(element_names[i]);
+			if(symbol_searcher != build_metadata.end()) {
+				if(extend_bounding_box(
+					IN symbol_searcher->second,
+					IN element_names[i],
+					IN uninitialized_rect,
+					IN bounding_rectangle,
+					IN element_frames[i],
+					IN element_matrices[i]
+					))
+				{
+					uninitialized_rect = false;
+				}
+			}
+		}
+	}
+
+	bounding_box bbox(bounding_rectangle);
+	bbox.scale(1.2);
+
+	bbox.split( position, dimensions );
+
     writer.push( "frame" )
         .attribute( "idx", index * 1000 / FRAME_RATE )
         .attribute( "w", dimensions.x )
@@ -823,6 +1099,7 @@ void export_animation_frame(
 }
 
 void export_animation(
+	IN const build_metadata_t& build_metadata,
     IN xml_writer&  writer,
     IN char*        name,
     IN char*        root,
@@ -851,6 +1128,7 @@ void export_animation(
     {
         int element_start_index = frame_element_start_indices[i];
         export_animation_frame(
+			IN build_metadata,
             IN writer,
             IN frame_indices[i],
             IN frame_dimensions[i],
@@ -890,38 +1168,104 @@ void import_animation(
 }
 
 void import_mainline_key(
-    s_object_ref&   object,
-    OUT float2&     position,
-    OUT float2&     pivot,
-    OUT float&      angle,
-    OUT float2&     scale,
-    OUT int&        z_index,
-    OUT int&        spin,
-    OUT int&        id,
-    OUT int&        timeline_id,
-	OUT int&		parent_id
+    const s_object_ref&		object_ref,
+	const s_animation&		anim,
+	const s_data&			scml,
+    OUT float2&				position,
+    OUT float2&			    pivot,
+    OUT float&				angle,
+    OUT float2&				scale,
+    OUT int&				z_index,
+    OUT int&				spin,
+    OUT int&				id,
+    OUT int&				timeline_id,
+	OUT int&				parent_id
     )
 {
-    position.x = object.abs_x;
-    position.y = object.abs_y;
-    scale.x = object.abs_scale_x;
-    scale.y = object.abs_scale_y;
-    angle = object.abs_angle;
-    z_index = object.z_index;
+    id = object_ref.key;
+    timeline_id = object_ref.timeline;
+	parent_id = object_ref.parent;
+
+    z_index = object_ref.z_index;
     spin = 0;
 
-    if(object.found_pivot_x)
-    {
-        pivot.x = object.abs_pivot_x;
-    }
-    if(object.found_pivot_y)
-    {
-        pivot.y = object.abs_pivot_y;
-    }
+	// Spriter b5 doesn't use the geometrical data in object_ref's.
+	/*
+    position.x = object_ref.abs_x;
+    position.y = object_ref.abs_y;
 
-    id = object.key;
-    timeline_id = object.timeline;
-	parent_id = object.parent;
+    scale.x = object_ref.abs_scale_x;
+    scale.y = object_ref.abs_scale_y;
+
+    angle = object_ref.abs_angle;
+
+    if(object_ref.found_pivot_x)
+    {
+        pivot.x = object_ref.abs_pivot_x;
+    }
+    if(object_ref.found_pivot_y)
+    {
+        pivot.y = object_ref.abs_pivot_y;
+    }
+	*/
+
+	s_timeline_map::const_iterator timeline_match = anim.timelines.find(timeline_id);
+	if(timeline_match == anim.timelines.end() || timeline_match->second == NULL) {
+		return;
+	}
+
+	const s_timeline& timeline = *timeline_match->second;
+
+	s_timeline_key_map::const_iterator key_match = timeline.keys.find(id);
+	if(key_match == timeline.keys.end() || key_match->second == NULL) {
+		return;
+	}
+
+	const s_timeline_key& key = *key_match->second;
+
+	if(!key.has_object) {
+		return;
+	}
+
+	const s_timeline_object& object = key.object;
+
+
+
+	s_folder_map::const_iterator folder_match = scml.folders.find(object.folder);
+	if(folder_match != scml.folders.end() && folder_match->second != NULL) {
+		const s_folder& folder = *folder_match->second;
+		s_file_map::const_iterator file_match = folder.files.find(object.file);
+		if(file_match != folder.files.end() && file_match->second != NULL) {
+			const s_file& file = *file_match->second;
+
+			position.x = file.offset_x;
+			position.y = file.offset_y;
+
+			pivot.x = file.pivot_x;
+			pivot.y = file.pivot_y;
+		}
+	}
+	
+
+
+	if(object.found_x) {
+		position.x = object.x;
+	}
+	if(object.found_y) {
+		position.y = object.y;
+	}
+
+	scale.x = object.scale_x;
+	scale.y = object.scale_y;
+
+	angle = object.angle;
+
+	if(object.found_pivot_x) {
+		pivot.x = object.pivot_x;
+	}
+	if(object.found_pivot_y) {
+		pivot.y = object.pivot_y;
+	}
 }
 
 bool is_valid_animation(s_animation& anim)
@@ -948,7 +1292,8 @@ void import_mainline(
     OUT int*    mainline_key_spins,
     OUT int*    mainline_key_ids,
     OUT int*    mainline_key_timeline_ids,   
-	OUT int*    parent_ids
+	OUT int*    parent_ids,
+	OUT std::set< std::pair<int, int> >* anim_timeline_key_forceexport
     )
 {
     int anim_index = 0;
@@ -964,14 +1309,29 @@ void import_mainline(
                 s_mainline_key_map& keys = anim.mainline.keys;                
                 mainline_key_start_indices[anim_index] = mainline_key_index;
 
+				std::set< std::pair<int, int> >& timeline_key_forceexport = anim_timeline_key_forceexport[anim_index];
+
+				int max_key_time = 0;
+				s_mainline_key* max_key = NULL;
+
+				const int mainline_key_index_begin = mainline_key_index;
+
                 for(s_mainline_key_map::iterator iter = keys.begin(); iter != keys.end(); ++iter)
                 {
                     s_mainline_key& key = *iter->second;
+
+					if(key.time > max_key_time) {
+						max_key_time = key.time;
+						max_key = &key;
+					}
+
                     for(s_object_container_map::iterator object_iter = key.objects.begin(); object_iter != key.objects.end(); ++object_iter )
                     {
                         s_object_ref& object = *object_iter->second.object_ref;
                         import_mainline_key(
                             IN  object,
+							IN  anim,
+							IN  scml,
                             OUT mainline_key_positions[mainline_key_index],
                             OUT mainline_key_pivots[mainline_key_index],
                             OUT mainline_key_angles[mainline_key_index],
@@ -986,7 +1346,19 @@ void import_mainline(
                         mainline_key_index++;
                     }
                 }
-                mainline_key_counts[anim_index] = mainline_key_index - mainline_key_start_indices[anim_index];
+
+				const int mainline_key_index_end = mainline_key_index;
+
+                mainline_key_counts[anim_index] = mainline_key_index_end - mainline_key_index_begin;
+
+				if(max_key != NULL) {
+					for(s_object_container_map::iterator object_iter = max_key->objects.begin(); object_iter != max_key->objects.end(); ++object_iter )
+                    {
+                        s_object_ref& object = *object_iter->second.object_ref;
+
+						timeline_key_forceexport.insert( make_pair(object.timeline, object.key) );
+                    }
+				}
 
                 ++anim_index;
             }
@@ -1054,10 +1426,16 @@ void import_timeline_maps(
         for(s_animation_map::iterator anim_iter = entity.animations.begin(); anim_iter != entity.animations.end(); ++anim_iter)
         { 
             s_animation& anim = *anim_iter->second;
+#ifdef ANIMDEBUG
+			cout << "Animation: " << anim.name << endl;
+#endif
             if(is_valid_animation(anim))
             {                
                 for(s_timeline_map::iterator timeline_iter = anim.timelines.begin(); timeline_iter != anim.timelines.end(); ++timeline_iter)
-                {  
+                { 
+#ifdef ANIMDEBUG
+					cout << "\tTimeline: " << timeline_iter->first << endl;
+#endif
 					s_timeline& timeline = *timeline_iter->second;
 					if(is_valid_timeline(timeline))
 					{
@@ -1076,6 +1454,9 @@ void import_timeline_maps(
 						int first_key_id = timeline.keys.begin()->second->id;
 						for(s_timeline_key_map::iterator key_iter = timeline.keys.begin(); key_iter != timeline.keys.end(); ++key_iter)
 						{
+#ifdef ANIMDEBUG
+							cout << "\t\tKey: " << key_iter->first << endl;
+#endif
 							s_timeline_key& key = *key_iter->second;
 							s_timeline_object& object = key.object;
 							int mainline_start_index = mainline_key_start_indices[anim_index];
@@ -1101,6 +1482,11 @@ void import_timeline_maps(
 								symbol_ids,
 								timeline_symbol_map[timeline_key_index]
 								);
+
+#ifdef ANIMDEBUG
+							const size_t sym_index = timeline_symbol_map[timeline_key_index];
+							cout << "Got symbol index " << timeline_symbol_map[timeline_key_index] << " (folder: " << symbol_ids[sym_index].folder << ", file: " << symbol_ids[sym_index].file << ")" << endl;
+#endif
 
 							++timeline_key_index;
 						}
@@ -1133,6 +1519,7 @@ void import_timeline_key(
     scale.y = object.scale_y;
     
 	time = key.time;
+	// LOOK AT ME
 	symbol_frame_num = object.file;
 
     position.x = object.x;
@@ -1176,6 +1563,9 @@ void import_timelines(
             s_animation& anim = *anim_iter->second;
             if(is_valid_animation(anim))
             {
+#ifdef ANIMDEBUG
+				cout << "Importing timelines for anim " << anim.name << endl;
+#endif
 				anim_timeline_start_indices[anim_index] = timeline_index;
 				anim_timeline_counts[anim_index] = 0;
                 for(s_timeline_map::iterator timeline_iter = anim.timelines.begin(); timeline_iter != anim.timelines.end(); ++timeline_iter)
@@ -1686,6 +2076,9 @@ void build_scml(
 	bone* anim_bone_frames = new bone[bone_frame_count];
 	bone* anim_flattened_bone_frames = new bone[bone_frame_count];
 
+	// (timeline_id, timeline_key_id)
+	std::set< std::pair<int, int> >* anim_timeline_key_forceexport = new std::set< std::pair<int, int> >[anim_count];
+
     import_animations(
         IN  scml,
         OUT anim_names,
@@ -1707,7 +2100,8 @@ void build_scml(
         OUT mainline_key_spins, 
         OUT mainline_key_ids,
         OUT mainline_key_timeline_ids,
-		OUT mainline_parent_ids
+		OUT mainline_parent_ids,
+		OUT	anim_timeline_key_forceexport
         );
 
     import_timeline_maps(
@@ -1746,7 +2140,7 @@ void build_scml(
         OUT timeline_key_angles,
         OUT timeline_key_scales,
         OUT timeline_key_z_indices,
-        OUT timeline_key_spins        
+        OUT timeline_key_spins
         );
 
     apply_mainline_keys(
@@ -1831,6 +2225,7 @@ void build_scml(
         convert_anim_timelines_to_frames(
             anim_lengths[i],
 			anim_loopings[i],
+			anim_timeline_key_forceexport[i],
             anim_timeline_counts[i],
             &anim_timeline_key_start_indices[timeline_start_index],
             &anim_timeline_key_counts[timeline_start_index],
@@ -2089,19 +2484,32 @@ void build_scml(
     }
     else
     {
+#ifdef NEWPIVOTS
+        // convert_symbol_frame_pivots
+        for(int i = 0; i < symbol_frame_count; ++i)
+        {
+            convert_pivot(
+                IN  symbol_frame_dimensions[i],
+                IN  symbol_frame_pivots[i],
+                OUT symbol_frame_pivots[i]
+                );
+        }
+#else
         // clear_symbol_frame_pivots
         for(int i = 0; i < symbol_frame_count; ++i)
         {
             symbol_frame_pivots[i].x = 0;
             symbol_frame_pivots[i].y = 0;
         }
+#endif
     }
+
+	build_metadata_t build_metadata;
     
     // export builds
-    char build_xml_path[MAX_PATH_LEN];
-    sprintf(build_xml_path, "%s\\build.xml", get_asset_temp_dir());
     export_build(
-        IN build_xml_path,
+		OUT build_metadata,
+        IN (Path(get_asset_temp_dir())/"build.xml").c_str(),
         IN build_name,
         IN symbol_count, 
         IN symbol_names, 
@@ -2116,13 +2524,10 @@ void build_scml(
 
 
     // export animations
-    char animation_xml_path[MAX_PATH_LEN];
-    sprintf(animation_xml_path, "%s\\animation.xml", get_asset_temp_dir());
-
     if(anim_count > 0)
     {
         xml_writer animation_writer;
-        animation_writer.begin_doc(animation_xml_path);
+        animation_writer.begin_doc( (Path(get_asset_temp_dir())/"animation.xml").c_str() );
         animation_writer.push("Anims");
 
         for(int i = 0; i < anim_count; ++i)
@@ -2131,6 +2536,7 @@ void build_scml(
             {
                 int frame_start_index = anim_frame_start_indices[i];
                 export_animation(
+					IN build_metadata,
                     IN animation_writer,
                     IN anim_names[i],
                     IN anim_roots[i],
@@ -2164,73 +2570,99 @@ int main( int argument_count, char** arguments )
     set_application_folder( arguments[0] );
     begin_log();
 
+	bool force = extract_arg(argument_count, arguments, "f");
+	bool ignore_self_date = extract_arg(argument_count, arguments, "ignore-self-date");
+
 	if( argument_count != 3 )
 	{
 		error( "ERROR: Invalid number of arguments!\n" );
 	}
     
-	char const* input_file_path = arguments[1];
+	Path input_file_path = arguments[1];
+	input_file_path.makeAbsolute();
 
-	if( !exists( input_file_path ) )
+	if( !input_file_path.exists() )
 	{
-		error( "ERROR: Could not open '%s'!\n", input_file_path );
+		error( "ERROR: Could not open '%s'!\n", input_file_path.c_str() );
 	}
+	//printf("input file: %s\n", input_file_path.basename().c_str());
 
-	char asset_name[MAX_PATH_LEN];
-	char const* asset_name_start = strrchr(input_file_path, '\\') + 1;
-	memcpy( asset_name, asset_name_start, strlen(asset_name_start) - 5);
-	asset_name[strlen(asset_name_start) - 5] = 0;
-	set_asset_name( asset_name );
+	Path asset_name = input_file_path.basename();
+	asset_name.removeExtension();
+	set_asset_name( asset_name.c_str() );
 
-    char input_folder[2048];
-    get_folder( input_file_path, input_folder );
+	Path input_folder = input_file_path.dirname();
 
-    char output_package_file_path[MAX_PATH_LEN];
-    get_output_file_path( input_file_path, output_package_file_path );
+	Path output_package_file_path = input_file_path;
+	output_package_file_path.replaceExtension("zip");
 
-    char const* output_dir = arguments[2];
+	Path output_dir = arguments[2];
+	output_dir.makeAbsolute();
 
-    char built_package_path[MAX_PATH_LEN];
-    sprintf( built_package_path, "%s\\anim\\%s", output_dir, strrchr( output_package_file_path, '\\' ) );
+	Path built_package_path = output_dir/"anim"/output_package_file_path.basename();
 
-    if( exists( built_package_path ) &&
-        exists( output_package_file_path ) &&
-        is_more_recent( input_file_path, built_package_path ) &&
-        is_more_recent( arguments[0], built_package_path ) && 
-        is_more_recent( output_package_file_path, built_package_path ) )
-    {
-         return 0;
-    }
-
-    SCML::Data scml( input_file_path );	
+    SCML::Data scml( input_file_path.c_str() );	
 
 	char** image_paths = 0;
 	int image_path_count;
 
 	build_scml(scml, image_paths, image_path_count);
 
-    char image_list_path[MAX_PATH_LEN];
-    sprintf(image_list_path, "%s\\images.lst", get_asset_temp_dir());
-    FILE* image_list_file = fopen(image_list_path, "w");
+	bool up_to_date = false;
+	/*
+	 * Existence checks are implicit.
+	 * If neither compared files of a pair exist, the check fails, since the inequality is strict.
+	 */
+    if(	!force
+		&& built_package_path.isNewerThan(input_file_path)
+        && (ignore_self_date || built_package_path.isNewerThan(arguments[0]))
+        && (!output_package_file_path.exists() || built_package_path.isNewerThan(output_package_file_path))
+	  ){
+		up_to_date = true;
+	}
+
+	Path image_list_path = Path(get_asset_temp_dir())/"images.lst";
+    FILE* image_list_file = fopen(image_list_path.c_str(), "w");
     for(int i = 0; i < image_path_count; ++i)
     {
-        char path[MAX_PATH_LEN];
-        sprintf(path, "%s\\%s", input_folder, image_paths[i]);
-        if(!exists(path))
+		Path path = input_folder/image_paths[i];
+        if(!path.exists())
         {
-            error("ERROR: Missing image '%s' referenced by '%s'.\n", image_paths[i], strrchr(input_file_path, '\\') + 1);
+            error("ERROR: Missing image '%s' referenced by '%s'.\n", image_paths[i], input_file_path.basename().c_str());
         }
-        fprintf(image_list_file, "%s\n", path);
+		else if(path.isNewerThan(built_package_path)) {
+			up_to_date = false;
+		}
+        fprintf(image_list_file, "%s\n", path.c_str());
     }
     fclose(image_list_file);
 
+    if(up_to_date){
+		log_and_fprint(stderr, "%s is up to date.\n", built_package_path.c_str());
+        return 0;
+    }
+
+	Path app_folder(get_application_folder());
+
 	char command_line[32768];
-	sprintf( command_line, "\"\"%s\\buildtools\\windows\\Python27\\python.exe\" \"%s\\compiler_scripts\\zipanim.py\" \"%s\" \"%s\"\"", get_application_folder(), get_application_folder(), get_asset_temp_dir(), output_package_file_path );
+	sprintf(command_line,
+			"%s \"%s\" \"%s\" \"%s\"",
+			get_python(),
+			(app_folder/"compiler_scripts"/"zipanim.py").c_str(),
+			get_asset_temp_dir(),
+			output_package_file_path.c_str()
+	);
+	run( command_line, true, "Packaging '%s'", output_package_file_path.basename().c_str() );
 
-	run( command_line, true, "Packaging '%s'", strrchr(output_package_file_path, '\\') + 1 );
-
-    sprintf( command_line, "\"\"%s\\buildtools\\windows\\Python27\\python.exe\" \"%s\\exported\\export.py\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\\data\" \"%s\"\"", get_application_folder(), get_application_folder(), output_dir, get_application_folder(), output_package_file_path );
-    run( command_line, true, "Building '%s'", strrchr(output_package_file_path, '\\') + 1 );
+	sprintf(command_line,
+			"%s \"%s\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\" \"%s\"",
+			get_python(),
+			(app_folder/"exported"/"export.py").c_str(),
+			output_dir.c_str(),
+			(app_folder/"data").c_str(),
+			output_package_file_path.c_str()
+	);
+    run( command_line, true, "Building '%s'", output_package_file_path.basename().c_str() );
 
     end_log();
 
