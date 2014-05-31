@@ -50,7 +50,9 @@ void list_folders( Path const& path, file_list& folders )
 			{
 				if(file.is_dir && file.name[0] != '.')
 				{
-					folders.push_back( path/file.name );
+					if(!(path/file.name/"NOAUTOCOMPILE").exists()) {
+						folders.push_back( path/file.name );
+					}
 				}
 			}
 			tinydir_next(&dir);
