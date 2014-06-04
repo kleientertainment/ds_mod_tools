@@ -24,7 +24,6 @@ using namespace Compat;
 
 
 //#define ANIMDEBUG 1
-//#define NEWPIVOTS 1
 
 
 typedef SCML::Data s_data;
@@ -603,16 +602,8 @@ void create_trans_rot_scale_pivot_matrix(
 	OUT matrix3& m
 	)
 {
-#ifdef NEWPIVOTS
-	/*
-	 * Now the pivots are being properly placed as xy coordinates of the build symbol, within build.xml.
-	 */
-	(void)pivot;
-#else
     matrix3 pivot_trans;
     pivot_trans.set_translation(pivot.x, pivot.y);
-
-#endif
 
     matrix3 scale_mat;
     scale_mat.set_scale(scale.x, scale.y);
@@ -623,11 +614,7 @@ void create_trans_rot_scale_pivot_matrix(
     matrix3 rot;
     rot.set_rotation(angle);
 
-#ifdef NEWPIVOTS
-	m = trans * rot * scale_mat; 
-#else
 	m = trans* rot * scale_mat * pivot_trans;
-#endif
 }
 
 
@@ -647,7 +634,7 @@ void convert_timeline_frame_to_element_frame(
 	   IN float2(pos.x, -pos.y),
 	   IN angle,
 	   IN scale,
-	   IN float2(image_dimensions.x / 2.f - scaled_pivot_x, -(image_dimensions.y / 2.f - scaled_pivot_y)),
+	   IN float2(-scaled_pivot_x, scaled_pivot_y),
 	   OUT m
 	   );
 }
@@ -684,7 +671,7 @@ void convert_timeline_to_frames(
 		should_export = false;
 	}
 	else if(!forceexport.count( make_pair(timeline_id, key_count - 1) ) && times[key_count - 1] + 1000/FRAME_RATE < frame_num) {
-		should_export = false;
+		should_export = looping;
 	}
 
 	if(!should_export) {
@@ -1916,40 +1903,37 @@ void convert_z_index(
 	z = max_z - z;
 }
 
-void convert_pivot(
-    IN  int2&    image_dimensions,
-    IN  float2&  input_pivot,
-    OUT float2&  output_pivot
-    )
+void convert_symbol_frame_pivots_to_build_pivots(
+	IN  int    symbol_frame_count,
+	IN  int2*  symbol_frame_dimensions,
+	IN  float2* symbol_frame_pivots,
+	OUT float2* build_frame_pivots
+	)
 {
-    float scaled_pivot_x = input_pivot.x * (float)image_dimensions.x;
-    float scaled_pivot_y = input_pivot.y * (float)image_dimensions.y;
+	for(int i = 0; i < symbol_frame_count; ++i)
+	{
+		float scaled_pivot_x = symbol_frame_pivots[i].x * float(symbol_frame_dimensions[i].x);
+		float scaled_pivot_y = symbol_frame_pivots[i].y * float(symbol_frame_dimensions[i].y);
 
-    output_pivot.x = image_dimensions.x / 2.f - scaled_pivot_x;
-    output_pivot.y = image_dimensions.y / 2.f - scaled_pivot_y;
-    output_pivot.y = -output_pivot.y;
+		build_frame_pivots[i].x = (float)symbol_frame_dimensions[i].x / 2.f - scaled_pivot_x;
+		build_frame_pivots[i].y = (float)symbol_frame_dimensions[i].y / 2.f - scaled_pivot_y;
+		build_frame_pivots[i].y = -build_frame_pivots[i].y;
+	}
 }
 
-void convert_to_swappable_build(
-    IN  int     timeline_key_count,
-    IN  int*    timeline_symbol_map,
-    IN  int*    timeline_key_times,
-    IN  int2*   timeline_key_dimensions,
-    IN  float2* timeline_key_pivots,
-    OUT float2* symbol_frame_pivots
-    )
+void apply_inverse_symbol_frame_pivots_to_timeline_pivots(
+		IN  float2* symbol_frame_pivots,
+		IN  int		timeline_key_count,
+		IN  int*	timeline_symbol_map,
+		IN  float2* timeline_key_pivots,
+		OUT float2* adjusted_timeline_key_pivots
+		)
 {
-    for(int i = 0; i < timeline_key_count; ++i)
-    {
-        if(timeline_key_times[i] == 0)
-        {
-            convert_pivot(
-                IN  timeline_key_dimensions[i],
-                IN  timeline_key_pivots[i],
-                OUT symbol_frame_pivots[timeline_symbol_map[i]]
-                );        
-        }
-    }
+	for(int i = 0; i < timeline_key_count; ++i)
+	{
+		adjusted_timeline_key_pivots[i].x = timeline_key_pivots[i].x - symbol_frame_pivots[timeline_symbol_map[i]].x;
+		adjusted_timeline_key_pivots[i].y = timeline_key_pivots[i].y - symbol_frame_pivots[timeline_symbol_map[i]].y;
+	}
 }
 
 void build_scml(
@@ -1978,6 +1962,7 @@ void build_scml(
     char**      symbol_frame_image_names = allocate_strings(symbol_frame_count, MAX_NAME_LENGTH);
     int2*       symbol_frame_dimensions = new int2[symbol_frame_count];
     float2*     symbol_frame_pivots = new float2[symbol_frame_count];
+	float2*     build_frame_pivots = new float2[symbol_frame_count];
     symbol_id*  symbol_ids = new symbol_id[symbol_frame_count];
 
     import_build(
@@ -2200,8 +2185,22 @@ void build_scml(
 			IN  max_z,
 			OUT timeline_key_z_indices[i]
 			);
-
 	}
+
+	apply_inverse_symbol_frame_pivots_to_timeline_pivots(
+		IN  symbol_frame_pivots,
+		IN  timeline_key_count,
+		IN  timeline_symbol_map,
+		IN  timeline_key_pivots,
+		OUT timeline_key_pivots
+		);
+
+	convert_symbol_frame_pivots_to_build_pivots(
+		IN  symbol_frame_count,
+		IN  symbol_frame_dimensions,
+		IN  symbol_frame_pivots,
+		OUT build_frame_pivots
+		);
 
 	int2* timeline_frame_dimensions = new int2[element_count];
     float2* timeline_frame_positions = new float2[element_count];
@@ -2459,49 +2458,8 @@ void build_scml(
             else
             {
                 symbol_frame_durations[i] = 10;
-            }
-            
-        }
-        
-        // convert_symbol_frame_pivots
-        for(int i = 0; i < symbol_frame_count; ++i)
-        {
-            convert_pivot(
-                IN  symbol_frame_dimensions[i],
-                IN  symbol_frame_pivots[i],
-                OUT symbol_frame_pivots[i]
-                );
-        }
-
-        convert_to_swappable_build(
-            IN  timeline_key_count,
-            IN  timeline_symbol_map,
-            IN  timeline_key_times,
-            IN  timeline_key_dimensions,
-            IN  timeline_key_pivots,
-            OUT symbol_frame_pivots
-            );
-    }
-    else
-    {
-#ifdef NEWPIVOTS
-        // convert_symbol_frame_pivots
-        for(int i = 0; i < symbol_frame_count; ++i)
-        {
-            convert_pivot(
-                IN  symbol_frame_dimensions[i],
-                IN  symbol_frame_pivots[i],
-                OUT symbol_frame_pivots[i]
-                );
-        }
-#else
-        // clear_symbol_frame_pivots
-        for(int i = 0; i < symbol_frame_count; ++i)
-        {
-            symbol_frame_pivots[i].x = 0;
-            symbol_frame_pivots[i].y = 0;
-        }
-#endif
+            }            
+        }        
     }
 
 	build_metadata_t build_metadata;
@@ -2519,7 +2477,7 @@ void build_scml(
         IN symbol_frame_durations, 
         IN symbol_frame_image_names, 
         IN symbol_frame_dimensions, 
-        IN symbol_frame_pivots
+        IN build_frame_pivots
         );
 
 
