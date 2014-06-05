@@ -20,7 +20,7 @@ struct compiler
     {
         char command_line[1024];
 #		if defined(IS_WINDOWS)
-			sprintf( command_line, "%s.exe \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
+			sprintf( command_line, "\"\"%s.exe\" \"%s\" \"%s\"\"", path.c_str(), asset_path, output_folder );
 #		else
 			sprintf( command_line, "%s \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
 #		endif

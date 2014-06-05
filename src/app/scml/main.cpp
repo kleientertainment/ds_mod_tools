@@ -2604,7 +2604,7 @@ int main( int argument_count, char** arguments )
 
 	char command_line[32768];
 	sprintf(command_line,
-			"%s \"%s\" \"%s\" \"%s\"",
+			"\"\"%s\" \"%s\" \"%s\" \"%s\"\"",
 			get_python(),
 			(app_folder/"compiler_scripts"/"zipanim.py").c_str(),
 			get_asset_temp_dir(),
@@ -2613,7 +2613,7 @@ int main( int argument_count, char** arguments )
 	run( command_line, true, "Packaging '%s'", output_package_file_path.basename().c_str() );
 
 	sprintf(command_line,
-			"%s \"%s\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\" \"%s\"",
+			"\"\"%s\" \"%s\" --skip_update_prefabs --outputdir \"%s\" --prefabsdir \"%s\" \"%s\"\"",
 			get_python(),
 			(app_folder/"exported"/"export.py").c_str(),
 			output_dir.c_str(),
