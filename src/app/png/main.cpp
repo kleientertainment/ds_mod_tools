@@ -107,7 +107,11 @@ int main( int argument_count, char** arguments )
     }
 	*/
 
+#if defined(IS_WINDOWS)
     sprintf( command_line, "\"\"%s\" \"%s\" \"%s\"\"", get_python(), build_tool_path.c_str(), input_file_path.c_str());
+#else
+	sprintf( command_line, "\"%s\" \"%s\" \"%s\"", get_python(), build_tool_path.c_str(), input_file_path.c_str());
+#endif
     
     run( command_line, true, "Compiling '%s'", input_file_path.c_str() );
 
