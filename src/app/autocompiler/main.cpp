@@ -22,7 +22,7 @@ struct compiler
 #		if defined(IS_WINDOWS)
 			sprintf( command_line, "\"\"%s.exe\" \"%s\" \"%s\"\"", path.c_str(), asset_path, output_folder );
 #		else
-			sprintf( command_line, "%s \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
+			sprintf( command_line, "\"%s\" \"%s\" \"%s\"", path.c_str(), asset_path, output_folder );
 #		endif
         if(!run( command_line, false, "Compiling %s.", asset_path ))
 		{
