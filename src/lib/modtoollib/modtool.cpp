@@ -88,11 +88,13 @@ static void initialize_compatibility_layer() {
 	const char * const old_pythonpath = getenv("PYTHONPATH");
 	Compat::Path basic_custom_pythonpath = absolute_python_root/"Lib";
 	Compat::Path site_custom_pythonpath = basic_custom_pythonpath/"site-packages";
-	std::string new_pythonpath = basic_custom_pythonpath + ":" + site_custom_pythonpath;
+	std::string new_pythonpath;
 	if(old_pythonpath != NULL) {
-		new_pythonpath += ":";
 		new_pythonpath += old_pythonpath;
+		new_pythonpath += ":";
 	}
+	new_pythonpath += basic_custom_pythonpath + ":" + site_custom_pythonpath;
+
 	setenv("PYTHONPATH", new_pythonpath.c_str(), 1);
 #endif
 }
