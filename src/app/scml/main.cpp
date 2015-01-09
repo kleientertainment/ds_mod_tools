@@ -98,7 +98,7 @@ public:
 		set_values(pos.x, pos.y, dim.x, dim.y);
 	}
 	explicit bounding_box(const rectangle& r) {
-		set_values(r.x1, r.y1, int(ceil(r.x2 - r.x1)), int(ceil(r.y2 - r.y1)));
+		set_values(r.x1, r.y1, int(ceilf(r.x2 - r.x1)), int(ceilf(r.y2 - r.y1)));
 	}
 
 	void split(float2& pos, int2& dim) const {
@@ -985,19 +985,24 @@ static bool extend_bounding_box(
 
 	const symbol_frame_metadata_t& frame_metadata = symbol_metadata[frame];
 
-	float x1, x2, y1, y2;
+	float xs[4], ys[4];
 
-	x1 = m.m00*frame_metadata.x + m.m01*frame_metadata.y + m.m02;
-	x2 = x1 + m.m00*frame_metadata.w + m.m01*frame_metadata.h;
+	xs[0] = m.m02;
+	xs[1] = xs[0] + m.m00*frame_metadata.w;
+	xs[2] = xs[0] + m.m01*frame_metadata.h;
+	xs[3] = xs[0] + m.m00*frame_metadata.w + m.m01*frame_metadata.h;
 
-	y1 = m.m10*frame_metadata.x + m.m11*frame_metadata.y + m.m12;
-	y2 = x1 + m.m10*frame_metadata.w + m.m11*frame_metadata.h;
+	ys[0] = m.m12;
+	ys[1] = ys[0] + m.m10*frame_metadata.w;
+	ys[2] = ys[0] + m.m11*frame_metadata.h;
+	ys[3] = ys[0] + m.m10*frame_metadata.w + m.m11*frame_metadata.h;
 
-	if(x2 < x1) {
-		std::swap(x1, x2);
-	}
-	if(y2 < y1) {
-		std::swap(y1, y2);
+	float x1 = xs[0], x2 = xs[0], y1 = ys[0], y2 = ys[0];
+	for(size_t i = 1; i < 4; i++) {
+		x1 = std::min(x1, xs[i]);
+		x2 = std::max(x2, xs[i]);
+		y1 = std::min(y1, ys[i]);
+		y2 = std::max(y2, ys[i]);
 	}
 
 	if(first || x1 < rect.x1) {
@@ -1056,7 +1061,11 @@ void export_animation_frame(
 	}
 
 	bounding_box bbox(bounding_rectangle);
-	bbox.scale(1.2);
+
+	bbox.x += bbox.w/2.0f;
+	bbox.y += bbox.h/2.0f;
+
+	bbox.scale(1.1);
 
 	bbox.split( position, dimensions );
 
