@@ -164,16 +164,12 @@ int main( int argument_count, char** arguments )
 
     file_list mod_folders;
 	Path mods_folder = app_folder/".."/".."/"mods";
-	list_folders( mods_folder, mod_folders );
+    list_folders( mods_folder, mod_folders );
 
 	mods_folder = app_folder/".."/".."/"dont_starve"/"mods";
-	list_folders( mods_folder, mod_folders );
+    list_folders( mods_folder, mod_folders );
 
-	mods_folder = app_folder/".."/".."/"Don't Starve Together Beta"/"mods";
-	list_folders( mods_folder, mod_folders );
 
-	mods_folder = app_folder/".."/".."/"Don't Starve Together"/"mods";
-	list_folders( mods_folder, mod_folders );
 
     compiler_list compilers = get_compilers( get_application_folder() );
     for( compiler_list::iterator iter = compilers.begin(); iter != compilers.end(); ++iter )
