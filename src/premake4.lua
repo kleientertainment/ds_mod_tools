@@ -1,8 +1,8 @@
 os_properties = 
 {
-	windows = { dir = 'win32', pkg_dirs = {"cmn", "win32"}, pythondir = 'windows' },
-	macosx = { dir = 'osx', pkg_dirs = {"cmn", "unix"}, pythondir = 'osx' },
-	linux = { dir = 'linux', pkg_dirs = {"cmn", "unix"}, pythondir = 'linux' },
+	windows = { dir = 'win32', pythondir = 'windows' },
+	macosx = { dir = 'osx', pythondir = 'osx' },
+	linux = { dir = 'linux', pythondir = 'linux' },
 }
 
 
@@ -261,7 +261,7 @@ end)()
 mkdir( props.outdir )
 
 --[[
--- Maps subdirectories of pkg/{pkg_dir}/ to subdirectories of mod_tools.
+-- Maps subdirectories of pkg/ to subdirectories of mod_tools.
 --]]
 pkg_map = {
 	[catfile("mod_tools")] = catfile("."),
@@ -319,10 +319,8 @@ solution('mod_tools')
 	end
 
 
-extract(catfile("..", "pkg", "tst", "wand.zip"), catfile(props.outdir, "dont_starve", "mods"))
-
-for _, src_dir in ipairs(props.pkg_dirs) do
-	local src_base = catfile("..", "pkg", src_dir)
+local function copyPkg()
+	local src_base = catfile("..", "pkg")
 	local dest_base = props.skuoutdir
 	for src_subdir, dest_subdir in pairs(pkg_map) do
 		local src = catfile(src_base, src_subdir)
@@ -332,3 +330,4 @@ for _, src_dir in ipairs(props.pkg_dirs) do
 		end
 	end
 end
+copyPkg()
