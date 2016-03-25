@@ -601,12 +601,12 @@ class Formatter(object):
 
     def convert_field(self, value, conversion):
         # do any conversion on the resulting object
-        if conversion is None:
-            return value
+        if conversion == 'r':
+            return repr(value)
         elif conversion == 's':
             return str(value)
-        elif conversion == 'r':
-            return repr(value)
+        elif conversion is None:
+            return value
         raise ValueError("Unknown conversion specifier {0!s}".format(conversion))
 
 

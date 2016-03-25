@@ -173,8 +173,7 @@ class FixerError(Exception):
 
 class RefactoringTool(object):
 
-    _default_options = {"print_function" : False,
-                        "write_unchanged_files" : False}
+    _default_options = {"print_function" : False}
 
     CLASS_PREFIX = "Fix" # The prefix for fixer classes
     FILE_PREFIX = "fix_" # The prefix for modules with a fixer within
@@ -196,10 +195,6 @@ class RefactoringTool(object):
             self.grammar = pygram.python_grammar_no_print_statement
         else:
             self.grammar = pygram.python_grammar
-        # When this is True, the refactor*() methods will call write_file() for
-        # files processed even if they were not changed during refactoring. If
-        # and only if the refactor method's write parameter was True.
-        self.write_unchanged_files = self.options.get("write_unchanged_files")
         self.errors = []
         self.logger = logging.getLogger("RefactoringTool")
         self.fixer_log = []
@@ -346,13 +341,13 @@ class RefactoringTool(object):
         if doctests_only:
             self.log_debug("Refactoring doctests in %s", filename)
             output = self.refactor_docstring(input, filename)
-            if self.write_unchanged_files or output != input:
+            if output != input:
                 self.processed_file(output, filename, input, write, encoding)
             else:
                 self.log_debug("No doctest changes in %s", filename)
         else:
             tree = self.refactor_string(input, filename)
-            if self.write_unchanged_files or (tree and tree.was_changed):
+            if tree and tree.was_changed:
                 # The [:-1] is to take off the \n we added earlier
                 self.processed_file(unicode(tree)[:-1], filename,
                                     write=write, encoding=encoding)
@@ -391,13 +386,13 @@ class RefactoringTool(object):
         if doctests_only:
             self.log_debug("Refactoring doctests in stdin")
             output = self.refactor_docstring(input, "<stdin>")
-            if self.write_unchanged_files or output != input:
+            if output != input:
                 self.processed_file(output, "<stdin>", input)
             else:
                 self.log_debug("No doctest changes in stdin")
         else:
             tree = self.refactor_string(input, "<stdin>")
-            if self.write_unchanged_files or (tree and tree.was_changed):
+            if tree and tree.was_changed:
                 self.processed_file(unicode(tree), "<stdin>", input)
             else:
                 self.log_debug("No changes in stdin")
@@ -445,7 +440,7 @@ class RefactoringTool(object):
 
                         try:
                             find_root(node)
-                        except ValueError:
+                        except AssertionError:
                             # this node has been cut off from a
                             # previous transformation ; skip
                             continue
@@ -507,7 +502,7 @@ class RefactoringTool(object):
     def processed_file(self, new_text, filename, old_text=None, write=False,
                        encoding=None):
         """
-        Called when a file has been refactored and there may be changes.
+        Called when a file has been refactored, and there are changes.
         """
         self.files.append(filename)
         if old_text is None:
@@ -518,8 +513,7 @@ class RefactoringTool(object):
         self.print_output(old_text, new_text, filename, equal)
         if equal:
             self.log_debug("No changes to %s", filename)
-            if not self.write_unchanged_files:
-                return
+            return
         if write:
             self.write_file(new_text, filename, old_text, encoding)
         else:

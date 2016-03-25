@@ -244,11 +244,14 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         self.request_version = version = self.default_request_version
         self.close_connection = 1
         requestline = self.raw_requestline
-        requestline = requestline.rstrip('\r\n')
+        if requestline[-2:] == '\r\n':
+            requestline = requestline[:-2]
+        elif requestline[-1:] == '\n':
+            requestline = requestline[:-1]
         self.requestline = requestline
         words = requestline.split()
         if len(words) == 3:
-            command, path, version = words
+            [command, path, version] = words
             if version[:5] != 'HTTP/':
                 self.send_error(400, "Bad request version (%r)" % version)
                 return False
@@ -274,7 +277,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
                           "Invalid HTTP Version (%s)" % base_version_number)
                 return False
         elif len(words) == 2:
-            command, path = words
+            [command, path] = words
             self.close_connection = 1
             if command != 'GET':
                 self.send_error(400,
@@ -447,13 +450,13 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         specified as subsequent arguments (it's just like
         printf!).
 
-        The client ip address and current date/time are prefixed to every
-        message.
+        The client host and current date/time are prefixed to
+        every message.
 
         """
 
         sys.stderr.write("%s - - [%s] %s\n" %
-                         (self.client_address[0],
+                         (self.address_string(),
                           self.log_date_time_string(),
                           format%args))
 

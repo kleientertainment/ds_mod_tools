@@ -642,23 +642,17 @@ class ElementTree(object):
     # @exception ParseError If the parser fails to parse the document.
 
     def parse(self, source, parser=None):
-        close_source = False
         if not hasattr(source, "read"):
             source = open(source, "rb")
-            close_source = True
-        try:
-            if not parser:
-                parser = XMLParser(target=TreeBuilder())
-            while 1:
-                data = source.read(65536)
-                if not data:
-                    break
-                parser.feed(data)
-            self._root = parser.close()
-            return self._root
-        finally:
-            if close_source:
-                source.close()
+        if not parser:
+            parser = XMLParser(target=TreeBuilder())
+        while 1:
+            data = source.read(65536)
+            if not data:
+                break
+            parser.feed(data)
+        self._root = parser.close()
+        return self._root
 
     ##
     # Creates a tree iterator for the root element.  The iterator loops
@@ -683,8 +677,8 @@ class ElementTree(object):
         return list(self.iter(tag))
 
     ##
-    # Same as getroot().find(path), starting at the root of the
-    # tree.
+    # Finds the first toplevel element with given tag.
+    # Same as getroot().find(path).
     #
     # @param path What element to look for.
     # @keyparam namespaces Optional namespace prefix map.
@@ -704,9 +698,10 @@ class ElementTree(object):
         return self._root.find(path, namespaces)
 
     ##
-    # Same as getroot().findtext(path), starting at the root of the tree.
+    # Finds the element text for the first toplevel element with given
+    # tag.  Same as getroot().findtext(path).
     #
-    # @param path What element to look for.
+    # @param path What toplevel element to look for.
     # @param default What to return if the element was not found.
     # @keyparam namespaces Optional namespace prefix map.
     # @return The text content of the first matching element, or the
@@ -728,7 +723,8 @@ class ElementTree(object):
         return self._root.findtext(path, default, namespaces)
 
     ##
-    # Same as getroot().findall(path), starting at the root of the tree.
+    # Finds all toplevel elements with the given tag.
+    # Same as getroot().findall(path).
     #
     # @param path What element to look for.
     # @keyparam namespaces Optional namespace prefix map.
@@ -777,12 +773,11 @@ class ElementTree(object):
     # @param file A file name, or a file object opened for writing.
     # @param **options Options, given as keyword arguments.
     # @keyparam encoding Optional output encoding (default is US-ASCII).
+    # @keyparam method Optional output method ("xml", "html", "text" or
+    #     "c14n"; default is "xml").
     # @keyparam xml_declaration Controls if an XML declaration should
     #     be added to the file.  Use False for never, True for always,
     #     None for only if not US-ASCII or UTF-8.  None is default.
-    # @keyparam default_namespace Sets the default XML namespace (for "xmlns").
-    # @keyparam method Optional output method ("xml", "html", "text" or
-    #     "c14n"; default is "xml").
 
     def write(self, file_or_filename,
               # keyword arguments
@@ -944,7 +939,7 @@ def _serialize_xml(write, elem, encoding, qnames, namespaces):
         write(_escape_cdata(elem.tail, encoding))
 
 HTML_EMPTY = ("area", "base", "basefont", "br", "col", "frame", "hr",
-              "img", "input", "isindex", "link", "meta", "param")
+              "img", "input", "isindex", "link", "meta" "param")
 
 try:
     HTML_EMPTY = set(HTML_EMPTY)
@@ -1194,22 +1189,18 @@ def parse(source, parser=None):
 # @return A (event, elem) iterator.
 
 def iterparse(source, events=None, parser=None):
-    close_source = False
     if not hasattr(source, "read"):
         source = open(source, "rb")
-        close_source = True
     if not parser:
         parser = XMLParser(target=TreeBuilder())
-    return _IterParseIterator(source, events, parser, close_source)
+    return _IterParseIterator(source, events, parser)
 
 class _IterParseIterator(object):
 
-    def __init__(self, source, events, parser, close_source=False):
+    def __init__(self, source, events, parser):
         self._file = source
-        self._close_file = close_source
         self._events = []
         self._index = 0
-        self._error = None
         self.root = self._root = None
         self._parser = parser
         # wire up the parser for event reporting
@@ -1255,31 +1246,22 @@ class _IterParseIterator(object):
         while 1:
             try:
                 item = self._events[self._index]
-                self._index += 1
-                return item
             except IndexError:
-                pass
-            if self._error:
-                e = self._error
-                self._error = None
-                raise e
-            if self._parser is None:
-                self.root = self._root
-                if self._close_file:
-                    self._file.close()
-                raise StopIteration
-            # load event buffer
-            del self._events[:]
-            self._index = 0
-            data = self._file.read(16384)
-            if data:
-                try:
+                if self._parser is None:
+                    self.root = self._root
+                    raise StopIteration
+                # load event buffer
+                del self._events[:]
+                self._index = 0
+                data = self._file.read(16384)
+                if data:
                     self._parser.feed(data)
-                except SyntaxError as exc:
-                    self._error = exc
+                else:
+                    self._root = self._parser.close()
+                    self._parser = None
             else:
-                self._root = self._parser.close()
-                self._parser = None
+                self._index = self._index + 1
+                return item
 
     def __iter__(self):
         return self

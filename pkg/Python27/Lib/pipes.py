@@ -54,6 +54,8 @@ for the built-in function open() or for os.popen().
 
 To create a new template object initialized to a given one:
    t2 = t.clone()
+
+For an example, see the function test() at the end of the file.
 """                                     # '
 
 

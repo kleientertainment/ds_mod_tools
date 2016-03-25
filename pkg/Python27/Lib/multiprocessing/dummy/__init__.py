@@ -70,8 +70,7 @@ class DummyProcess(threading.Thread):
     def start(self):
         assert self._parent is current_process()
         self._start_called = True
-        if hasattr(self._parent, '_children'):
-            self._parent._children[self] = None
+        self._parent._children[self] = None
         threading.Thread.start(self)
 
     @property

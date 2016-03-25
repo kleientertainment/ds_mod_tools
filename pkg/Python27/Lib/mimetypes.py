@@ -386,14 +386,12 @@ def _default_mime_types():
         '.taz': '.tar.gz',
         '.tz': '.tar.gz',
         '.tbz2': '.tar.bz2',
-        '.txz': '.tar.xz',
         }
 
     encodings_map = {
         '.gz': 'gzip',
         '.Z': 'compress',
         '.bz2': 'bzip2',
-        '.xz': 'xz',
         }
 
     # Before adding new types, make sure they are either registered with IANA,
@@ -434,12 +432,11 @@ def _default_mime_types():
         '.hdf'    : 'application/x-hdf',
         '.htm'    : 'text/html',
         '.html'   : 'text/html',
-        '.ico'    : 'image/vnd.microsoft.icon',
         '.ief'    : 'image/ief',
         '.jpe'    : 'image/jpeg',
         '.jpeg'   : 'image/jpeg',
         '.jpg'    : 'image/jpeg',
-        '.js'     : 'application/javascript',
+        '.js'     : 'application/x-javascript',
         '.ksh'    : 'text/plain',
         '.latex'  : 'application/x-latex',
         '.m1v'    : 'video/mpeg',

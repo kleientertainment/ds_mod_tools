@@ -30,7 +30,12 @@ else :
     import db
 
 if sys.version_info < (2, 6) :
-    from UserDict import DictMixin as MutableMapping
+    try:
+        from UserDict import DictMixin
+    except ImportError:
+        # DictMixin is new in Python 2.3
+        class DictMixin: pass
+    MutableMapping = DictMixin
 else :
     import collections
     MutableMapping = collections.MutableMapping
@@ -191,8 +196,6 @@ class DB(MutableMapping):
         return self._cobj.set_bt_compare(*args, **kwargs)
     def set_cachesize(self, *args, **kwargs):
         return self._cobj.set_cachesize(*args, **kwargs)
-    def set_dup_compare(self, *args, **kwargs) :
-        return self._cobj.set_dup_compare(*args, **kwargs)
     def set_flags(self, *args, **kwargs):
         return self._cobj.set_flags(*args, **kwargs)
     def set_h_ffactor(self, *args, **kwargs):

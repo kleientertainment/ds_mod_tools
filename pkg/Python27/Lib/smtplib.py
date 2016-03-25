@@ -149,13 +149,6 @@ def quoteaddr(addr):
     else:
         return "<%s>" % m
 
-def _addr_only(addrstring):
-    displayname, addr = email.utils.parseaddr(addrstring)
-    if (displayname, addr) == ('', ''):
-        # parseaddr couldn't parse it, so use it as is.
-        return addrstring
-    return addr
-
 def quotedata(data):
     """Quote data for email.
 
@@ -237,9 +230,8 @@ class SMTP:
 
         If specified, `host' is the name of the remote host to which to
         connect.  If specified, `port' specifies the port to which to connect.
-        By default, smtplib.SMTP_PORT is used.  If a host is specified the
-        connect method is called, and if it returns anything other than
-        a success code an SMTPConnectError is raised.  If specified,
+        By default, smtplib.SMTP_PORT is used.  An SMTPConnectError is raised
+        if the specified `host' doesn't respond correctly.  If specified,
         `local_hostname` is used as the FQDN of the local host.  By default,
         the local hostname is found using socket.getfqdn().
 
@@ -277,12 +269,12 @@ class SMTP:
         """
         self.debuglevel = debuglevel
 
-    def _get_socket(self, host, port, timeout):
+    def _get_socket(self, port, host, timeout):
         # This makes it simpler for SMTP_SSL to use the SMTP connect code
         # and just alter the socket connection bit.
         if self.debuglevel > 0:
             print>>stderr, 'connect:', (host, port)
-        return socket.create_connection((host, port), timeout)
+        return socket.create_connection((port, host), timeout)
 
     def connect(self, host='localhost', port=0):
         """Connect to a host on a given port.
@@ -353,10 +345,8 @@ class SMTP:
         while 1:
             try:
                 line = self.file.readline()
-            except socket.error as e:
-                self.close()
-                raise SMTPServerDisconnected("Connection unexpectedly closed: "
-                                             + str(e))
+            except socket.error:
+                line = ''
             if line == '':
                 self.close()
                 raise SMTPServerDisconnected("Connection unexpectedly closed")
@@ -507,14 +497,14 @@ class SMTP:
 
     def verify(self, address):
         """SMTP 'verify' command -- checks for address validity."""
-        self.putcmd("vrfy", _addr_only(address))
+        self.putcmd("vrfy", quoteaddr(address))
         return self.getreply()
     # a.k.a.
     vrfy = verify
 
     def expn(self, address):
         """SMTP 'expn' command -- expands a mailing list."""
-        self.putcmd("expn", _addr_only(address))
+        self.putcmd("expn", quoteaddr(address))
         return self.getreply()
 
     # some useful methods
@@ -819,13 +809,13 @@ class LMTP(SMTP):
         try:
             self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.sock.connect(host)
-        except socket.error:
+        except socket.error, msg:
             if self.debuglevel > 0:
                 print>>stderr, 'connect fail:', host
             if self.sock:
                 self.sock.close()
             self.sock = None
-            raise
+            raise socket.error, msg
         (code, msg) = self.getreply()
         if self.debuglevel > 0:
             print>>stderr, "connect:", msg

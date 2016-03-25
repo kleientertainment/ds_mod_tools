@@ -1,4 +1,4 @@
-# Copyright 2001-2012 by Vinay Sajip. All Rights Reserved.
+# Copyright 2001-2010 by Vinay Sajip. All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and its
 # documentation for any purpose and without fee is hereby granted,
@@ -16,9 +16,9 @@
 
 """
 Logging package for Python. Based on PEP 282 and comments thereto in
-comp.lang.python.
+comp.lang.python, and influenced by Apache's log4j system.
 
-Copyright (C) 2001-2012 Vinay Sajip. All Rights Reserved.
+Copyright (C) 2001-2010 Vinay Sajip. All Rights Reserved.
 
 To use, simply 'import logging' and log away!
 """
@@ -180,7 +180,7 @@ def addLevelName(level, levelName):
         _releaseLock()
 
 def _checkLevel(level):
-    if isinstance(level, (int, long)):
+    if isinstance(level, int):
         rv = level
     elif str(level) == level:
         if level not in _levelNames:
@@ -478,12 +478,8 @@ class Formatter(object):
             except UnicodeError:
                 # Sometimes filenames have non-ASCII chars, which can lead
                 # to errors when s is Unicode and record.exc_text is str
-                # See issue 8924.
-                # We also use replace for when there are multiple
-                # encodings, e.g. UTF-8 for the filesystem and latin-1
-                # for a script. See issue 13232.
-                s = s + record.exc_text.decode(sys.getfilesystemencoding(),
-                                               'replace')
+                # See issue 8924
+                s = s + record.exc_text.decode(sys.getfilesystemencoding())
         return s
 
 #
@@ -624,8 +620,7 @@ def _removeHandlerRef(wr):
     # This function can be called during module teardown, when globals are
     # set to None. If _acquireLock is None, assume this is the case and do
     # nothing.
-    if (_acquireLock is not None and _handlerList is not None and
-        _releaseLock is not None):
+    if _acquireLock is not None:
         _acquireLock()
         try:
             if wr in _handlerList:
@@ -795,7 +790,7 @@ class Handler(Filterer):
         You could, however, replace this with a custom handler if you wish.
         The record which was being processed is passed in to this method.
         """
-        if raiseExceptions and sys.stderr:  # see issue 13807
+        if raiseExceptions:
             ei = sys.exc_info()
             try:
                 traceback.print_exception(ei[0], ei[1], ei[2],
@@ -829,12 +824,8 @@ class StreamHandler(Handler):
         """
         Flushes the stream.
         """
-        self.acquire()
-        try:
-            if self.stream and hasattr(self.stream, "flush"):
-                self.stream.flush()
-        finally:
-            self.release()
+        if self.stream and hasattr(self.stream, "flush"):
+            self.stream.flush()
 
     def emit(self, record):
         """
@@ -905,16 +896,12 @@ class FileHandler(StreamHandler):
         """
         Closes the stream.
         """
-        self.acquire()
-        try:
-            if self.stream:
-                self.flush()
-                if hasattr(self.stream, "close"):
-                    self.stream.close()
-                StreamHandler.close(self)
-                self.stream = None
-        finally:
-            self.release()
+        if self.stream:
+            self.flush()
+            if hasattr(self.stream, "close"):
+                self.stream.close()
+            StreamHandler.close(self)
+            self.stream = None
 
     def _open(self):
         """
@@ -1016,10 +1003,6 @@ class Manager(object):
         placeholder to now point to the logger.
         """
         rv = None
-        if not isinstance(name, basestring):
-            raise TypeError('A logger name must be string or Unicode')
-        if isinstance(name, unicode):
-            name = name.encode('utf-8')
         _acquireLock()
         try:
             if name in self.loggerDict:
@@ -1174,12 +1157,11 @@ class Logger(Filterer):
         if self.isEnabledFor(ERROR):
             self._log(ERROR, msg, args, **kwargs)
 
-    def exception(self, msg, *args, **kwargs):
+    def exception(self, msg, *args):
         """
         Convenience method for logging an ERROR with exception information.
         """
-        kwargs['exc_info'] = 1
-        self.error(msg, *args, **kwargs)
+        self.error(msg, exc_info=1, *args)
 
     def critical(self, msg, *args, **kwargs):
         """
@@ -1252,7 +1234,7 @@ class Logger(Filterer):
         all the handlers of this logger to handle the record.
         """
         if _srcfile:
-            #IronPython doesn't track Python frames, so findCaller raises an
+            #IronPython doesn't track Python frames, so findCaller throws an
             #exception on some versions of IronPython. We trap it here so that
             #IronPython can use logging.
             try:
@@ -1584,13 +1566,12 @@ def error(msg, *args, **kwargs):
         basicConfig()
     root.error(msg, *args, **kwargs)
 
-def exception(msg, *args, **kwargs):
+def exception(msg, *args):
     """
     Log a message with severity 'ERROR' on the root logger,
     with exception information.
     """
-    kwargs['exc_info'] = 1
-    error(msg, *args, **kwargs)
+    error(msg, exc_info=1, *args)
 
 def warning(msg, *args, **kwargs):
     """

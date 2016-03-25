@@ -303,7 +303,7 @@ class Integral(Rational):
         raise NotImplementedError
 
     def __index__(self):
-        """Called whenever an index is needed, such as in slicing"""
+        """index(self)"""
         return long(self)
 
     @abstractmethod

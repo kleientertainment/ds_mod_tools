@@ -502,7 +502,15 @@ class Trace:
     def run(self, cmd):
         import __main__
         dict = __main__.__dict__
-        self.runctx(cmd, dict, dict)
+        if not self.donothing:
+            threading.settrace(self.globaltrace)
+            sys.settrace(self.globaltrace)
+        try:
+            exec cmd in dict, dict
+        finally:
+            if not self.donothing:
+                sys.settrace(None)
+                threading.settrace(None)
 
     def runctx(self, cmd, globals=None, locals=None):
         if globals is None: globals = {}

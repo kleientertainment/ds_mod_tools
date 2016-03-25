@@ -129,8 +129,9 @@ From all times, sorting has always been a Great Art! :-)
 __all__ = ['heappush', 'heappop', 'heapify', 'heapreplace', 'merge',
            'nlargest', 'nsmallest', 'heappushpop']
 
-from itertools import islice, count, imap, izip, tee, chain
+from itertools import islice, repeat, count, imap, izip, tee, chain
 from operator import itemgetter
+import bisect
 
 def cmp_lt(x, y):
     # Use __lt__ if available; otherwise, try __le__.
@@ -187,26 +188,11 @@ def heapify(x):
     for i in reversed(xrange(n//2)):
         _siftup(x, i)
 
-def _heappushpop_max(heap, item):
-    """Maxheap version of a heappush followed by a heappop."""
-    if heap and cmp_lt(item, heap[0]):
-        item, heap[0] = heap[0], item
-        _siftup_max(heap, 0)
-    return item
-
-def _heapify_max(x):
-    """Transform list into a maxheap, in-place, in O(len(x)) time."""
-    n = len(x)
-    for i in reversed(range(n//2)):
-        _siftup_max(x, i)
-
 def nlargest(n, iterable):
     """Find the n largest elements in a dataset.
 
     Equivalent to:  sorted(iterable, reverse=True)[:n]
     """
-    if n < 0:
-        return []
     it = iter(iterable)
     result = list(islice(it, n))
     if not result:
@@ -223,18 +209,30 @@ def nsmallest(n, iterable):
 
     Equivalent to:  sorted(iterable)[:n]
     """
-    if n < 0:
-        return []
-    it = iter(iterable)
-    result = list(islice(it, n))
-    if not result:
+    if hasattr(iterable, '__len__') and n * 10 <= len(iterable):
+        # For smaller values of n, the bisect method is faster than a minheap.
+        # It is also memory efficient, consuming only n elements of space.
+        it = iter(iterable)
+        result = sorted(islice(it, 0, n))
+        if not result:
+            return result
+        insort = bisect.insort
+        pop = result.pop
+        los = result[-1]    # los --> Largest of the nsmallest
+        for elem in it:
+            if cmp_lt(elem, los):
+                insort(result, elem)
+                pop()
+                los = result[-1]
         return result
-    _heapify_max(result)
-    _heappushpop = _heappushpop_max
-    for elem in it:
-        _heappushpop(result, elem)
-    result.sort()
-    return result
+    # An alternative approach manifests the whole iterable in memory but
+    # saves comparisons by heapifying all at once.  Also, saves time
+    # over bisect.insort() which has O(n) data movement time for every
+    # insertion.  Finding the n smallest of an m length iterable requires
+    #    O(m) + O(n log m) comparisons.
+    h = list(iterable)
+    heapify(h)
+    return map(heappop, repeat(h, min(n, len(h))))
 
 # 'heap' is a heap at all indices >= startpos, except possibly for pos.  pos
 # is the index of a leaf with a possibly out-of-order value.  Restore the
@@ -311,42 +309,6 @@ def _siftup(heap, pos):
     # to its final resting place (by sifting its parents down).
     heap[pos] = newitem
     _siftdown(heap, startpos, pos)
-
-def _siftdown_max(heap, startpos, pos):
-    'Maxheap variant of _siftdown'
-    newitem = heap[pos]
-    # Follow the path to the root, moving parents down until finding a place
-    # newitem fits.
-    while pos > startpos:
-        parentpos = (pos - 1) >> 1
-        parent = heap[parentpos]
-        if cmp_lt(parent, newitem):
-            heap[pos] = parent
-            pos = parentpos
-            continue
-        break
-    heap[pos] = newitem
-
-def _siftup_max(heap, pos):
-    'Maxheap variant of _siftup'
-    endpos = len(heap)
-    startpos = pos
-    newitem = heap[pos]
-    # Bubble up the larger child until hitting a leaf.
-    childpos = 2*pos + 1    # leftmost child position
-    while childpos < endpos:
-        # Set childpos to index of larger child.
-        rightpos = childpos + 1
-        if rightpos < endpos and not cmp_lt(heap[rightpos], heap[childpos]):
-            childpos = rightpos
-        # Move the larger child up.
-        heap[pos] = heap[childpos]
-        pos = childpos
-        childpos = 2*pos + 1
-    # The leaf at pos is empty now.  Put newitem there, and bubble it up
-    # to its final resting place (by sifting its parents down).
-    heap[pos] = newitem
-    _siftdown_max(heap, startpos, pos)
 
 # If available, use C implementation
 try:

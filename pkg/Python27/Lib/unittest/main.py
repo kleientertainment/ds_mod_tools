@@ -157,10 +157,7 @@ class TestProgram(object):
             self.test = self.testLoader.loadTestsFromNames(self.testNames,
                                                            self.module)
 
-    def _do_discovery(self, argv, Loader=None):
-        if Loader is None:
-            Loader = lambda: self.testLoader
-
+    def _do_discovery(self, argv, Loader=loader.TestLoader):
         # handle command line args for test discovery
         self.progName = '%s discover' % self.progName
         import optparse

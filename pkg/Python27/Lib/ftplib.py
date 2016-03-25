@@ -273,24 +273,21 @@ class FTP:
 
     def makeport(self):
         '''Create a new socket and send a PORT command for it.'''
-        err = None
+        msg = "getaddrinfo returns an empty list"
         sock = None
         for res in socket.getaddrinfo(None, 0, self.af, socket.SOCK_STREAM, 0, socket.AI_PASSIVE):
             af, socktype, proto, canonname, sa = res
             try:
                 sock = socket.socket(af, socktype, proto)
                 sock.bind(sa)
-            except socket.error, err:
+            except socket.error, msg:
                 if sock:
                     sock.close()
                 sock = None
                 continue
             break
-        if sock is None:
-            if err is not None:
-                raise err
-            else:
-                raise socket.error("getaddrinfo returns an empty list")
+        if not sock:
+            raise socket.error, msg
         sock.listen(1)
         port = sock.getsockname()[1] # Get proper port
         host = self.sock.getsockname()[0] # Get proper host
@@ -328,39 +325,32 @@ class FTP:
         if self.passiveserver:
             host, port = self.makepasv()
             conn = socket.create_connection((host, port), self.timeout)
-            try:
-                if rest is not None:
-                    self.sendcmd("REST %s" % rest)
-                resp = self.sendcmd(cmd)
-                # Some servers apparently send a 200 reply to
-                # a LIST or STOR command, before the 150 reply
-                # (and way before the 226 reply). This seems to
-                # be in violation of the protocol (which only allows
-                # 1xx or error messages for LIST), so we just discard
-                # this response.
-                if resp[0] == '2':
-                    resp = self.getresp()
-                if resp[0] != '1':
-                    raise error_reply, resp
-            except:
-                conn.close()
-                raise
+            if rest is not None:
+                self.sendcmd("REST %s" % rest)
+            resp = self.sendcmd(cmd)
+            # Some servers apparently send a 200 reply to
+            # a LIST or STOR command, before the 150 reply
+            # (and way before the 226 reply). This seems to
+            # be in violation of the protocol (which only allows
+            # 1xx or error messages for LIST), so we just discard
+            # this response.
+            if resp[0] == '2':
+                resp = self.getresp()
+            if resp[0] != '1':
+                raise error_reply, resp
         else:
             sock = self.makeport()
-            try:
-                if rest is not None:
-                    self.sendcmd("REST %s" % rest)
-                resp = self.sendcmd(cmd)
-                # See above.
-                if resp[0] == '2':
-                    resp = self.getresp()
-                if resp[0] != '1':
-                    raise error_reply, resp
-                conn, sockaddr = sock.accept()
-                if self.timeout is not _GLOBAL_DEFAULT_TIMEOUT:
-                    conn.settimeout(self.timeout)
-            finally:
-                sock.close()
+            if rest is not None:
+                self.sendcmd("REST %s" % rest)
+            resp = self.sendcmd(cmd)
+            # See above.
+            if resp[0] == '2':
+                resp = self.getresp()
+            if resp[0] != '1':
+                raise error_reply, resp
+            conn, sockaddr = sock.accept()
+            if self.timeout is not _GLOBAL_DEFAULT_TIMEOUT:
+                conn.settimeout(self.timeout)
         if resp[:3] == '150':
             # this is conditional in case we received a 125
             size = parse150(resp)
@@ -454,7 +444,7 @@ class FTP:
           blocksize: The maximum data size to read from fp and send over
                      the connection at once.  [default: 8192]
           callback: An optional single parameter callable that is called on
-                    each block of data after it is sent.  [default: None]
+                    on each block of data after it is sent.  [default: None]
           rest: Passed to transfercmd().  [default: None]
 
         Returns:
@@ -477,7 +467,7 @@ class FTP:
           cmd: A STOR command.
           fp: A file-like object with a readline() method.
           callback: An optional single parameter callable that is called on
-                    each line after it is sent.  [default: None]
+                    on each line after it is sent.  [default: None]
 
         Returns:
           The response code.
@@ -585,11 +575,11 @@ class FTP:
 
     def close(self):
         '''Close the connection without assuming anything about it.'''
-        if self.file is not None:
+        if self.file:
             self.file.close()
-        if self.sock is not None:
             self.sock.close()
-        self.file = self.sock = None
+            self.file = self.sock = None
+
 
 try:
     import ssl

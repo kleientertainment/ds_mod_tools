@@ -132,8 +132,7 @@ def poll(timeout=0.0, map=None):
             is_w = obj.writable()
             if is_r:
                 r.append(fd)
-            # accepting sockets should not be writable
-            if is_w and not obj.accepting:
+            if is_w:
                 w.append(fd)
             if is_r or is_w:
                 e.append(fd)
@@ -180,8 +179,7 @@ def poll2(timeout=0.0, map=None):
             flags = 0
             if obj.readable():
                 flags |= select.POLLIN | select.POLLPRI
-            # accepting sockets should not be writable
-            if obj.writable() and not obj.accepting:
+            if obj.writable():
                 flags |= select.POLLOUT
             if flags:
                 # Only check for exceptions if object was either readable
@@ -225,7 +223,6 @@ class dispatcher:
     debug = False
     connected = False
     accepting = False
-    connecting = False
     closing = False
     addr = None
     ignore_log_types = frozenset(['warning'])
@@ -249,7 +246,7 @@ class dispatcher:
             try:
                 self.addr = sock.getpeername()
             except socket.error, err:
-                if err.args[0] in (ENOTCONN, EINVAL):
+                if err.args[0] == ENOTCONN:
                     # To handle the case where we got an unconnected
                     # socket.
                     self.connected = False
@@ -343,11 +340,9 @@ class dispatcher:
 
     def connect(self, address):
         self.connected = False
-        self.connecting = True
         err = self.socket.connect_ex(address)
         if err in (EINPROGRESS, EALREADY, EWOULDBLOCK) \
         or err == EINVAL and os.name in ('nt', 'ce'):
-            self.addr = address
             return
         if err in (0, EISCONN):
             self.addr = address
@@ -393,7 +388,7 @@ class dispatcher:
             else:
                 return data
         except socket.error, why:
-            # winsock sometimes raises ENOTCONN
+            # winsock sometimes throws ENOTCONN
             if why.args[0] in _DISCONNECTED:
                 self.handle_close()
                 return ''
@@ -403,7 +398,6 @@ class dispatcher:
     def close(self):
         self.connected = False
         self.accepting = False
-        self.connecting = False
         self.del_channel()
         try:
             self.socket.close()
@@ -442,8 +436,7 @@ class dispatcher:
             # sockets that are connected
             self.handle_accept()
         elif not self.connected:
-            if self.connecting:
-                self.handle_connect_event()
+            self.handle_connect_event()
             self.handle_read()
         else:
             self.handle_read()
@@ -454,7 +447,6 @@ class dispatcher:
             raise socket.error(err, _strerror(err))
         self.handle_connect()
         self.connected = True
-        self.connecting = False
 
     def handle_write_event(self):
         if self.accepting:
@@ -463,8 +455,12 @@ class dispatcher:
             return
 
         if not self.connected:
-            if self.connecting:
-                self.handle_connect_event()
+            #check for errors
+            err = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR)
+            if err != 0:
+                raise socket.error(err, _strerror(err))
+
+            self.handle_connect_event()
         self.handle_write()
 
     def handle_expt_event(self):

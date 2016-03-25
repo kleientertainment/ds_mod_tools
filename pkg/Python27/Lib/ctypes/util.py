@@ -180,36 +180,29 @@ elif os.name == "posix":
             res.sort(cmp= lambda x,y: cmp(_num_version(x), _num_version(y)))
             return res[-1]
 
-    elif sys.platform == "sunos5":
-
-        def _findLib_crle(name, is64):
-            if not os.path.exists('/usr/bin/crle'):
-                return None
-
-            if is64:
-                cmd = 'env LC_ALL=C /usr/bin/crle -64 2>/dev/null'
-            else:
-                cmd = 'env LC_ALL=C /usr/bin/crle 2>/dev/null'
-
-            for line in os.popen(cmd).readlines():
-                line = line.strip()
-                if line.startswith('Default Library Path (ELF):'):
-                    paths = line.split()[4]
-
-            if not paths:
-                return None
-
-            for dir in paths.split(":"):
-                libfile = os.path.join(dir, "lib%s.so" % name)
-                if os.path.exists(libfile):
-                    return libfile
-
-            return None
-
-        def find_library(name, is64 = False):
-            return _get_soname(_findLib_crle(name, is64) or _findLib_gcc(name))
-
     else:
+
+        def _findLib_ldconfig(name):
+            # XXX assuming GLIBC's ldconfig (with option -p)
+            expr = r'/[^\(\)\s]*lib%s\.[^\(\)\s]*' % re.escape(name)
+            f = os.popen('LC_ALL=C LANG=C /sbin/ldconfig -p 2>/dev/null')
+            try:
+                data = f.read()
+            finally:
+                f.close()
+            res = re.search(expr, data)
+            if not res:
+                # Hm, this works only for libs needed by the python executable.
+                cmd = 'ldd %s 2>/dev/null' % sys.executable
+                f = os.popen(cmd)
+                try:
+                    data = f.read()
+                finally:
+                    f.close()
+                res = re.search(expr, data)
+                if not res:
+                    return None
+            return res.group(0)
 
         def _findSoname_ldconfig(name):
             import struct
@@ -227,7 +220,8 @@ elif os.name == "posix":
             abi_type = mach_map.get(machine, 'libc6')
 
             # XXX assuming GLIBC's ldconfig (with option -p)
-            expr = r'\s+(lib%s\.[^\s]+)\s+\(%s' % (re.escape(name), abi_type)
+            expr = r'(\S+)\s+\((%s(?:, OS ABI:[^\)]*)?)\)[^/]*(/[^\(\)\s]*lib%s\.[^\(\)\s]*)' \
+                   % (abi_type, re.escape(name))
             f = os.popen('/sbin/ldconfig -p 2>/dev/null')
             try:
                 data = f.read()

@@ -1,8 +1,8 @@
-This is Python version 2.7.5
+This is Python version 2.7.2
 ============================
 
-Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-2012, 2013 Python Software Foundation.  All rights reserved.
+Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011
+Python Software Foundation.  All rights reserved.
 
 Copyright (c) 2000 BeOpen.com.
 All rights reserved.
@@ -241,7 +241,7 @@ longer:
 - NeXT
 - Irix 4 and --with-sgi-dl
 - Linux 1
-- Systems defining __d6_pthread_create (configure.ac)
+- Systems defining __d6_pthread_create (configure.in)
 - Systems defining PY_PTHREAD_D4, PY_PTHREAD_D6,
   or PY_PTHREAD_D7 in thread_pthread.h
 - Systems using --with-dl-dld
@@ -680,10 +680,10 @@ platforms, additional compiler and/or linker options are required for
 threads to work properly.  Below is a table of those options,
 collected by Bill Janssen.  We would love to automate this process
 more, but the information below is not enough to write a patch for the
-configure.ac file, so manual intervention is required.  If you patch
-the configure.ac file and are confident that the patch works, please
+configure.in file, so manual intervention is required.  If you patch
+the configure.in file and are confident that the patch works, please
 send in the patch.  (Don't bother patching the configure script itself
--- it is regenerated each time the configure.ac file changes.)
+-- it is regenerated each time the configure.in file changes.)
 
 Compiler switches for threads
 .............................
@@ -1201,7 +1201,7 @@ RISCOS/         Files specific to RISC OS port
 Tools/          Some useful programs written in Python
 pyconfig.h.in   Source from which pyconfig.h is created (GNU autoheader output)
 configure       Configuration shell script (GNU autoconf output)
-configure.ac    Configuration specification (input for GNU autoconf)
+configure.in    Configuration specification (input for GNU autoconf)
 install-sh      Shell script used to install files
 setup.py        Python script used to build extension modules
 

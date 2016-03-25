@@ -318,6 +318,7 @@ solution('mod_tools')
 	      	end
 	end
 
+extract(catfile("..", "test", "wand.zip"), catfile(props.outdir, "dont_starve", "mods"))
 
 local function copyPkg()
 	local src_base = catfile("..", "pkg")
@@ -329,5 +330,19 @@ local function copyPkg()
 			copyDirTree(src, dest)
 		end
 	end
+	rmDirTree( catfile(
+		props.skuoutdir
+		, assert(pkg_map.Python27)
+		, "Lib"
+		, "site-packages"
+		, "PIL"
+		) )
+	rmDirTree( catfile(
+		props.skuoutdir
+		, assert(pkg_map.Python27)
+		, "Lib"
+		, "site-packages"
+		, "PIL.pth"
+		) )
 end
 copyPkg()

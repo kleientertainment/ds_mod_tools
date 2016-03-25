@@ -4,24 +4,20 @@
 import sys
 from ctypes import *
 
-_array_type = type(Array)
+_array_type = type(c_int * 3)
 
 def _other_endian(typ):
     """Return the type with the 'other' byte order.  Simple types like
     c_int and so on already have __ctype_be__ and __ctype_le__
     attributes which contain the types, for more complicated types
-    arrays and structures are supported.
+    only arrays are supported.
     """
-    # check _OTHER_ENDIAN attribute (present if typ is primitive type)
-    if hasattr(typ, _OTHER_ENDIAN):
+    try:
         return getattr(typ, _OTHER_ENDIAN)
-    # if typ is array
-    if isinstance(typ, _array_type):
-        return _other_endian(typ._type_) * typ._length_
-    # if typ is structure
-    if issubclass(typ, Structure):
-        return typ
-    raise TypeError("This type does not support other endian: %s" % typ)
+    except AttributeError:
+        if type(typ) == _array_type:
+            return _other_endian(typ._type_) * typ._length_
+        raise TypeError("This type does not support other endian: %s" % typ)
 
 class _swapped_meta(type(Structure)):
     def __setattr__(self, attrname, value):

@@ -200,7 +200,7 @@ def _get_importer(path_name):
                 pass
         else:
             # The following check looks a bit odd. The trick is that
-            # NullImporter raises ImportError if the supplied path is a
+            # NullImporter throws ImportError if the supplied path is a
             # *valid* directory entry (and hence able to be handled
             # by the standard import machinery)
             try:

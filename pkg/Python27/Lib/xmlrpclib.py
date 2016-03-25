@@ -945,7 +945,7 @@ class _MultiCallMethod:
 
 class MultiCallIterator:
     """Iterates over the results of a multicall. Exceptions are
-    raised in response to xmlrpc faults."""
+    thrown in response to xmlrpc faults."""
 
     def __init__(self, results):
         self.results = results
@@ -1538,9 +1538,6 @@ class ServerProxy:
     def __init__(self, uri, transport=None, encoding=None, verbose=0,
                  allow_none=0, use_datetime=0):
         # establish a "logical" server connection
-
-        if isinstance(uri, unicode):
-            uri = uri.encode('ISO-8859-1')
 
         # get the url
         import urllib

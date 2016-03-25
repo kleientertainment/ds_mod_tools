@@ -451,25 +451,6 @@ class Example:
         self.options = options
         self.exc_msg = exc_msg
 
-    def __eq__(self, other):
-        if type(self) is not type(other):
-            return NotImplemented
-
-        return self.source == other.source and \
-               self.want == other.want and \
-               self.lineno == other.lineno and \
-               self.indent == other.indent and \
-               self.options == other.options and \
-               self.exc_msg == other.exc_msg
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __hash__(self):
-        return hash((self.source, self.want, self.lineno, self.indent,
-                     self.exc_msg))
-
-
 class DocTest:
     """
     A collection of doctest examples that should be run in a single
@@ -518,22 +499,6 @@ class DocTest:
         return ('<DocTest %s from %s:%s (%s)>' %
                 (self.name, self.filename, self.lineno, examples))
 
-    def __eq__(self, other):
-        if type(self) is not type(other):
-            return NotImplemented
-
-        return self.examples == other.examples and \
-               self.docstring == other.docstring and \
-               self.globs == other.globs and \
-               self.name == other.name and \
-               self.filename == other.filename and \
-               self.lineno == other.lineno
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __hash__(self):
-        return hash((self.docstring, self.name, self.filename, self.lineno))
 
     # This lets us sort tests by name:
     def __cmp__(self, other):
@@ -2287,23 +2252,6 @@ class DocTestCase(unittest.TestCase):
     def id(self):
         return self._dt_test.name
 
-    def __eq__(self, other):
-        if type(self) is not type(other):
-            return NotImplemented
-
-        return self._dt_test == other._dt_test and \
-               self._dt_optionflags == other._dt_optionflags and \
-               self._dt_setUp == other._dt_setUp and \
-               self._dt_tearDown == other._dt_tearDown and \
-               self._dt_checker == other._dt_checker
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __hash__(self):
-        return hash((self._dt_optionflags, self._dt_setUp, self._dt_tearDown,
-                     self._dt_checker))
-
     def __repr__(self):
         name = self._dt_test.name.split('.')
         return "%s (%s)" % (name[-1], '.'.join(name[:-1]))
@@ -2314,8 +2262,7 @@ class DocTestCase(unittest.TestCase):
         return "Doctest: " + self._dt_test.name
 
 class SkipDocTestCase(DocTestCase):
-    def __init__(self, module):
-        self.module = module
+    def __init__(self):
         DocTestCase.__init__(self, None)
 
     def setUp(self):
@@ -2325,10 +2272,7 @@ class SkipDocTestCase(DocTestCase):
         pass
 
     def shortDescription(self):
-        return "Skipping tests from %s" % self.module.__name__
-
-    __str__ = shortDescription
-
+        return "Skipping tests from %s" % module.__name__
 
 def DocTestSuite(module=None, globs=None, extraglobs=None, test_finder=None,
                  **options):
@@ -2376,17 +2320,12 @@ def DocTestSuite(module=None, globs=None, extraglobs=None, test_finder=None,
     if not tests and sys.flags.optimize >=2:
         # Skip doctests when running with -O2
         suite = unittest.TestSuite()
-        suite.addTest(SkipDocTestCase(module))
+        suite.addTest(SkipDocTestCase())
         return suite
     elif not tests:
         # Why do we want to do this? Because it reveals a bug that might
         # otherwise be hidden.
-        # It is probably a bug that this exception is not also raised if the
-        # number of doctest examples in tests is zero (i.e. if no doctest
-        # examples were found).  However, we should probably not be raising
-        # an exception at all here, though it is too late to make this change
-        # for a maintenance release.  See also issue #14649.
-        raise ValueError(module, "has no docstrings")
+        raise ValueError(module, "has no tests")
 
     tests.sort()
     suite = unittest.TestSuite()
