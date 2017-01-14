@@ -723,7 +723,6 @@ void convert_timeline_to_frames(
 	frame_alpha = lerp(alphas[start_key], alphas[end_key], blend);
 }
 
-
 void convert_anim_timelines_to_frames(
     IN  int     length,
 	IN  bool	looping,
@@ -743,6 +742,7 @@ void convert_anim_timelines_to_frames(
 	IN  char**	timeline_key_names,
 	IN  int*	timeline_key_parent_ids,
 	IN	float*	timeline_key_alphas,
+	IN	char**	timeline_names,
 	OUT int&	anim_frame_count,
 	OUT int*	frame_element_count,
 	OUT int*    frame_element_start_indices,
@@ -798,10 +798,24 @@ void convert_anim_timelines_to_frames(
 
 			const int key_index = key_start_index + key_offset;
 
-			char timeline_layer_name[1024];
-			sprintf(timeline_layer_name, "timeline_%i", i);
+			string timeline_layer_name = timeline_names[key_index];
+			std::size_t found = timeline_layer_name.find_first_of("0");
+			if (found > 0)
+			{
+				timeline_layer_name = timeline_layer_name.substr(0, found-1);
+			}
+			
+				found = timeline_layer_name.find_first_of("1");
+				if (found > 0)
+				{
+					timeline_layer_name = timeline_layer_name.substr(0, found - 1);
+				}
+			
+
+			//char timeline_layer_name[1024];
+			//sprintf(timeline_layer_name, "timeline_%i", i);
 			strcpy(timeline_frame_names[element_index], timeline_key_names[key_index]);
-			strcpy(timeline_frame_layer_names[element_index], timeline_layer_name);
+			strcpy(timeline_frame_layer_names[element_index], timeline_layer_name.c_str());
 			timeline_frame_z_indices[element_index] = timeline_key_z_indices[key_index];
 			timeline_frame_symbol_frame_nums[element_index] = timeline_key_symbol_frame_nums[key_index];
 			timeline_frame_parent_ids[element_index] = timeline_key_parent_ids[key_index];
@@ -1536,7 +1550,8 @@ void import_timelines(
 	OUT int*	timeline_key_times,
 	OUT int*	timeline_key_symbol_frame_nums,
 	OUT char**  timeline_key_names,
-	OUT float*	timeline_key_alphas
+	OUT float*	timeline_key_alphas,
+	OUT char**	timeline_names
     )
 {
     int anim_index = 0;
@@ -1579,7 +1594,12 @@ void import_timelines(
 								);
 							
                             s_folder& folder = *scml.folders.find(key.object.folder)->second;
-                            if(folder.name.size() > 0)
+							if (timeline.name.size() > 0)
+							{
+								strcpy(timeline_names[timeline_key_index], timeline.name.c_str());
+							}
+                            
+							if(folder.name.size() > 0)
                             {
                                 strcpy(timeline_key_names[timeline_key_index], skip_slash(folder.name.c_str()));
                             }
@@ -2057,6 +2077,7 @@ void build_scml(
 	int* timeline_key_parent_ids = new int[timeline_key_count];
 	float* timeline_key_alphas = new float[timeline_key_count];
 	char** timeline_key_names = allocate_strings(timeline_key_count, MAX_NAME_LENGTH);	
+	char** timeline_names = allocate_strings(timeline_key_count, MAX_NAME_LENGTH);
 
 	bone* anim_bone_frames = new bone[bone_frame_count];
 	bone* anim_flattened_bone_frames = new bone[bone_frame_count];
@@ -2157,7 +2178,8 @@ void build_scml(
 		OUT timeline_key_times,
 		OUT timeline_key_symbol_frame_nums,
 		OUT timeline_key_names,
-		OUT timeline_key_alphas
+		OUT timeline_key_alphas,
+		OUT timeline_names
         );
 
 	import_bones(
@@ -2240,6 +2262,7 @@ void build_scml(
 			timeline_key_names,
 			timeline_key_parent_ids,
 			timeline_key_alphas,
+			timeline_names,
 			anim_frame_counts[i],			
 			&frame_element_counts[frame_element_count_index],
 			&frame_element_start_indices[frame_element_count_index],
