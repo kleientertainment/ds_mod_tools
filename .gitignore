@@ -1,2 +1,3 @@
 # Ignores everything in build/
 build/**
+*.pyc
