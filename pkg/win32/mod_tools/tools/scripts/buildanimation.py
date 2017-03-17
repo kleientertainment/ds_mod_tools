@@ -72,10 +72,14 @@ ANIMVERSION = 4
 #   original string (int, string)
 
 
-FACING_RIGHT = 1
-FACING_UP = 2
-FACING_LEFT = 4
-FACING_DOWN = 8
+FACING_RIGHT = 1<<0
+FACING_UP = 1<<1
+FACING_LEFT = 1<<2
+FACING_DOWN = 1<<3
+FACING_UPRIGHT = 1<<4
+FACING_UPLEFT = 1<<5
+FACING_DOWNRIGHT = 1<<6
+FACING_DOWNLEFT = 1<<7
 
 def strhash(str, hashcollection):
     hash = 0
@@ -107,9 +111,17 @@ def ExportAnim(endianstring, xmlstr, outzip, ignore_exceptions):
                 re.search("(.*)_down\Z", name),
                 re.search("(.*)_side\Z", name),
                 re.search("(.*)_left\Z", name),
-                re.search("(.*)_right\Z", name))
+                re.search("(.*)_right\Z", name),
+                re.search("(.*)_upside\Z", name),
+                re.search("(.*)_downside\Z", name),
+                re.search("(.*)_upleft\Z", name),
+                re.search("(.*)_upright\Z", name),
+                re.search("(.*)_downleft\Z", name),
+                re.search("(.*)_downright\Z", name),
+                re.search("(.*)_45s\Z", name),
+                re.search("(.*)_90s\Z", name))
         
-        facingbyte = FACING_RIGHT | FACING_LEFT | FACING_UP | FACING_DOWN
+        facingbyte = FACING_RIGHT | FACING_LEFT | FACING_UP | FACING_DOWN | FACING_UPLEFT | FACING_UPRIGHT | FACING_DOWNLEFT | FACING_DOWNRIGHT
         
         if dirs[0]:
             name = dirs[0].group(1)
@@ -126,6 +138,30 @@ def ExportAnim(endianstring, xmlstr, outzip, ignore_exceptions):
         elif dirs[4]:
             name = dirs[4].group(1)
             facingbyte = FACING_RIGHT
+        elif dirs[5]:
+            name = dirs[5].group(1)
+            facingbyte = FACING_UPLEFT | FACING_UPRIGHT
+        elif dirs[6]:
+            name = dirs[6].group(1)
+            facingbyte = FACING_DOWNLEFT | FACING_DOWNRIGHT
+        elif dirs[7]:
+            name = dirs[7].group(1)
+            facingbyte = FACING_UPLEFT
+        elif dirs[8]:
+            name = dirs[8].group(1)
+            facingbyte = FACING_UPRIGHT
+        elif dirs[9]:
+            name = dirs[9].group(1)
+            facingbyte = FACING_DOWNLEFT
+        elif dirs[10]:
+            name = dirs[10].group(1)
+            facingbyte = FACING_DOWNRIGHT
+        elif dirs[11]:
+            name = dirs[11].group(1)
+            facingbyte = FACING_UPLEFT | FACING_UPRIGHT | FACING_DOWNLEFT | FACING_DOWNRIGHT
+        elif dirs[12]:
+            name = dirs[12].group(1)
+            facingbyte = FACING_UP | FACING_DOWN | FACING_LEFT | FACING_RIGHT
         
         root = anim_node.attributes["root"].value.encode('ascii')
         num_frames = len(anim_node.getElementsByTagName("frame"))
