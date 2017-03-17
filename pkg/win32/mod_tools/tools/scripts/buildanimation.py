@@ -555,7 +555,7 @@ if __name__ == "__main__":
         sys.stderr.write( "Error Exporting {}\n".format(results.infile) + str(e) )
         traceback.print_exc(file=sys.stderr)
         if not results.ignoreexceptions:
-            raw_input("There was an export error!\n")
+            #raw_input("There was an export error!\n") # uncomment this to stop the execution when this breaks
             exit(-1)
 
 
