@@ -28,13 +28,13 @@ Compilation instructions
 
 For Windows, run the src/premake4.bat script to generate a Visual Studio 2010 project in build/proj/. Then open this project in Visual Studio and build it. For MinGW, see the note below.
 
-For Mac and Linux, run src/premake.sh, then enter the directory build/proj with a terminal and enter the command
+For Mac and Linux, enter `src/` and run `premake.sh`, then enter the directory `build/proj` with a terminal and enter the command
 ```
 $ make
 ```
 (without the prefixing '$')
 
-The output is built to 'build/win32', 'build/osx' or 'build/linux'.
+The output is built to `build/win32`, `build/osx` or `build/linux`.
 
 To customize the build files placed in build/proj, instead of running src/premake.bat or src/premake.sh the premake4 program may be run directly from a terminal (cmd.exe, under Windows). For the full list of options, run `premake4 --help`, but the most significant scenario is generating GNU make files for compilation using MinGW, under Windows. This can be done via a
 ```
