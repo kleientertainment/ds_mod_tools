@@ -21,7 +21,8 @@ Runtime dependencies
 
 Under Windows, the tools have no runtime dependencies other than those bundled within the tools.
 
-For Mac and Linux, a system wide installation of Python 2.7 is assumed, as well as the Python Imaging Library (PIL) or its backwards-compatible fork (Pillow). A system wide installation of the TEX converter ktech is also assumed.
+For Mac and Linux, a system wide installation of Python 2.7 is assumed, as well as the Python Imaging Library (PIL) or its backwards-compatible fork (Pillow). A system wide installation of the TEX converter ktech in [ktools
+](https://github.com/nsimplex/ktools#installation-from-source) is also assumed.
 
 Compilation instructions
 ============
