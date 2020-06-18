@@ -244,7 +244,7 @@ local copyDirTree = (function()
 	local cmd_template
 
 	if hostIsUnix() then
-		cmd_template = "cp -rT %q %q"
+		cmd_template = "cp -r %q %q"
 	else
 		cmd_template = 'xcopy /e /y "%s" "%s"'
 	end
