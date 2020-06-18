@@ -47,7 +47,7 @@ local function deduceOS()
 		if kernel_name == "linux" then
 			return "linux"
 		elseif kernel_name == "darwin" then
-			return "osx"
+			return "macosx"
 		end
 	end
 end
@@ -120,7 +120,7 @@ local definesMacros = (function()
 end)()
 
 local function targetIsUnix()
-	return _OPTIONS.os == "linux" or _OPTIONS.os == "osx"
+	return _OPTIONS.os == "linux" or _OPTIONS.os == "macosx"
 end
 
 local function targetIsWindows()
