@@ -153,7 +153,7 @@ def optlist(orig):
 	return newlist
 
 def GetImageRegions(img, blocksize=16):
-	rootNode = QuadTreeNode(img, None, 0, blocksize)
+	rootNode = QuadTreeNode(img.convert("RGBA"), None, 0, blocksize) #fix crash while a non RGBA image was input
 	opaque = doopt(sorted( rootNode.GetBBox(lambda x: x.type == BlockType.OPAQUE), key = lambda x : x.w*x.h,reverse=True))
 	alpha = doopt(sorted( rootNode.GetBBox(lambda x: x.type == BlockType.ALPHA), key = lambda x : x.w*x.h,reverse=True))
 
