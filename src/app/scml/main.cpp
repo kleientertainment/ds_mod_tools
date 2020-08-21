@@ -1014,10 +1014,10 @@ static bool extend_bounding_box(
 
 	float x1 = xs[0], x2 = xs[0], y1 = ys[0], y2 = ys[0];
 	for(size_t i = 1; i < 4; i++) {
-		x1 = std::min(x1, xs[i]);
-		x2 = std::max(x2, xs[i]);
-		y1 = std::min(y1, ys[i]);
-		y2 = std::max(y2, ys[i]);
+		x1 = min(x1, xs[i]);
+		x2 = max(x2, xs[i]);
+		y1 = min(y1, ys[i]);
+		y2 = max(y2, ys[i]);
 	}
 
 	if(first || x1 < rect.x1) {
