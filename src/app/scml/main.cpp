@@ -109,17 +109,8 @@ public:
 	}
 
 	void scale(float f) {
-		float xoff = w/2.0f;
-		float yoff = h/2.0f;
-
 		w = int(ceilf(f*w));
 		h = int(ceilf(f*h));
-
-		xoff -= w/2.0f;
-		yoff -= h/2.0f;
-
-		x += xoff;
-		y += yoff;
 	}
 };
 
@@ -1001,12 +992,12 @@ static bool extend_bounding_box(
 
 	float xs[4], ys[4];
 
-	xs[0] = m.m02;
+	xs[0] = m.m02 - frame_metadata.w/2.0f + frame_metadata.x;
 	xs[1] = xs[0] + m.m00*frame_metadata.w;
 	xs[2] = xs[0] + m.m01*frame_metadata.h;
 	xs[3] = xs[0] + m.m00*frame_metadata.w + m.m01*frame_metadata.h;
 
-	ys[0] = m.m12;
+	ys[0] = m.m12 - frame_metadata.h/2.0f + frame_metadata.y;
 	ys[1] = ys[0] + m.m10*frame_metadata.w;
 	ys[2] = ys[0] + m.m11*frame_metadata.h;
 	ys[3] = ys[0] + m.m10*frame_metadata.w + m.m11*frame_metadata.h;
@@ -1020,18 +1011,26 @@ static bool extend_bounding_box(
 		y2 = max(y2, ys[i]);
 	}
 
-	if(first || x1 < rect.x1) {
-		rect.x1 = x1;
+	if(!first && x1 > rect.x1 - rect.x2/2.0f) {
+		x1 = rect.x1 - rect.x2/2.0f;
 	}
-	if(first || x2 > rect.x2) {
-		rect.x2 = x2;
+	if(!first && x2 < rect.x1 + rect.x2/2.0f) {
+		x2 = rect.x1 + rect.x2/2.0f;
 	}
-	if(first || y1 < rect.y1) {
-		rect.y1 = y1;
+	if(!first && y1 > rect.y1 - rect.y2/2.0f) {
+		y1 = rect.y1 - rect.y2/2.0f;
 	}
-	if(first || y2 > rect.y2) {
-		rect.y2 = y2;
+	if(!first && y2 < rect.y1 + rect.y2/2.0f) {
+		y2 = rect.y1 + rect.y2/2.0f;
 	}
+	float w = x2 - x1;
+	float h = y2 - y1;
+
+	// Leo: rect's x1 and y2 are actually the center of the frame
+	rect.x1 = x1 + w/2.0f;
+	rect.y1 = y1 + h/2.0f;
+	rect.x2 = w;
+	rect.y2 = h;
 
 	return true;
 }
@@ -1076,9 +1075,6 @@ void export_animation_frame(
 	}
 
 	bounding_box bbox(bounding_rectangle);
-
-	bbox.x += bbox.w/2.0f;
-	bbox.y += bbox.h/2.0f;
 
 	bbox.scale(1.1);
 
