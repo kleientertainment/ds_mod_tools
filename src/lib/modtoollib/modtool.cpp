@@ -163,7 +163,7 @@ char* get_asset_temp_dir()
 
 		created = true;
 
-		sprintf(gAssetTempFolder, "%s"DSSTR"%s",  get_temp_dir(), assetName);
+		sprintf(gAssetTempFolder, "%s" DSSTR "%s",  get_temp_dir(), assetName);
 
 		if(!Compat::Path(gAssetTempFolder).mkdir()) {
 			error("ERROR: Failed to create directory %s.", gAssetTempFolder);
