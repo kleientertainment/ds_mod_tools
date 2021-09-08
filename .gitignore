@@ -1,2 +1,4 @@
+*.py[co]
+
 # Ignores everything in build/
 build/**
