@@ -98,7 +98,7 @@ public:
 		set_values(pos.x, pos.y, dim.x, dim.y);
 	}
 	explicit bounding_box(const rectangle& r) {
-		set_values(r.x1, r.y1, int(ceil(r.x2 - r.x1)), int(ceil(r.y2 - r.y1)));
+		set_values(r.x1, r.y1, int(ceilf(r.x2 - r.x1)), int(ceilf(r.y2 - r.y1)));
 	}
 
 	void split(float2& pos, int2& dim) const {
@@ -109,17 +109,8 @@ public:
 	}
 
 	void scale(float f) {
-		float xoff = w/2.0f;
-		float yoff = h/2.0f;
-
 		w = int(ceilf(f*w));
 		h = int(ceilf(f*h));
-
-		xoff -= w/2.0f;
-		yoff -= h/2.0f;
-
-		x += xoff;
-		y += yoff;
 	}
 };
 
@@ -999,33 +990,47 @@ static bool extend_bounding_box(
 
 	const symbol_frame_metadata_t& frame_metadata = symbol_metadata[frame];
 
-	float x1, x2, y1, y2;
+	float xs[4], ys[4];
 
-	x1 = m.m00*frame_metadata.x + m.m01*frame_metadata.y + m.m02;
-	x2 = x1 + m.m00*frame_metadata.w + m.m01*frame_metadata.h;
+	xs[0] = m.m02 - frame_metadata.w/2.0f + frame_metadata.x;
+	xs[1] = xs[0] + m.m00*frame_metadata.w;
+	xs[2] = xs[0] + m.m01*frame_metadata.h;
+	xs[3] = xs[0] + m.m00*frame_metadata.w + m.m01*frame_metadata.h;
 
-	y1 = m.m10*frame_metadata.x + m.m11*frame_metadata.y + m.m12;
-	y2 = x1 + m.m10*frame_metadata.w + m.m11*frame_metadata.h;
+	ys[0] = m.m12 - frame_metadata.h/2.0f + frame_metadata.y;
+	ys[1] = ys[0] + m.m10*frame_metadata.w;
+	ys[2] = ys[0] + m.m11*frame_metadata.h;
+	ys[3] = ys[0] + m.m10*frame_metadata.w + m.m11*frame_metadata.h;
 
-	if(x2 < x1) {
-		std::swap(x1, x2);
-	}
-	if(y2 < y1) {
-		std::swap(y1, y2);
+
+	float x1 = xs[0], x2 = xs[0], y1 = ys[0], y2 = ys[0];
+	for(size_t i = 1; i < 4; i++) {
+		x1 = min(x1, xs[i]);
+		x2 = max(x2, xs[i]);
+		y1 = min(y1, ys[i]);
+		y2 = max(y2, ys[i]);
 	}
 
-	if(first || x1 < rect.x1) {
-		rect.x1 = x1;
+	if(!first && x1 > rect.x1 - rect.x2/2.0f) {
+		x1 = rect.x1 - rect.x2/2.0f;
 	}
-	if(first || x2 > rect.x2) {
-		rect.x2 = x2;
+	if(!first && x2 < rect.x1 + rect.x2/2.0f) {
+		x2 = rect.x1 + rect.x2/2.0f;
 	}
-	if(first || y1 < rect.y1) {
-		rect.y1 = y1;
+	if(!first && y1 > rect.y1 - rect.y2/2.0f) {
+		y1 = rect.y1 - rect.y2/2.0f;
 	}
-	if(first || y2 > rect.y2) {
-		rect.y2 = y2;
+	if(!first && y2 < rect.y1 + rect.y2/2.0f) {
+		y2 = rect.y1 + rect.y2/2.0f;
 	}
+	float w = x2 - x1;
+	float h = y2 - y1;
+
+	// Leo: rect's x1 and y2 are actually the center of the frame
+	rect.x1 = x1 + w/2.0f;
+	rect.y1 = y1 + h/2.0f;
+	rect.x2 = w;
+	rect.y2 = h;
 
 	return true;
 }
@@ -1070,7 +1075,8 @@ void export_animation_frame(
 	}
 
 	bounding_box bbox(bounding_rectangle);
-	bbox.scale(1.2);
+
+	bbox.scale(1.1);
 
 	bbox.split( position, dimensions );
 
